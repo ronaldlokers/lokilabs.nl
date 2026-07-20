@@ -1,0 +1,14 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="projects — lokilabs" description="Things Ronald Lokers builds.">
+  <h1>projects</h1>
+  <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+    {projects.map((p) => <ProjectCard project={p} />)}
+  </div>
+</Base>

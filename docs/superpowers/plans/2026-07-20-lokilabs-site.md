@@ -16,7 +16,7 @@
 - Palette (exact): `--orange: #E9622E; --orange-light: #F67D51; --orange-deep: #DB551D; --violet: #7541B8; --purple: #562C8B; --ink: #231E1B; --muted: #76706C; --surface: #EFEBE4; --paper: #FBF8F4; --line: #DCD6D1;`
 - Type: Fira Code only, self-hosted via `@fontsource/fira-code` weights 400/500/700. No Google Fonts requests.
 - Site URL `https://lokilabs.nl`. English. Dates render ISO (`YYYY-MM-DD`) — fits terminal brand.
-- Fox mark exists at `public/assets/face-violet.svg` (committed). Fox art sits flush to the **bottom** edge of a `--surface` tile; tile radius ≈ 0.23 × size.
+- Portrait mark exists at `public/assets/face-violet.svg` (committed). Portrait art sits flush to the **bottom** edge of a `--surface` tile; tile radius ≈ 0.23 × size.
 - Astro 7 gotchas: unclosed/invalid HTML is a build **error**; whitespace between adjacent inline elements is stripped (write explicit spaces); markdown processor is Sätteri (GFM works, no remark plugins needed here).
 - Git: all work on branch `feat/site` (never commit to `main` — user rule). Conventional commit subjects, lowercase imperative.
 - Commit after every task. Verification = `pnpm build` (zod validates frontmatter) + checking `dist/` output; no unit-test framework (nothing to unit test — YAGNI).
@@ -30,7 +30,7 @@ package.json / pnpm-lock.yaml
 astro.config.mjs               # site URL + sitemap
 tsconfig.json                  # from scaffold
 public/assets/face-violet.svg  # exists
-public/favicon.svg             # copy of fox mark
+public/favicon.svg             # copy of app icon
 src/styles/global.css          # tokens + all styling
 src/layouts/Base.astro         # shell: head/SEO, header, footer
 src/components/PostList.astro  # blog post <ul> (home + blog index)
@@ -200,7 +200,7 @@ h2 { font-size: 20px; margin: 32px 0 12px; }
 }
 .site-nav a:hover { color: var(--orange-light); }
 
-/* fox tile: art flush to bottom edge, radius ~0.23 x size */
+/* portrait tile: art flush to bottom edge, radius ~0.23 x size */
 .tile {
   width: var(--tile, 44px); height: var(--tile, 44px);
   border-radius: calc(var(--tile, 44px) * 0.23);
@@ -298,7 +298,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <header class="site-header">
       <div class="site-header__inner">
         <a class="site-header__brand" href="/">
-          <span class="tile"><img src="/assets/face-violet.svg" alt="lokilabs fox mark" /></span>
+          <span class="tile"><img src="/assets/face-violet.svg" alt="lokilabs mark" /></span>
           <span>/lokilabs <span class="prompt">$</span></span>
         </a>
         <nav class="site-nav">
@@ -517,7 +517,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
   description="TypeScript developer going deep on platform engineering and AI. Personal site of Ronald Lokers."
 >
   <section style="display: flex; align-items: center; gap: 26px; flex-wrap: wrap; margin: 24px 0 32px;">
-    <span class="tile" style="--tile: 104px;"><img src="/assets/face-violet.svg" alt="lokilabs fox mark" /></span>
+    <span class="tile" style="--tile: 104px;"><img src="/assets/face-violet.svg" alt="lokilabs mark" /></span>
     <span>
       <span style="display: block; font-size: 16px; font-weight: 700; color: var(--violet);">Ronald Lokers <span style="color: var(--orange-deep); font-weight: 500;">→</span></span>
       <span style="display: block; font-size: 38px; font-weight: 700; letter-spacing: -1.5px;">/lokilabs <span style="color: var(--orange);">$</span></span>
