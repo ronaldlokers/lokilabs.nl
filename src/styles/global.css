@@ -124,7 +124,7 @@ a.wordmark:hover { color: var(--orange-light); }
 .tags-purple .tag { background: var(--purple-tag); color: #E7DCF5; border: none; }
 
 /* ---------- page sections ---------- */
-.page-head { padding: 34px 0 0; }
+.page-head { padding-top: 34px; }
 .page-head h1 { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin: 0 0 26px; }
 
 .seclabel {
@@ -257,7 +257,7 @@ a.wordmark:hover { color: var(--orange-light); }
 .site-footer .mail { color: #9A938C; }
 
 /* ---------- misc ---------- */
-.section { padding: 34px 0 0; }
+.section { padding-top: 34px; }
 
 @media (max-width: 640px) {
   .wrap { padding: 0 18px; }
