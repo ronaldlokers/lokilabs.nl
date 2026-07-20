@@ -79,11 +79,31 @@ const history: Job[] = [
       <div class="about-tile"><img src="/assets/face-line-violet.png" alt="Ronald Lokers, line-art portrait" /></div>
       <div>
         <h1>Ronald Lokers</h1>
-        <p>Developer in the Netherlands. 15 years of frontend and fullstack behind me — now building the pipelines and platforms that keep software boring to deploy. If I do something twice, it becomes a script.</p>
+        <p><strong>Loki Labs</strong> = <em>Lokers</em> + the lab where I break and rebuild things: a homelab, AI tooling, research experiments. This site is the lab notebook.</p>
       </div>
     </div>
 
-    <p class="seclabel" style="margin: 30px 0 22px;">work history</p>
+    <div class="prose" style="max-width: 640px;">
+      <p>15 years of frontend and fullstack — Coolblue, Mendix, Oliver IT — taught me that the part I kept gravitating toward was never the UI. It was the build tools, the CI/CD pipelines, and the infrastructure underneath. A health-related career break gave me room to be honest about that (fully under control — cleared and eager to get back to work). Since mid-2025: platform engineering, full time.</p>
+    </div>
+
+    <p class="seclabel" style="margin: 30px 0 18px;">in practice</p>
+    <div class="prose" style="max-width: 640px;">
+      <ul>
+        <li>A Kubernetes cluster on Raspberry Pi CM5 — three HA control planes — run like production: GitOps with FluxCD, everything declared in Git (<a href="https://github.com/ronaldlokers/homelab">repo</a>)</li>
+        <li>Full observability with Prometheus and Grafana; Longhorn storage, MetalLB, Renovate</li>
+        <li>Daily drivers: Linux (Arch), Docker, CI/CD pipeline design, cluster operations</li>
+      </ul>
+      <p style="margin-top: 14px;"><code>kubernetes · fluxcd · gitops · docker · prometheus · grafana · linux · ci/cd · typescript</code></p>
+      <p>Ready to bring 15+ years of engineering experience to a Platform or DevOps role. <a href="mailto:ronald@lokilabs.nl">Get in touch</a>.</p>
+    </div>
+
+    <p class="seclabel" style="margin: 30px 0 18px;">away from the keyboard</p>
+    <div class="prose" style="max-width: 640px;">
+      <p>Rally Chief Official and Rescue Marshal at KNAF rallies; Event Traffic Controller at local events in Fijnaart — carnaval, the Oranjeloop, Fendertse Week, the Christmas market. Different kind of incident response.</p>
+    </div>
+
+    <p class="seclabel" style="margin: 34px 0 22px;">work history</p>
     <div class="timeline">
       {history.map((job) => (
         <div class={`tl-item${job.state ? ` ${job.state}` : ''}`}>
