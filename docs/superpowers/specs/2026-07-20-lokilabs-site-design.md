@@ -142,6 +142,7 @@ Filled via a copy interview after scaffolding:
 - About page prose
 - 1 first blog post (hello world / why lokilabs)
 - 2–3 project pages
+- LinkedIn profile URL for the footer
 
 ## Deployment & verification
 
