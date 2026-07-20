@@ -19,7 +19,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title="lokilabs" href="/rss.xml" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -31,7 +32,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <header class="site-header">
       <div class="site-header__inner">
         <a class="site-header__brand" href="/">
-          <span class="tile"><img src="/assets/face-violet.svg" alt="lokilabs mark" /></span>
+          <span class="tile"><img src="/assets/face-line-violet.png" alt="lokilabs mark" /></span>
           <span>/lokilabs <span class="prompt">$</span></span>
         </a>
         <nav class="site-nav">
