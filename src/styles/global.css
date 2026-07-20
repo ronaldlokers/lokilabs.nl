@@ -211,11 +211,10 @@ a.wordmark:hover { color: var(--orange-light); }
 .tl-item::before {
   content: ""; position: absolute; left: -30px; top: 3px;
   width: 14px; height: 14px; border-radius: 50%;
-  background: var(--violet); border: 3px solid var(--paper);
-  box-shadow: 0 0 0 2px var(--violet);
+  background: #C7BFB5; border: 3px solid var(--paper);
+  box-shadow: 0 0 0 2px #C7BFB5;
 }
 .tl-item.current::before { background: var(--purple); box-shadow: 0 0 0 2px var(--purple); }
-.tl-item.past::before { background: #C7BFB5; box-shadow: 0 0 0 2px #C7BFB5; }
 .tl-item .when { font-size: 12px; color: var(--orange); font-weight: 700; margin-bottom: 3px; }
 .tl-item.past .when { color: var(--faint); }
 .tl-item .role { font-size: 16px; font-weight: 700; }
