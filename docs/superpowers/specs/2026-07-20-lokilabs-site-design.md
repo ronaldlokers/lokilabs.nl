@@ -47,7 +47,7 @@ src/
     rss.xml.ts           # blog RSS
   styles/global.css      # brand tokens + base styles
 public/
-  assets/                # fox mark SVGs from design project
+  assets/                # portrait mark SVGs from design project
   favicon.svg
 docs/superpowers/specs/  # this spec, plans
 mise.toml
@@ -108,12 +108,12 @@ CSS custom properties in `global.css`:
   (weights 400/500/700). No Google Fonts request.
 - Page background `--surface`; cards `--paper` with 1px `--line` border,
   border-radius 18px (matches handoff cards).
-- Logo: fox SVGs copied from the design project (`face-vector-violet.svg` and
-  variants) into `public/assets/`. Fox art sits flush to the bottom edge of a
+- Logo: portrait SVGs copied from the design project (`face-vector-violet.svg` and
+  variants) into `public/assets/`. Portrait art sits flush to the bottom edge of a
   `--surface` tile; tile radius ≈ 0.23 × size.
-- Header logo: fox tile + `/lokilabs $` wordmark on `--purple` bar
+- Header logo: portrait tile + `/lokilabs $` wordmark on `--purple` bar
   (text `--paper`, `$` in `--orange-light`), per handoff spec.
-- Primary lockup (home hero): fox tile 104px/radius 24px +
+- Primary lockup (home hero): portrait tile 104px/radius 24px +
   "Ronald Lokers →" (`--violet`, arrow `--orange-deep`) over
   `/lokilabs $` (`--ink`, `$` in `--orange`).
 - Links `--violet`, hover `--purple`. Accents orange.

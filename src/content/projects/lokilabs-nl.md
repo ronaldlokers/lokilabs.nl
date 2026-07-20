@@ -13,8 +13,8 @@ JavaScript shipped.
 - **Astro 7** with typed content collections: blog and project frontmatter
   validated by zod at build time, so a bad date fails the build instead of
   the page
-- Fira Code self-hosted, brand tokens as CSS custom properties, the pixel
-  fox from the Loki Labs design system
+- Fira Code self-hosted, brand tokens as CSS custom properties, and a
+  pixelized headshot as the mark
 - RSS feed and sitemap generated at build
 - Deployed on Cloudflare Pages: push to `main`, preview deploys per PR
 

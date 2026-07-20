@@ -50,7 +50,7 @@ h2 { font-size: 20px; margin: 32px 0 12px; }
 }
 .site-nav a:hover { color: var(--orange-light); }
 
-/* fox tile: art flush to bottom edge, radius ~0.23 x size */
+/* mark tile: art flush to bottom edge, radius ~0.23 x size */
 .tile {
   width: var(--tile, 44px); height: var(--tile, 44px);
   border-radius: calc(var(--tile, 44px) * 0.23);
