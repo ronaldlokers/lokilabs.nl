@@ -51,6 +51,7 @@ a:hover { color: var(--purple); }
   color: var(--paper); text-decoration: none;
 }
 .wordmark .prompt { color: var(--orange-light); }
+a.wordmark:hover { color: var(--orange-light); }
 .site-nav { display: flex; gap: 22px; font-size: 13px; font-weight: 500; }
 .site-nav a { color: var(--nav-muted); text-decoration: none; }
 .site-nav a:hover, .site-nav a.active { color: var(--paper); }
