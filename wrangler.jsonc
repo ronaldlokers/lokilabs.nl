@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "lokilabs-nl",
+  "name": "lokilabs",
   "compatibility_date": "2026-07-20",
   "assets": {
     "directory": "./dist",
