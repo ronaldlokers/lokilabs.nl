@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Prompt from '../../components/Prompt.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects', ({ data }) => !data.draft);
@@ -11,13 +12,22 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 ---
 <Base title={`${project.data.title} — lokilabs`} description={project.data.description}>
-  <h1>{project.data.title}</h1>
-  <p class="note">
-    {project.data.tech.map((t) => <span class="tag">{t}</span>)}
-    {project.data.repo && <span> · <a href={project.data.repo}>repo</a></span>}
-    {project.data.link && <span> · <a href={project.data.link}>live</a></span>}
-  </p>
-  <div class="prose">
-    <Content />
-  </div>
+  <section class="hero-detail">
+    <div class="wrap">
+      <a class="backlink" href="/projects/"><span class="a">←</span> /lokilabs/projects</a>
+      <Prompt cmd="./run" cwd={`/lokilabs/${project.id}`} purple />
+      <h1>{project.data.title}</h1>
+      <p class="sub">{project.data.description}</p>
+      <div class="tags-purple">{project.data.tech.map((t) => <span class="tag">{t}</span>)}</div>
+      <div class="btn-row">
+        {project.data.link && <a class="btn" href={project.data.link}>visit {project.data.title} →</a>}
+        {project.data.repo && <a class="btn ghost" href={project.data.repo}>github</a>}
+      </div>
+    </div>
+  </section>
+  <main class="wrap section">
+    <div class="prose">
+      <Content />
+    </div>
+  </main>
 </Base>

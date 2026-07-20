@@ -1,8 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
+import Prompt from '../components/Prompt.astro';
 ---
 <Base title="404 — lokilabs" description="Page not found.">
-  <h1>404</h1>
-  <p><code>lokilabs $ cat {'{page}'}</code></p>
-  <p>No such file or directory. <a href="/">cd ~</a></p>
+  <main class="wrap page-head">
+    <Prompt cmd="cat {page}" />
+    <h1>404</h1>
+    <p>No such file or directory. <a href="/">cd ~</a></p>
+  </main>
 </Base>
