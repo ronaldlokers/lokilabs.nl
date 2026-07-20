@@ -145,7 +145,7 @@ a.wordmark:hover { color: var(--orange-light); }
   flex: 1; min-width: 260px; border: 1px solid var(--line);
   border-radius: 12px; overflow: hidden; text-decoration: none; display: block;
 }
-.workcard:hover { border-color: var(--violet); }
+.workcard:hover { border-color: var(--purple); background: var(--surface); }
 .workcard .shot {
   height: 96px; display: flex; align-items: center; justify-content: center;
   background: repeating-linear-gradient(45deg, var(--stripe-a), var(--stripe-a) 8px, var(--stripe-b) 8px, var(--stripe-b) 16px);
