@@ -1,0 +1,55 @@
+---
+import '@fontsource/fira-code/400.css';
+import '@fontsource/fira-code/500.css';
+import '@fontsource/fira-code/700.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="lokilabs" href="/rss.xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-header__brand" href="/">
+          <span class="tile"><img src="/assets/face-violet.svg" alt="lokilabs fox mark" /></span>
+          <span>/lokilabs <span class="prompt">$</span></span>
+        </a>
+        <nav class="site-nav">
+          <a href="/">home</a>
+          <a href="/about/">about</a>
+          <a href="/blog/">blog</a>
+          <a href="/projects/">projects</a>
+        </nav>
+      </div>
+    </header>
+    <main class="wrap">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <a href="https://github.com/ronaldlokers">github</a>
+      <a href="https://www.linkedin.com/in/ronaldlokers">linkedin</a>
+      <a href="mailto:ronald@lokilabs.nl">ronald@lokilabs.nl</a>
+      <span>© {new Date().getFullYear()} Ronald Lokers</span>
+    </footer>
+  </body>
+</html>
