@@ -191,9 +191,9 @@ a.wordmark:hover { color: var(--orange-light); }
 .postrow:hover .t { color: var(--violet); }
 
 /* ---------- about ---------- */
-.about-head { display: flex; align-items: center; gap: 20px; margin: 8px 0 24px; }
+.about-head { display: flex; align-items: flex-start; gap: 20px; margin: 8px 0 24px; }
 .about-tile {
-  width: 84px; height: 84px; border-radius: 18px; overflow: hidden;
+  width: 108px; height: 108px; border-radius: 22px; overflow: hidden;
   background: var(--surface); flex-shrink: 0;
   display: flex; align-items: flex-end; justify-content: center;
 }
