@@ -15,6 +15,7 @@ Raspberry Pi CM5 modules, running k3s. Three of them form the control plane —
 `control-plane,etcd` roles on every node:
 
 ```ansi frame="terminal" title="ronald@homelab — k3s production"
+$ kubectl get nodes
 NAME     STATUS   ROLES                AGE    VERSION
 cm5-01   Ready    control-plane,etcd   212d   v1.33.6+k3s1
 cm5-02   Ready    control-plane,etcd   212d   v1.33.6+k3s1
