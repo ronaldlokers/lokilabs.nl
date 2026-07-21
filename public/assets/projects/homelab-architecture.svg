@@ -13,7 +13,7 @@
   <!-- git repo -->
   <rect x="60" y="40" width="300" height="86" rx="12" fill="#EFEBE4" stroke="#DCD6D1"/>
   <text x="84" y="76" font-size="16" font-weight="700" fill="#231E1B">git repo</text>
-  <text x="84" y="102" font-size="12" fill="#76706C">github.com/ronaldlokers/homelab</text>
+  <text x="84" y="102" font-size="11" fill="#76706C">github.com/ronaldlokers/homelab</text>
 
   <!-- renovate -->
   <rect x="60" y="170" width="300" height="66" rx="12" fill="#FBF8F4" stroke="#DCD6D1" stroke-dasharray="5 4"/>
@@ -58,14 +58,14 @@
   <!-- etcd quorum line -->
   <path d="M 490 346 L 490 366 L 802 366 L 802 346" stroke="#DCD6D1" stroke-width="1.5" fill="none"/>
   <path d="M 646 346 L 646 366" stroke="#DCD6D1" stroke-width="1.5" fill="none"/>
-  <text x="586" y="384" font-size="10.5" fill="#A69C90">etcd quorum — survives one node loss</text>
+  <text x="646" y="384" font-size="10.5" fill="#A69C90" text-anchor="middle">etcd quorum — survives one node loss</text>
 
   <!-- storage / network bands -->
   <rect x="420" y="400" width="220" height="42" rx="9" fill="#FBF8F4" stroke="#DCD6D1"/>
-  <text x="438" y="426" font-size="12" fill="#231E1B">longhorn <tspan fill="#76706C">· 3-replica storage</tspan></text>
+  <text x="438" y="426" font-size="12" fill="#231E1B">longhorn <tspan fill="#76706C">· 3-replica</tspan></text>
 
   <rect x="652" y="400" width="220" height="42" rx="9" fill="#FBF8F4" stroke="#DCD6D1"/>
-  <text x="670" y="426" font-size="12" fill="#231E1B">metallb <tspan fill="#76706C">· load balancer</tspan></text>
+  <text x="670" y="426" font-size="12" fill="#231E1B">metallb <tspan fill="#76706C">· load bal.</tspan></text>
 
   <rect x="420" y="452" width="452" height="42" rx="9" fill="#FBF8F4" stroke="#DCD6D1"/>
   <text x="438" y="478" font-size="12" fill="#231E1B">prometheus + grafana <tspan fill="#76706C">· dashboards &amp; alerting</tspan></text>
@@ -73,8 +73,8 @@
   <!-- staging -->
   <rect x="60" y="300" width="280" height="120" rx="12" fill="#FBF8F4" stroke="#DCD6D1" stroke-dasharray="5 4"/>
   <text x="84" y="334" font-size="14" font-weight="700" fill="#76706C">k3d — staging</text>
-  <text x="84" y="358" font-size="11.5" fill="#A69C90">mirrors production, because you</text>
-  <text x="84" y="376" font-size="11.5" fill="#A69C90">don't test in prod. not even at home.</text>
+  <text x="84" y="358" font-size="11.5" fill="#A69C90">mirrors production — you don't</text>
+  <text x="84" y="376" font-size="11.5" fill="#A69C90">test in prod. not even at home.</text>
   <text x="84" y="402" font-size="10.5" fill="#A69C90">← same fluxcd reconcile loop</text>
 
   <!-- caption -->
