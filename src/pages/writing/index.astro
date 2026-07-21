@@ -5,7 +5,7 @@ import Prompt from '../../components/Prompt.astro';
 
 const posts = (await getCollection('writing', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const iso = (d: Date) => d.toISOString().slice(0, 10);
+import { fmtDate } from '../../lib/date';
 const minutes = (body: string | undefined) =>
   Math.max(1, Math.round((body ?? '').split(/\s+/).length / 200));
 ---
@@ -17,7 +17,7 @@ const minutes = (body: string | undefined) =>
       {posts.map((post) => (
         <a class="postrow" href={`/writing/${post.id}/`}>
           <span class="grow">
-            <span class="date">{iso(post.data.pubDate)} · {minutes(post.body)} min</span>
+            <span class="date">{fmtDate(post.data.pubDate)} · {minutes(post.body)} min</span>
             <span class="t" style="display: block;">{post.data.title}</span>
             <p>{post.data.description}</p>
             {post.data.tags.length > 0 && <span class="tags" style="display: flex; gap: 6px; margin-top: 10px;">{post.data.tags.map((t) => <span class="tag">{t}</span>)}</span>}

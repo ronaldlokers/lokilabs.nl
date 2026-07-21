@@ -9,14 +9,14 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const iso = (d: Date) => d.toISOString().slice(0, 10);
+import { fmtDate } from '../../lib/date';
 const minutes = Math.max(1, Math.round((post.body ?? '').split(/\s+/).length / 200));
 ---
 <Base title={`${post.data.title} — lokilabs`} description={post.data.description}>
   <section class="hero-detail">
     <div class="wrap">
       <a class="backlink" href="/writing/"><span class="a">←</span> /lokilabs/writing</a>
-      <p class="meta">{iso(post.data.pubDate)} · {minutes} min · ronald{post.data.updatedDate && ` · updated ${iso(post.data.updatedDate)}`}</p>
+      <p class="meta">{fmtDate(post.data.pubDate)} · {minutes} min · ronald{post.data.updatedDate && ` · updated ${fmtDate(post.data.updatedDate)}`}</p>
       <h1>{post.data.title}</h1>
       {post.data.tags.length > 0 && <div class="tags-purple">{post.data.tags.map((t) => <span class="tag">{t}</span>)}</div>}
     </div>
