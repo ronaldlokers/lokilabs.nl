@@ -58,6 +58,7 @@ a:hover { color: var(--purple); text-decoration-color: var(--purple); }
 .wordmark {
   font-size: 17px; font-weight: 700; letter-spacing: -0.5px;
   color: var(--paper); text-decoration: none;
+  white-space: nowrap; flex-shrink: 0;
 }
 .wordmark .prompt { color: var(--orange-light); }
 a.wordmark:hover { color: var(--orange-light); }
@@ -132,7 +133,7 @@ a.wordmark:hover { color: var(--orange-light); }
 /* detail-page hero (project / post) */
 .hero-detail { background: var(--purple); padding: 0 0 40px; }
 .backlink {
-  display: inline-block; font-size: 13px; color: #E7DCF5;
+  display: inline-block; font-size: 13px; color: #E7DCF5; white-space: nowrap;
   background: var(--purple-tag); border-radius: 999px; padding: 5px 14px;
   text-decoration: none;
 }
