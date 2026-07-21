@@ -10,8 +10,18 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'projects', item: new URL('/projects/', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: project.data.title.toLowerCase() },
+  ],
+};
 ---
 <Base title={`${project.data.title} — lokilabs`} description={project.data.description}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbLd)} />
   <header class="site-header" slot="header">
     <div class="site-header__inner">
       <a class="backlink" href="/projects/"><span class="a">←</span> /lokilabs/projects</a>
