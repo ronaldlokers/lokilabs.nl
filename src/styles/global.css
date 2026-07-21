@@ -264,6 +264,8 @@ a.wordmark:hover { color: var(--orange-light); }
 
 @media (max-width: 640px) {
   .wrap { padding: 0 18px; }
+  .promptline { margin-top: 16px; }
+  .project-shot { margin-top: 16px; }
   .site-header__inner, .site-footer__inner { padding-left: 18px; padding-right: 18px; }
   .hero .wrap { flex-direction: column; gap: 22px; }
   .hero-tile { width: 110px; height: 110px; border-radius: 24px; }
