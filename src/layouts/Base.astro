@@ -53,17 +53,19 @@ const active = (prefix: string) => (path.startsWith(prefix) ? 'active' : undefin
   </head>
   <body>
     <a class="skip-link" href="#main">skip to content</a>
-    <header class="site-header">
-      <div class="site-header__inner">
-        <a class="wordmark" href="/">/lokilabs <span class="prompt">$</span></a>
-        <nav class="site-nav">
-          <a href="/about/" class={active('/about')}>about</a>
-          <a href="/projects/" class={active('/projects')}>projects</a>
-          <a href="/writing/" class={active('/writing')}>writing</a>
-          <a href="/cv/" class={active('/cv')}>cv</a>
-        </nav>
-      </div>
-    </header>
+    <slot name="header">
+      <header class="site-header">
+        <div class="site-header__inner">
+          <a class="wordmark" href="/">/lokilabs <span class="prompt">$</span></a>
+          <nav class="site-nav">
+            <a href="/about/" class={active('/about')}>about</a>
+            <a href="/projects/" class={active('/projects')}>projects</a>
+            <a href="/writing/" class={active('/writing')}>writing</a>
+            <a href="/cv/" class={active('/cv')}>cv</a>
+          </nav>
+        </div>
+      </header>
+    </slot>
     <slot />
     <footer class="site-footer">
       <div class="site-footer__inner">
