@@ -50,7 +50,8 @@ a:hover { color: var(--purple); text-decoration-color: var(--purple); }
 .wrap { max-width: 880px; margin: 0 auto; padding: 0 28px; }
 
 /* ---------- header ---------- */
-.site-header { background: var(--purple); }
+/* padding-top extends the purple under the iOS status bar in standalone mode */
+.site-header { background: var(--purple); padding-top: env(safe-area-inset-top); }
 .site-header__inner {
   max-width: 880px; margin: 0 auto; padding: 22px 28px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
