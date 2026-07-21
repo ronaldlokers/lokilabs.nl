@@ -8,7 +8,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
 const host = (url: string) => new URL(url).host;
 ---
 <Base title="projects — lokilabs" description="Things Ronald Lokers builds.">
-  <main class="wrap page-head">
+  <main id="main" class="wrap page-head">
     <Prompt cmd="ls projects/" />
     <h1>projects</h1>
     <div>

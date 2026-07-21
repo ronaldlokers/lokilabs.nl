@@ -21,7 +21,7 @@ const minutes = Math.max(1, Math.round((post.body ?? '').split(/\s+/).length / 2
       {post.data.tags.length > 0 && <div class="tags-purple">{post.data.tags.map((t) => <span class="tag">{t}</span>)}</div>}
     </div>
   </section>
-  <main class="wrap section">
+  <main id="main" class="wrap section">
     <div class="prose">
       <Content />
     </div>

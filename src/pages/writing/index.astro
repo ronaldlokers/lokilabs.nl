@@ -10,7 +10,7 @@ const minutes = (body: string | undefined) =>
   Math.max(1, Math.round((body ?? '').split(/\s+/).length / 200));
 ---
 <Base title="writing — lokilabs" description="Posts by Ronald Lokers on platform engineering, automation, and shipping side projects.">
-  <main class="wrap page-head">
+  <main id="main" class="wrap page-head">
     <Prompt cmd="ls writing/" />
     <h1>writing</h1>
     <div>
