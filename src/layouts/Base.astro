@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '@fontsource/fira-code/400.css';
 import '@fontsource/fira-code/500.css';
 import '@fontsource/fira-code/700.css';
@@ -53,6 +54,7 @@ const active = (prefix: string) => (path.startsWith(prefix) ? 'active' : undefin
       ],
     })} />
     <script defer is:inline src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7963c7055a374937acd09a9a2535f60d"}'></script>
+    <ClientRouter />
   </head>
   <body>
     <a class="skip-link" href="#main">skip to content</a>
