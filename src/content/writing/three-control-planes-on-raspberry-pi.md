@@ -15,11 +15,12 @@ Raspberry Pi CM5 modules, running k3s. Three of them form the control plane —
 `control-plane,etcd` roles on every node:
 
 ```ansi frame="terminal" title="ronald@homelab — k3s production"
-$ kubectl get nodes
+[38;2;164;125;224mronald[0m [38;2;246;125;81m→[0m [38;2;164;125;224mhomelab[0m [38;2;246;125;81m$[0m [38;2;239;235;228mkubectl get nodes[0m
 NAME     STATUS   ROLES                AGE    VERSION
-cm5-01   Ready    control-plane,etcd   212d   v1.33.6+k3s1
-cm5-02   Ready    control-plane,etcd   212d   v1.33.6+k3s1
-cm5-03   Ready    control-plane,etcd   211d   v1.33.6+k3s1
+cm5-01   [38;2;125;201;143mReady[0m    control-plane,etcd   212d   v1.33.6+k3s1
+cm5-02   [38;2;125;201;143mReady[0m    control-plane,etcd   212d   v1.33.6+k3s1
+cm5-03   [38;2;125;201;143mReady[0m    control-plane,etcd   211d   v1.33.6+k3s1
+[38;2;164;125;224mronald[0m [38;2;246;125;81m→[0m [38;2;164;125;224mhomelab[0m [38;2;246;125;81m$[0m [48;2;246;125;81m [0m
 ```
 
 Three isn't a random number. etcd needs quorum: with three members you can
