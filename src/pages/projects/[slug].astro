@@ -26,6 +26,14 @@ const { Content } = await render(project);
     </div>
   </section>
   <main class="wrap section">
+    {project.data.screenshot && (
+      <img
+        class="project-shot"
+        src={project.data.screenshot}
+        alt={`${project.data.title} screenshot`}
+        style="width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; margin-bottom: 30px;"
+      />
+    )}
     <div class="prose">
       <Content />
     </div>

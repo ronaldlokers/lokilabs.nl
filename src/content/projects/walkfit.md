@@ -5,6 +5,7 @@ tech: ["vue 3", "typescript", "web bluetooth", "github actions"]
 repo: "https://github.com/ronaldlokers/WalkFit"
 link: "https://ronaldlokers.github.io/WalkFit/"
 order: 10
+screenshot: /assets/projects/walkfit.png
 ---
 
 Browser app that drives a Dreaver Motion One walking treadmill over

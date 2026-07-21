@@ -5,6 +5,7 @@ tech: ["kubernetes", "k3s", "fluxcd", "longhorn", "metallb", "prometheus", "graf
 repo: "https://github.com/ronaldlokers/homelab"
 order: 0
 featured: true
+screenshot: /assets/projects/homelab.png
 ---
 
 A multi-node Kubernetes homelab that refuses to behave like a homelab.

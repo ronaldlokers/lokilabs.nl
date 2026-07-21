@@ -36,7 +36,9 @@ const host = (url: string) => new URL(url).host;
       <div class="workgrid">
         {projects.map((p) => (
           <a class="workcard" href={`/projects/${p.id}/`}>
-            <span class="shot">screenshot</span>
+            {p.data.screenshot
+              ? <span class="shot"><img src={p.data.screenshot} alt={`${p.data.title} screenshot`} /></span>
+              : <span class="shot">screenshot</span>}
             <span class="body" style="display: block;">
               <span class="t">{p.data.title} {p.data.link && <small>{host(p.data.link)}</small>}</span>
               <p>{p.data.description}</p>
