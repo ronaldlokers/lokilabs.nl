@@ -5,6 +5,8 @@ tech: ["typescript", "cloudflare"]
 repo: "https://github.com/ronaldlokers/Zenith"
 link: "https://zenith.lokilabs.nl"
 order: 20
+featured: true
+screenshot: /assets/projects/zenith.png
 ---
 
 Every application, company, and recruiter contact in one place — because a

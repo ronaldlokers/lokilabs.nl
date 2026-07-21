@@ -10,6 +10,8 @@ interface Props {
 }
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname;
+const active = (prefix: string) => (path.startsWith(prefix) ? 'active' : undefined);
 ---
 <!doctype html>
 <html lang="en">
@@ -31,26 +33,24 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body>
     <header class="site-header">
       <div class="site-header__inner">
-        <a class="site-header__brand" href="/">
-          <span class="tile"><img src="/assets/face-line-violet.png" alt="lokilabs mark" /></span>
-          <span>/lokilabs <span class="prompt">$</span></span>
-        </a>
+        <a class="wordmark" href="/">/lokilabs <span class="prompt">$</span></a>
         <nav class="site-nav">
-          <a href="/">home</a>
-          <a href="/about/">about</a>
-          <a href="/blog/">blog</a>
-          <a href="/projects/">projects</a>
+          <a href="/about/" class={active('/about')}>about</a>
+          <a href="/projects/" class={active('/projects')}>projects</a>
+          <a href="/writing/" class={active('/writing')}>writing</a>
         </nav>
       </div>
     </header>
-    <main class="wrap">
-      <slot />
-    </main>
+    <slot />
     <footer class="site-footer">
-      <a href="https://github.com/ronaldlokers">github</a>
-      <a href="https://www.linkedin.com/in/ronaldlokers">linkedin</a>
-      <a href="mailto:ronald@lokilabs.nl">ronald@lokilabs.nl</a>
-      <span>© {new Date().getFullYear()} Ronald Lokers</span>
+      <div class="site-footer__inner">
+        <span class="wordmark">/lokilabs <span class="prompt">$</span></span>
+        <nav>
+          <a href="https://github.com/ronaldlokers"><span class="a">→</span> github</a>
+          <a href="https://www.linkedin.com/in/ronaldlokers"><span class="a">→</span> linkedin</a>
+          <a class="mail" href="mailto:ronald@lokilabs.nl">ronald@lokilabs.nl</a>
+        </nav>
+      </div>
     </footer>
   </body>
 </html>

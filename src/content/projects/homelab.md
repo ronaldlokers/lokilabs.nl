@@ -4,6 +4,8 @@ description: "GitOps-managed Kubernetes cluster on Raspberry Pi CM5 — run like
 tech: ["kubernetes", "k3s", "fluxcd", "longhorn", "metallb", "prometheus", "grafana"]
 repo: "https://github.com/ronaldlokers/homelab"
 order: 0
+featured: true
+screenshot: /assets/projects/homelab.png
 ---
 
 A multi-node Kubernetes homelab that refuses to behave like a homelab.

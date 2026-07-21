@@ -1,0 +1,11 @@
+---
+interface Props {
+  cmd: string;
+  cwd?: string;
+  purple?: boolean;
+}
+const { cmd, cwd = '/lokilabs', purple = false } = Astro.props;
+---
+<p class={purple ? 'promptline on-purple' : 'promptline'}>
+  <span class="u">ronald</span> <span class="a">→</span> <span class="p">{cwd}</span> <span class="a">$</span> {cmd}
+</p>

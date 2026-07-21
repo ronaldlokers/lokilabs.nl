@@ -1,47 +1,66 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import PostList from '../components/PostList.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import Prompt from '../components/Prompt.astro';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
+const projects = (await getCollection('projects', ({ data }) => !data.draft && data.featured))
+  .sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('writing', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
-const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 3);
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+const host = (url: string) => new URL(url).host;
 ---
 <Base
   title="lokilabs — Ronald Lokers"
-  description="TypeScript developer going deep on platform engineering and AI. Personal site of Ronald Lokers."
+  description="From TypeScript to Kubernetes: I build the tooling that keeps software boring to deploy, and write down what breaks along the way."
 >
-  <section style="display: flex; align-items: center; gap: 26px; flex-wrap: wrap; margin: 24px 0 32px;">
-    <span class="tile" style="--tile: 104px;"><img src="/assets/face-line-violet.png" alt="lokilabs mark" /></span>
-    <span>
-      <span style="display: block; font-size: 16px; font-weight: 700; color: var(--violet);">Ronald Lokers <span style="color: var(--orange-deep); font-weight: 500;">→</span></span>
-      <span style="display: block; font-size: 38px; font-weight: 700; letter-spacing: -1.5px;">/lokilabs <span style="color: var(--orange);">$</span></span>
-    </span>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-tile"><img src="/assets/face-line-violet.png" alt="Ronald Lokers, line-art portrait" /></div>
+      <div style="flex: 1;">
+        <Prompt cmd="whoami" purple />
+        <h1>Do it twice?<br />I'll automate it<span class="cursor" aria-hidden="true"></span></h1>
+        <p class="sub">From TypeScript to Kubernetes: I build the tooling that keeps software boring to deploy, and write down what breaks along the way.</p>
+        <div class="btn-row">
+          <a class="btn" href="/about/">about me →</a>
+          <a class="btn ghost" href="https://github.com/ronaldlokers">github</a>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <p>
-    I used to build UIs. Turns out I liked the pipelines behind them more —
-    so after 15+ years of frontend and fullstack work, I've fully committed
-    to platform engineering. My <a href="https://github.com/ronaldlokers/homelab">Raspberry Pi
-    Kubernetes cluster</a> runs like production: GitOps with FluxCD,
-    Prometheus, Grafana, everything declared in Git.
-  </p>
-  <p class="note">
-    Open to Platform / DevOps roles — <a href="mailto:ronald@lokilabs.nl">ronald@lokilabs.nl</a> ·
-    <a href="/about/">more about me →</a>
-  </p>
+  <section class="section">
+    <div class="wrap">
+      <p class="seclabel">selected work</p>
+      <div class="workgrid">
+        {projects.map((p) => (
+          <a class="workcard" href={`/projects/${p.id}/`}>
+            {p.data.screenshot
+              ? <span class="shot"><img src={p.data.screenshot} alt={`${p.data.title} screenshot`} /></span>
+              : <span class="shot">screenshot</span>}
+            <span class="body" style="display: block;">
+              <span class="t">{p.data.title} {p.data.link && <small>{host(p.data.link)}</small>}</span>
+              <p>{p.data.description}</p>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
 
-  <h2>latest posts</h2>
-  <PostList posts={posts} />
-  <p class="note"><a href="/blog/">all posts →</a> · <a href="/rss.xml">rss</a></p>
-
-  <h2>projects</h2>
-  <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
-    {projects.map((p) => <ProjectCard project={p} />)}
-  </div>
-  <p class="note"><a href="/projects/">all projects →</a></p>
+  <section class="section">
+    <div class="wrap">
+      <p class="seclabel">latest writing</p>
+      {posts.map((post) => (
+        <a class="postrow" href={`/writing/${post.id}/`}>
+          <span class="grow">
+            <span class="date">{iso(post.data.pubDate)}</span>
+            <span class="t" style="display: block;">{post.data.title}</span>
+          </span>
+          <span class="go">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
 </Base>

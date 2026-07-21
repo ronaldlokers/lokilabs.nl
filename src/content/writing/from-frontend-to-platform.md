@@ -2,7 +2,7 @@
 title: "from frontend to platform"
 description: "Fifteen years of building UIs taught me I like the pipelines behind them more. So I switched."
 pubDate: 2026-07-20
-tags: ["meta", "career", "platform-engineering"]
+tags: ["career", "platform-engineering"]
 ---
 
 Fifteen years of frontend and fullstack work — Coolblue, Mendix, Oliver IT —

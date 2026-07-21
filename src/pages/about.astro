@@ -1,10 +1,116 @@
 ---
 import Base from '../layouts/Base.astro';
-import { Content } from '../content/about.md';
+import Prompt from '../components/Prompt.astro';
+
+type Job = {
+  when: string;
+  role: string;
+  org: string;
+  desc?: string;
+  state?: 'current' | 'past';
+};
+
+const history: Job[] = [
+  {
+    when: 'dec 2024 → now',
+    role: 'Career switch → platform engineering',
+    org: 'lokilabs',
+    desc: 'A health break turned pivot: built a multi-node Kubernetes cluster (Raspberry Pi CM5) run like production — GitOps with FluxCD, full Prometheus/Grafana observability. Fully cleared and eager to get back to work.',
+    state: 'current',
+  },
+  {
+    when: 'may 2024 → nov 2024',
+    role: 'Consultant · Software Engineer',
+    org: 'Oliver IT',
+    desc: 'Full-stack internal applications for enterprise clients — Node.js, TypeScript, React; CI/CD pipelines with GitHub Actions.',
+  },
+  {
+    when: '2019 → 2023',
+    role: 'Senior Software Engineer',
+    org: 'Mendix',
+    desc: "Mendix Studio's Page Editor — developer tooling at platform scale. Reusable React components used by thousands of developers; large TypeScript codebase; CI/CD with Jenkins and GitHub Actions.",
+  },
+  {
+    when: '2012 → 2019',
+    role: 'Medior Front-end Developer',
+    org: 'Coolblue',
+    desc: 'Webshop frontend through explosive growth (~20 to 100+ engineers). Cut frontend build times from 2m45s to seconds; led SMACSS CSS modularization; built a React + TypeScript customer-service tool.',
+  },
+  {
+    when: '2010 → 2012',
+    role: 'Front-end developer',
+    org: 'Redhotminute',
+    desc: 'Frontend and email templates in a .NET environment for Landal GreenParks, Van der Valk, Kia, Domino’s Pizza, and North Sea Jazz.',
+    state: 'past',
+  },
+  {
+    when: '2009 → 2010',
+    role: 'Senior web nerd',
+    org: 'medianerds',
+    desc: 'Built and managed websites and newsletters.',
+    state: 'past',
+  },
+  {
+    when: '2007 → 2009',
+    role: 'Interactive Designer',
+    org: 'Pixel Reclame Producties',
+    desc: 'Websites and newsletters for SMBs (valid XHTML!), plus SEO/SEA advisory.',
+    state: 'past',
+  },
+  {
+    when: '2006 → 2007',
+    role: 'Webdeveloper',
+    org: 'Crea10 Communicatie',
+    state: 'past',
+  },
+  {
+    when: '2005 → 2015',
+    role: 'Owner / Front-end developer',
+    org: 'h2o media',
+    desc: 'Side business building websites for local clients, long before it was called freelancing.',
+    state: 'past',
+  },
+];
 ---
-<Base title="about — lokilabs" description="Who Ronald Lokers is and what Loki Labs is about.">
-  <h1>about</h1>
-  <div class="prose">
-    <Content />
-  </div>
+<Base title="about — lokilabs" description="Ronald Lokers — 15 years of frontend and fullstack, now building the pipelines and platforms that keep software boring to deploy.">
+  <main class="wrap page-head">
+    <Prompt cmd="cat about.md" />
+    <div class="about-head">
+      <div class="about-tile"><img src="/assets/face-line-violet.png" alt="Ronald Lokers, line-art portrait" /></div>
+      <div>
+        <h1>Ronald Lokers</h1>
+        <p>Developer in the Netherlands, switched from frontend to platform engineering. If I do something twice, it becomes a script.</p>
+      </div>
+    </div>
+
+    <div class="prose" style="max-width: 640px;">
+      <p>15 years of frontend and fullstack at Coolblue, Mendix, and Oliver IT. The part I loved was never the UI — it was the pipelines and infrastructure underneath. Since mid-2025 (after a health break, fully under control) I'm all-in on platform engineering.</p>
+    </div>
+
+    <p class="seclabel" style="margin: 30px 0 18px;">in practice</p>
+    <div class="prose" style="max-width: 640px;">
+      <ul>
+        <li>Raspberry Pi CM5 Kubernetes cluster, three HA control planes, run like production — GitOps with FluxCD (<a href="https://github.com/ronaldlokers/homelab">repo</a>)</li>
+        <li>Prometheus + Grafana observability; Longhorn, MetalLB, Renovate</li>
+        <li>Daily: Arch Linux, Docker, CI/CD design, cluster operations</li>
+      </ul>
+      <p>Ready to bring 15+ years to a Platform or DevOps role. <a href="mailto:ronald@lokilabs.nl">Get in touch</a>.</p>
+    </div>
+
+    <p class="seclabel" style="margin: 30px 0 18px;">away from the keyboard</p>
+    <div class="prose" style="max-width: 640px;">
+      <p>Rally Chief Official and Rescue Marshal at KNAF rallies; Event Traffic Controller at village events in Fijnaart. Different kind of incident response.</p>
+    </div>
+
+    <p class="seclabel" style="margin: 34px 0 22px;">work history</p>
+    <div class="timeline">
+      {history.map((job) => (
+        <div class={`tl-item${job.state ? ` ${job.state}` : ''}`}>
+          <div class="when">{job.when}</div>
+          <div class="role">{job.role} <small>@ {job.org}</small></div>
+          {job.desc && <p>{job.desc}</p>}
+        </div>
+      ))}
+    </div>
+  </main>
 </Base>

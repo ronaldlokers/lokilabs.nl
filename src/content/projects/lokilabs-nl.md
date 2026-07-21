@@ -5,6 +5,7 @@ tech: ["astro", "typescript", "cloudflare pages"]
 repo: "https://github.com/ronaldlokers/lokilabs.nl"
 link: "https://lokilabs.nl"
 order: 50
+screenshot: /assets/projects/lokilabs-nl.png
 ---
 
 The site you're reading. Markdown in, static HTML out — zero client-side
