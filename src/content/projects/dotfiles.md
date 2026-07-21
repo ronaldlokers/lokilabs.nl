@@ -4,6 +4,7 @@ description: "chezmoi-managed Arch/Omarchy setup — the machine, declared."
 tech: ["chezmoi", "shell", "lua", "arch linux"]
 repo: "https://github.com/ronaldlokers/dotfiles"
 order: 40
+screenshot: /assets/projects/dotfiles.png
 ---
 
 The same GitOps instinct as the homelab, applied to the workstation: the
