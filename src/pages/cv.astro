@@ -31,41 +31,30 @@ import { jobs, education, skills } from '../data/history';
       a script.
     </p>
 
-    <p class="seclabel">skills</p>
-    <ul class="cv-skills">
-      {skills.map((s) => <li>{s}</li>)}
-    </ul>
-
     <p class="seclabel">experience</p>
-    <div class="cv-jobs">
+    <div class="timeline">
       {jobs.map((job) => (
-        <div class="cv-job">
+        <div class={`tl-item${job.state ? ` ${job.state}` : ''}`}>
           <div class="when">{job.when}</div>
-          <div>
-            <div class="role">{job.role} <small>@ {job.org}</small></div>
-            {job.desc && <p>{job.desc}</p>}
-          </div>
+          <div class="role">{job.role} <small>@ {job.org}</small></div>
+          {job.desc && <p>{job.desc}</p>}
         </div>
       ))}
     </div>
 
     <p class="seclabel">education</p>
-    <div class="cv-jobs">
-      {education.map((e) => (
-        <div class="cv-job">
+    <div class="timeline">
+      {education.map((e, i) => (
+        <div class={`tl-item${i === 0 ? ' current' : ''}`}>
           <div class="when">{e.when}</div>
-          <div>
-            <div class="role">{e.what} <small>@ {e.where}</small></div>
-          </div>
+          <div class="role">{e.what} <small>@ {e.where}</small></div>
         </div>
       ))}
     </div>
 
-    <p class="seclabel">selected projects</p>
-    <div class="cv-jobs">
-      <div class="cv-job"><div class="when">homelab</div><div><p>HA k3s cluster on Raspberry Pi CM5 — FluxCD GitOps, Longhorn, MetalLB, Prometheus/Grafana. <span class="cv-url">github.com/ronaldlokers/homelab</span></p></div></div>
-      <div class="cv-job"><div class="when">zenith</div><div><p>Job-hunt pipeline tracker — TypeScript on Cloudflare's free tier. <span class="cv-url">zenith.lokilabs.nl</span></p></div></div>
-      <div class="cv-job"><div class="when">walkfit</div><div><p>Browser treadmill control over Web Bluetooth — Vue 3, CI/E2E pipelines. <span class="cv-url">ronaldlokers.github.io/WalkFit</span></p></div></div>
-    </div>
+    <p class="seclabel">skills</p>
+    <ul class="cv-skills">
+      {skills.map((s) => <li>{s}</li>)}
+    </ul>
   </main>
 </Base>
