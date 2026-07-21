@@ -16,7 +16,7 @@ const { Content } = await render(project);
     <div class="wrap">
       <a class="backlink" href="/projects/"><span class="a">←</span> /lokilabs/projects</a>
       <Prompt cmd="./run" cwd={`/lokilabs/${project.id}`} purple />
-      <h1>{project.data.title}</h1>
+      <h1 style="text-transform: lowercase;">{project.data.title}</h1>
       <p class="sub">{project.data.description}</p>
       <div class="tags-purple">{project.data.tech.map((t) => <span class="tag">{t}</span>)}</div>
       <div class="btn-row">
