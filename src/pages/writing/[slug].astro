@@ -11,8 +11,32 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 import { fmtDate } from '../../lib/date';
 const minutes = Math.max(1, Math.round((post.body ?? '').split(/\s+/).length / 200));
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  ...(post.data.updatedDate && { dateModified: post.data.updatedDate.toISOString() }),
+  image: new URL(`/og/writing/${post.id}.png`, Astro.site).href,
+  url: new URL(`/writing/${post.id}/`, Astro.site).href,
+  mainEntityOfPage: new URL(`/writing/${post.id}/`, Astro.site).href,
+  keywords: post.data.tags.join(', '),
+  author: { '@type': 'Person', name: 'Ronald Lokers', url: 'https://lokilabs.nl' },
+};
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'writing', item: new URL('/writing/', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: post.data.title },
+  ],
+};
 ---
 <Base title={`${post.data.title} — lokilabs`} description={post.data.description}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(articleLd)} />
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbLd)} />
   <header class="site-header" slot="header">
     <div class="site-header__inner">
       <a class="backlink" href="/writing/"><span class="a">←</span> /lokilabs/writing</a>
