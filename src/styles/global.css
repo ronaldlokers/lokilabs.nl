@@ -306,10 +306,6 @@ a.wordmark:hover { color: var(--orange-light); }
 }
 
 /* ---------- expressive-code terminal frames — match the project-card terminals ---------- */
-.prose .expressive-code .frame.is-terminal .header {
-  justify-content: flex-start;
-  padding-inline-start: calc(var(--ec-uiPadInl, 1rem) + 2.9rem);
-}
 .prose .expressive-code .frame.is-terminal .header::before {
   background-color: transparent;
   background-image: linear-gradient(to right, #E9622E 0 33%, #7541B8 33% 66%, #3A322B 66% 100%);
