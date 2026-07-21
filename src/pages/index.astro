@@ -8,7 +8,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft && d
 const posts = (await getCollection('writing', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
-const iso = (d: Date) => d.toISOString().slice(0, 10);
+import { fmtDate } from '../lib/date';
 const host = (url: string) => new URL(url).host;
 ---
 <Base
@@ -55,7 +55,7 @@ const host = (url: string) => new URL(url).host;
       {posts.map((post) => (
         <a class="postrow" href={`/writing/${post.id}/`}>
           <span class="grow">
-            <span class="date">{iso(post.data.pubDate)}</span>
+            <span class="date">{fmtDate(post.data.pubDate)}</span>
             <span class="t" style="display: block;">{post.data.title}</span>
           </span>
           <span class="go">→</span>

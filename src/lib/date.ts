@@ -1,0 +1,3 @@
+// Site-wide display format: DD-MM-YYYY
+export const fmtDate = (d: Date) =>
+  d.toISOString().slice(0, 10).split('-').reverse().join('-');
