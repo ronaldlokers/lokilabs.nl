@@ -110,10 +110,11 @@ a.wordmark:hover { color: var(--orange-light); }
 /* detail-page hero (project / post) */
 .hero-detail { background: var(--purple); padding: 0 0 40px; }
 .hero-detail .backlink {
-  display: inline-block; font-size: 13px; color: var(--nav-muted);
+  display: inline-block; font-size: 13px; color: #E7DCF5;
+  background: var(--purple-tag); border-radius: 999px; padding: 5px 14px;
   text-decoration: none; margin: 0 0 30px;
 }
-.hero-detail .backlink:hover { color: var(--paper); }
+.hero-detail .backlink:hover { background: var(--purple-ghost); color: var(--paper); }
 .hero-detail .backlink .a { color: var(--orange-light); }
 .hero-detail h1 {
   font-size: clamp(30px, 5vw, 44px); font-weight: 700;
