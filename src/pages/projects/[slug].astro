@@ -12,9 +12,14 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 ---
 <Base title={`${project.data.title} — lokilabs`} description={project.data.description}>
+  <header class="site-header" slot="header">
+    <div class="site-header__inner">
+      <a class="backlink" href="/projects/"><span class="a">←</span> /lokilabs/projects</a>
+      <a class="wordmark" href="/">/lokilabs <span class="prompt">$</span></a>
+    </div>
+  </header>
   <section class="hero-detail">
     <div class="wrap">
-      <a class="backlink" href="/projects/"><span class="a">←</span> /lokilabs/projects</a>
       <Prompt cmd="./run" cwd={`/lokilabs/${project.id}`} purple />
       <h1 style="text-transform: lowercase;">{project.data.title}</h1>
       <p class="sub">{project.data.description}</p>
