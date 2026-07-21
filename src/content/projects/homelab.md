@@ -10,6 +10,8 @@ screenshot: /assets/projects/homelab.png
 
 A multi-node Kubernetes homelab that refuses to behave like a homelab.
 
+![Homelab architecture: git repo feeds FluxCD, which reconciles a 3-node HA k3s cluster with Longhorn storage, MetalLB, and Prometheus/Grafana; a k3d staging cluster mirrors production](/assets/projects/homelab-architecture.svg)
+
 - **Production**: three HA control planes (k3s) on Raspberry Pi CM5 hardware,
   Longhorn replicated storage, MetalLB load balancing
 - **Staging**: a k3d cluster that mirrors production, because you don't test
