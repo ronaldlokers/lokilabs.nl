@@ -1,0 +1,51 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Fira Code",
+    "fontSize": "14px",
+    "primaryColor": "#FBF8F4",
+    "primaryTextColor": "#231E1B",
+    "primaryBorderColor": "#DCD6D1",
+    "lineColor": "#E9622E",
+    "clusterBkg": "#EFEBE4",
+    "clusterBorder": "#DCD6D1",
+    "edgeLabelBackground": "#FBF8F4"
+  },
+  "flowchart": { "curve": "basis", "nodeSpacing": 40, "rankSpacing": 55 }
+}}%%
+flowchart TB
+  renovate["renovate<br/><small>dependency update PRs</small>"] -. opens PRs .-> git
+  git["git repo<br/><small>github.com/ronaldlokers/homelab</small>"] == pull &amp; reconcile ==> flux["fluxcd<br/><small>reconciles cluster state from git</small>"]
+  flux == apply ==> prod
+  flux -. same loop .-> staging["k3d — staging<br/><small>mirrors production — you don't<br/>test in prod. not even at home.</small>"]
+
+  subgraph prod["k3s cluster — production · 3× raspberry pi cm5"]
+    direction TB
+    cm1["cm5-01<br/><small>control-plane · etcd</small>"]
+    cm2["cm5-02<br/><small>control-plane · etcd</small>"]
+    cm3["cm5-03<br/><small>control-plane · etcd</small>"]
+    quorum["etcd quorum — survives one node loss"]
+    storage["longhorn · 3-replica storage"]
+    lb["metallb · load balancer"]
+    obs["prometheus + grafana · dashboards &amp; alerting"]
+    cm1 --- quorum
+    cm2 --- quorum
+    cm3 --- quorum
+    quorum ~~~ storage
+    quorum ~~~ lb
+    storage ~~~ obs
+    lb ~~~ obs
+  end
+
+  classDef purple fill:#562C8B,stroke:#562C8B,color:#FBF8F4,font-weight:bold
+  classDef box fill:#FBF8F4,stroke:#DCD6D1,color:#231E1B
+  classDef node fill:#FBF8F4,stroke:#DCD6D1,color:#562C8B,font-weight:bold
+  classDef ghost fill:#FBF8F4,stroke:#DCD6D1,stroke-dasharray:5 4,color:#76706C
+  classDef note fill:#EFEBE4,stroke:#EFEBE4,color:#A69C90
+
+  class flux purple
+  class git box
+  class cm1,cm2,cm3 node
+  class renovate,staging ghost
+  class quorum note
+  class storage,lb,obs box
