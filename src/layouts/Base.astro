@@ -29,6 +29,19 @@ const active = (prefix: string) => (path.startsWith(prefix) ? 'active' : undefin
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta name="generator" content={Astro.generator} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: 'Ronald Lokers',
+      jobTitle: 'Platform / DevOps Engineer',
+      url: 'https://lokilabs.nl',
+      email: 'mailto:ronald@lokilabs.nl',
+      sameAs: [
+        'https://github.com/ronaldlokers',
+        'https://www.linkedin.com/in/ronaldlokers',
+      ],
+    })} />
+    <script defer is:inline src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7963c7055a374937acd09a9a2535f60d"}'></script>
   </head>
   <body>
     <header class="site-header">
@@ -38,6 +51,7 @@ const active = (prefix: string) => (path.startsWith(prefix) ? 'active' : undefin
           <a href="/about/" class={active('/about')}>about</a>
           <a href="/projects/" class={active('/projects')}>projects</a>
           <a href="/writing/" class={active('/writing')}>writing</a>
+          <a href="/cv/" class={active('/cv')}>cv</a>
         </nav>
       </div>
     </header>
