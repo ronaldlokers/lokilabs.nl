@@ -6,6 +6,15 @@
 /assets/*
   Cache-Control: public, max-age=86400
 
+# fonts served cross-origin into the giscus iframe
+/assets/fonts/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=31536000, immutable
+
+/giscus-theme.css
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=86400
+
 /og/*
   Cache-Control: public, max-age=86400
 
