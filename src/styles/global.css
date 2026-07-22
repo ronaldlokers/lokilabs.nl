@@ -305,6 +305,23 @@ a.wordmark:hover { color: var(--orange-light); }
   .cv .tl-item .when { color: #555; }
 }
 
+/* ---------- post navigation ---------- */
+.postnav { display: flex; gap: 14px; margin-top: 40px; }
+.postnav-card {
+  flex: 1; border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px 18px; text-decoration: none;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.postnav-card:hover { border-color: var(--purple); background: var(--raised); }
+.postnav-card .dir { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); }
+.postnav-card .pt { font-size: 14px; font-weight: 700; color: var(--ink); }
+.postnav-card.next { text-align: right; align-items: flex-end; }
+.postnav-spacer { flex: 1; }
+@media (max-width: 640px) {
+  .postnav { flex-direction: column; }
+  .postnav-spacer { display: none; }
+}
+
 /* ---------- expressive-code terminal frames — match the project-card terminals ---------- */
 .prose .expressive-code .frame.is-terminal .header::before {
   background-color: transparent;
