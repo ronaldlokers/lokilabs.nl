@@ -5,20 +5,32 @@ let ctx = null;
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function hashFor(key) {
+// A "route" is { kind: 'post'|'project'|'cv', slug }. Detail content lives at
+// real URLs (/writing/x/, /projects/x/, /cv/) and is driven with the History
+// API — the overlay is opened without a full navigation, and the same URLs
+// are real static pages for deep links, crawlers, OG images and giscus.
+function parseKey(key) {
   const [kind, slug] = key.split(':');
-  if (kind === 'post') return '#/posts/' + slug;
-  if (kind === 'project') return '#/projects/' + slug;
-  return '#/cv';
+  return { kind, slug };
 }
 
-function parseHash() {
-  const h = location.hash || '';
-  let m = h.match(/^#\/posts\/([\w-]+)/);
+function routeKey(r) {
+  return r.kind + ':' + (r.slug || 'cv');
+}
+
+function pathFor(kind, slug) {
+  if (kind === 'post') return '/writing/' + slug + '/';
+  if (kind === 'project') return '/projects/' + slug + '/';
+  return '/cv/';
+}
+
+function parsePath(pathname) {
+  const p = (pathname || '/').replace(/\/+$/, '') || '/';
+  let m = p.match(/^\/writing\/([\w-]+)$/);
   if (m) return { kind: 'post', slug: m[1] };
-  m = h.match(/^#\/projects\/([\w-]+)/);
+  m = p.match(/^\/projects\/([\w-]+)$/);
   if (m) return { kind: 'project', slug: m[1] };
-  if (h.startsWith('#/cv')) return { kind: 'cv', slug: 'cv' };
+  if (p === '/cv') return { kind: 'cv', slug: 'cv' };
   return null;
 }
 
@@ -33,7 +45,14 @@ function init() {
   typeHeroCmd();
   observeReveals();
   if (!reduced()) initGlyphs();
-  if (parseHash()) openFromHash();
+
+  const overlay = document.getElementById('lk-overlay');
+  const openKey = overlay && overlay.dataset.open;
+  if (openKey) adoptOpen(parseKey(openKey));
+  else {
+    const route = parsePath(location.pathname);
+    if (route) openRoute(route, { push: false });
+  }
 }
 
 const later = (fn, ms) => ctx.timers.push(setTimeout(fn, ms));
@@ -55,7 +74,19 @@ function buildRegistry() {
 /* ---------- nav / link interception ---------- */
 
 function bindNav() {
-  on(window, 'hashchange', () => openFromHash());
+  // Intercept clicks on any SPA link (cards, nav, footer, foot-nav, taskbar)
+  // and open the overlay via pushState instead of navigating.
+  on(document, 'click', (e) => {
+    const a = e.target.closest('a[data-lk]');
+    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    openRoute(parseKey(a.dataset.lk), { push: true });
+  });
+  on(window, 'popstate', () => {
+    const route = parsePath(location.pathname);
+    if (route) openRoute(route, { push: false });
+    else closeVisual();
+  });
   on(window, 'keydown', (e) => {
     if (e.key === 'Escape' && ctx.route) { e.preventDefault(); closeOverlay(); }
   });
@@ -70,55 +101,102 @@ function bindNav() {
 
 /* ---------- overlay open / close ---------- */
 
-function openFromHash() {
-  const route = parseHash();
+// Enhance a server-rendered open overlay (deep link): the content is already
+// in the DOM, so wire it up without cloning or replaying the boot sequence.
+function adoptOpen(route) {
   const overlay = document.getElementById('lk-overlay');
-  if (route) {
-    const key = route.kind + ':' + route.slug;
-    ctx.minWindows = ctx.minWindows.filter((w) => w.key !== key);
-    renderTaskbar();
-    ctx.route = route;
-    mountDetail(route);
-    overlay.hidden = false;
-    document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (ctx) overlay.classList.add('shown');
-    }));
-    later(() => revealDetail(route), 200);
-    overlay.querySelector('.lk-panel').focus({ preventScroll: true });
-  } else {
-    overlay.classList.remove('shown');
-    document.body.style.overflow = '';
-    ctx.route = null;
-    later(() => {
-      if (ctx && !ctx.route) { overlay.hidden = true; overlay.classList.remove('maxed'); }
-    }, 460);
-  }
+  ctx.route = route;
+  overlay.hidden = false;
+  overlay.classList.add('shown');
+  document.body.style.overflow = 'hidden';
+  const body = document.getElementById('lk-dbody');
+  body.classList.add('lk-reveal');
+  [...body.children].forEach((el, i) => el.style.setProperty('--i', i));
+  mountFootNav(route, ctx.registry.get(routeKey(route)));
+  if (route.kind === 'project') mountGiscus();
+  history.replaceState({ lk: false }, '', location.href);
+}
+
+function openRoute(route, { push }) {
+  const overlay = document.getElementById('lk-overlay');
+  const key = routeKey(route);
+  ctx.minWindows = ctx.minWindows.filter((w) => w.key !== key);
+  renderTaskbar();
+  ctx.route = route;
+  if (push) history.pushState({ lk: true }, '', pathFor(route.kind, route.slug));
+  mountDetail(route);
+  overlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (ctx) overlay.classList.add('shown');
+  }));
+  later(() => revealDetail(route), 200);
+  overlay.querySelector('.lk-panel').focus({ preventScroll: true });
+}
+
+function closeVisual() {
+  const overlay = document.getElementById('lk-overlay');
+  overlay.classList.remove('shown');
+  document.body.style.overflow = '';
+  ctx.route = null;
+  later(() => {
+    if (ctx && !ctx.route) {
+      overlay.hidden = true;
+      overlay.classList.remove('maxed');
+      document.getElementById('lk-dbody').classList.remove('lk-reveal');
+    }
+  }, 460);
 }
 
 function closeOverlay() {
-  // Always clear the hash instead of history.back(): a popstate on a
-  // non-Astro history entry makes the ClientRouter re-swap the page,
-  // which resets this module (and loses minimized windows).
-  if (location.hash.startsWith('#/')) { location.hash = ''; return; }
-  if (ctx.route) openFromHash();
+  // If we pushed a history entry to open, step back so the URL returns to what
+  // it was; otherwise (deep link) rewrite to root and just hide.
+  if (history.state && history.state.lk) { history.back(); return; }
+  history.replaceState({}, '', '/');
+  closeVisual();
 }
 
 function minimize() {
   const r = ctx.route;
   if (r) {
-    const entry = ctx.registry.get(r.kind + ':' + r.slug);
-    const key = r.kind + ':' + r.slug;
+    const entry = ctx.registry.get(routeKey(r));
+    const key = routeKey(r);
     if (entry && !ctx.minWindows.some((w) => w.key === key)) {
-      ctx.minWindows.push({ key, title: entry.tab, hash: hashFor(key) });
+      ctx.minWindows.push({ key, title: entry.tab, route: { kind: r.kind, slug: r.slug } });
     }
     renderTaskbar();
   }
   closeOverlay();
 }
 
+function mountGiscus() {
+  const holder = document.querySelector('#lk-dbody .lk-giscus[data-giscus]');
+  if (!holder || holder.dataset.mounted) return;
+  holder.dataset.mounted = '1';
+  const s = document.createElement('script');
+  s.src = 'https://giscus.app/client.js';
+  s.async = true;
+  s.crossOrigin = 'anonymous';
+  const attrs = {
+    'data-repo': 'ronaldlokers/lokilabs.nl',
+    'data-repo-id': 'R_kgDOTee_gA',
+    'data-category': 'Projects',
+    'data-category-id': 'DIC_kwDOTee_gM4DBuPf',
+    'data-mapping': 'pathname',
+    'data-strict': '1',
+    'data-reactions-enabled': '1',
+    'data-emit-metadata': '0',
+    'data-input-position': 'bottom',
+    'data-theme': 'https://lokilabs.nl/giscus-theme.css',
+    'data-lang': 'en',
+    'data-loading': 'lazy',
+  };
+  Object.entries(attrs).forEach(([k, v]) => s.setAttribute(k, v));
+  holder.appendChild(s);
+}
+
 function mountDetail(route) {
-  const entry = ctx.registry.get(route.kind + ':' + route.slug);
+  const entry = ctx.registry.get(routeKey(route));
   const body = document.getElementById('lk-dbody');
   const title = document.getElementById('lk-ptitle');
   body.classList.remove('lk-reveal');
@@ -126,6 +204,7 @@ function mountDetail(route) {
   if (entry) {
     body.appendChild(entry.tpl.content.cloneNode(true));
     title.textContent = entry.tab;
+    if (route.kind === 'project') mountGiscus();
   } else {
     title.textContent = 'not found';
     body.appendChild(notFoundDoc(route));
@@ -142,7 +221,7 @@ function notFoundDoc(route) {
     '<div class="lk-doc-date">error 404</div>' +
     '<h1>file not found</h1>' +
     '<div class="lk-doc-desc" style="background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px; padding: 18px 22px; margin-top: 18px;">' +
-    '<div>bash: cat ' + route.slug.replace(/[^\w-]/g, '') + ': No such file or directory</div>' +
+    '<div>bash: cat ' + String(route.slug || '').replace(/[^\w-]/g, '') + ': No such file or directory</div>' +
     '<div style="margin-top: 6px; color: var(--faint);">the path you followed doesn’t exist — the project or post may have been renamed or removed.</div></div>' +
     '<div class="lk-doc-links"><a class="repo" href="#lk-projects">cd ~/projects</a> <a class="page" href="#lk-writing">cd ~/writing</a></div>';
   return div;
@@ -159,7 +238,8 @@ function mountFootNav(route, entry) {
   const i = list.indexOf(entry);
   const words = entry.kind === 'post' ? ['← newer', 'older →'] : ['← prev', 'next →'];
   const set = (el, target, lbl) => {
-    el.href = hashFor(target.key);
+    el.href = pathFor(target.kind, target.slug);
+    el.setAttribute('data-lk', target.key);
     el.querySelector('.lbl').textContent = lbl;
     el.querySelector('.ttl').textContent = target.title;
     el.hidden = false;
@@ -258,7 +338,7 @@ function renderTaskbar() {
       if (ctx.taskDragMoved) return;
       ctx.minWindows = ctx.minWindows.filter((x) => x.key !== w.key);
       renderTaskbar();
-      location.hash = w.hash;
+      openRoute(w.route, { push: true });
     });
     const x = document.createElement('button');
     x.className = 'x';

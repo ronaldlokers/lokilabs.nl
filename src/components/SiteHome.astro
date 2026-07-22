@@ -1,0 +1,204 @@
+---
+import { getCollection, render } from 'astro:content';
+import { fmtDate } from '../lib/date';
+import PostDoc from './detail/PostDoc.astro';
+import ProjectDoc from './detail/ProjectDoc.astro';
+import CvDoc from './detail/CvDoc.astro';
+
+interface Props {
+  open?: { kind: 'post' | 'project' | 'cv'; id?: string } | null;
+}
+const { open = null } = Astro.props;
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('writing', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const postDocs = await Promise.all(posts.map(async (p) => ({ p, Content: (await render(p)).Content })));
+const projectDocs = await Promise.all(projects.map(async (p) => ({ p, Content: (await render(p)).Content })));
+const slugName = (title: string) => title.toLowerCase();
+
+// Resolve the deep-linked item so its content can be server-rendered into the
+// overlay (crawlers / no-JS get the real content, JS just enhances it).
+const openPost = open?.kind === 'post' ? postDocs.find(({ p }) => p.id === open.id) : null;
+const openProject = open?.kind === 'project' ? projectDocs.find(({ p }) => p.id === open.id) : null;
+const openCv = open?.kind === 'cv';
+const openKey = open ? (open.kind === 'cv' ? 'cv:cv' : `${open.kind}:${open.id}`) : null;
+const openTab = openPost
+  ? `~/lokilabs/writing/${openPost.p.id}.md`
+  : openProject
+    ? `~/lokilabs/projects/${openProject.p.id} — README.md`
+    : openCv
+      ? '~/lokilabs/cv.md'
+      : '';
+const overlayOpen = !!(openPost || openProject || openCv);
+---
+
+<main id="main" class="lk-home">
+  <section id="lk-top" class="lk-hero" aria-label="intro">
+    <canvas id="lk-glyphs" aria-hidden="true"></canvas>
+    <div class="lk-hero-inner">
+      <p class="lk-hero-prompt"><span class="u">ronald</span> <span class="a">→</span> <span class="d">~/lokilabs</span> <span class="a">$</span> <span class="c" id="lk-cmd">whoami</span></p>
+      <h1 class="lk-hl">Do it twice?</h1>
+      <p class="lk-hl l2">I’ll automate it<span class="lk-cursor" aria-hidden="true"></span></p>
+      <p class="lk-hero-sub">from TypeScript to Kubernetes: i build the tooling that keeps software boring to deploy, and write down what breaks along the way.</p>
+      <div class="lk-hero-meta">
+        <a class="lk-open-badge" href="/cv/" data-lk="cv:cv"><span class="dot"></span>open to platform / devops roles</a>
+      </div>
+      <div class="lk-hero-cta">
+        <a class="lk-btn" href="#lk-about">about me →</a>
+        <a class="lk-btn ghost" href="/cv/" data-lk="cv:cv">open cv →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="lk-ticker" aria-hidden="true">
+    <div class="lk-ticker-track">
+      <span id="lk-tick-a"></span>
+      <span id="lk-tick-b"></span>
+    </div>
+  </div>
+
+  <section id="lk-about" class="lk-section about" aria-label="about">
+    <div class="lk-sechead">
+      <h2>about<span class="s">/</span></h2>
+      <span class="cmd">$ whoami --verbose</span>
+    </div>
+    <div class="lk-term lk-io">
+      <div class="lk-chrome">
+        <span class="d1"></span><span class="d2"></span><span class="d3"></span>
+        <span class="t">~/lokilabs — tmux: about</span>
+      </div>
+      <div class="lk-about-body">
+        <div class="lk-about-txt">
+          <div class="lk-promptline"><span class="u">ronald</span> <span class="a">→</span> ~/lokilabs <span class="a">$</span> cat about.md</div>
+          <p>15 years of frontend and fullstack — Coolblue, Mendix, Oliver IT. somewhere along the way i noticed the part i actually loved was the pipelines underneath.</p>
+          <p>so since mid-2025: all-in on platform engineering. the homelab is the lab — a gitops cluster on raspberry pi CM5s where everything on this page gets built, broken, and rebuilt.</p>
+          <div class="lk-about-tl">
+            <span><span class="y">2010–2025</span> — frontend / fullstack</span>
+            <span><span class="y">2025–now</span> — platform / devops</span>
+            <span><span class="y">always</span> — if it hurts, script it</span>
+          </div>
+        </div>
+        <div class="lk-about-face">
+          <div class="cmd"><span class="u">ronald</span> <span class="a">→</span> ~/lokilabs <span class="a">$</span> id --portrait</div>
+          <div class="img"><img src="/assets/face-line-violet.png" alt="Ronald Lokers, line-art portrait" width="600" height="600" loading="lazy" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lk-writing" class="lk-section" aria-label="writing">
+    <div class="lk-sechead">
+      <h2>writing<span class="s">/</span></h2>
+      <span class="cmd">$ ls ~/lokilabs/writing — posts open right here</span>
+    </div>
+    <div class="lk-postlist">
+      {posts.map((post, i) => (
+        <a class="lk-post lk-io" style={`--i: ${i}`} href={`/writing/${post.id}/`} data-lk={`post:${post.id}`}>
+          <span class="date">{fmtDate(post.data.pubDate)}</span>
+          <span class="t">{post.data.title}</span>
+          <span class="lk-arw" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="lk-projects" class="lk-section projects" aria-label="projects">
+    <div class="lk-sechead">
+      <h2>projects<span class="s">/</span></h2>
+      <span class="cmd">$ lokictl get projects — click one to open it</span>
+    </div>
+    <div class="lk-projgrid">
+      {projects.map((p, i) => (
+        <a class="lk-card lk-io" style={`--i: ${i % 3}`} href={`/projects/${p.id}/`} data-lk={`project:${p.id}`}>
+          <span class="lk-chrome">
+            <span class="d1"></span><span class="d2"></span><span class="d3"></span>
+            <span class="t">~/lokilabs/projects/{slugName(p.data.title)}</span>
+          </span>
+          <span class="lk-card-body">
+            <span class="lk-card-head">
+              <span class="n">{slugName(p.data.title)}</span>
+              {p.data.badge && <span class="lk-badge">{p.data.badge}</span>}
+            </span>
+            <span class="blurb">{p.data.description}</span>
+            <span class="open">open →</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <div id="lk-overlay" class={overlayOpen ? 'shown' : undefined} data-open={openKey ?? undefined} hidden={!overlayOpen}>
+    <div class="lk-scrim"></div>
+    <div class="lk-panel" role="dialog" aria-modal="true" aria-label="detail" tabindex="-1">
+      <div class="lk-panel-head">
+        <span class="lk-tl">
+          <button class="close" title="close" type="button"><span>×</span></button>
+          <button class="min" title="minimize" type="button"><span>−</span></button>
+          <button class="max" title="maximize" type="button"><span>+</span></button>
+        </span>
+        <span class="lk-panel-title" id="lk-ptitle">{openTab}</span>
+      </div>
+      <div id="lk-dbody" class={overlayOpen ? 'lk-reveal' : undefined}>
+        {openPost && <PostDoc post={openPost.p} Content={openPost.Content} />}
+        {openProject && <ProjectDoc project={openProject.p} Content={openProject.Content} />}
+        {openCv && <CvDoc />}
+      </div>
+      <div id="lk-boot" hidden><pre id="lk-bootlog"></pre></div>
+      <div class="lk-panel-foot">
+        <div class="lk-foot-hint">
+          <span><span class="u">ronald@lokilabs</span><span class="d">:~/lokilabs</span><span class="a">$</span></span>
+          <span class="h">esc to close · scroll to read</span>
+          <span class="lk-mini-cursor" aria-hidden="true"></span>
+        </div>
+        <a id="lk-prev" class="lk-foot-nav" href="#" hidden><span class="lbl"></span><span class="ttl"></span></a>
+        <a id="lk-next" class="lk-foot-nav next" href="#" hidden><span class="ttl"></span><span class="lbl"></span></a>
+      </div>
+    </div>
+  </div>
+
+  <div id="lk-taskbar" hidden>
+    <div class="lk-taskbrand">/lokilabs <span class="p">$</span></div>
+    <div id="lk-taskstrip"></div>
+    <span id="lk-taskcount"></span>
+  </div>
+
+  {postDocs.map(({ p, Content }) => (
+    <template
+      data-lk-tpl={`post:${p.id}`}
+      data-title={p.data.title}
+      data-tab={`~/lokilabs/writing/${p.id}.md`}
+      data-dir="~/lokilabs/writing"
+      data-file={`${p.id}.md`}
+      data-path={`/writing/${p.id}/`}
+    >
+      <PostDoc post={p} Content={Content} />
+    </template>
+  ))}
+
+  {projectDocs.map(({ p, Content }) => (
+    <template
+      data-lk-tpl={`project:${p.id}`}
+      data-title={slugName(p.data.title)}
+      data-tab={`~/lokilabs/projects/${p.id} — README.md`}
+      data-dir="~/lokilabs/projects"
+      data-file={`${p.id}/README.md`}
+      data-path={`/projects/${p.id}/`}
+    >
+      <ProjectDoc project={p} Content={Content} />
+    </template>
+  ))}
+
+  <template
+    data-lk-tpl="cv:cv"
+    data-title="cv"
+    data-tab="~/lokilabs/cv.md"
+    data-dir="~/lokilabs"
+    data-file="cv.md"
+    data-path="/cv/"
+  >
+    <CvDoc />
+  </template>
+</main>

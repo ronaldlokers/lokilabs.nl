@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  Content: any;
+}
+const { project, Content } = Astro.props;
+const name = project.data.title.toLowerCase();
+---
+<div class="lk-doc project">
+  <div class="lk-doc-head">
+    <h1>{name}</h1>
+    {project.data.badge && <span class="lk-badge">{project.data.badge}</span>}
+  </div>
+  <div class="lk-doc-desc">{project.data.description}</div>
+  {project.data.tech.length > 0 && <div class="lk-doc-tags">{project.data.tech.map((t) => <span>{t}</span>)}</div>}
+  <div class="prose"><Content /></div>
+  <div class="lk-doc-links">
+    {project.data.repo && <a class="repo" href={project.data.repo}>repo ↗</a>}
+    {project.data.link && <a class="live" href={project.data.link}>live ↗</a>}
+  </div>
+  <div class="lk-comments">
+    <div class="lk-doc-sublabel">$ cat comments.log</div>
+    <div class="lk-giscus" data-giscus></div>
+  </div>
+</div>

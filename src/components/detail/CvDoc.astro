@@ -1,0 +1,24 @@
+---
+import { jobs, skills } from '../../data/history';
+---
+<div class="lk-doc">
+  <h1>ronald lokers</h1>
+  <div class="lk-cv-role">platform / devops engineer</div>
+  <div class="lk-cv-actions">
+    <a href="mailto:ronald@lokilabs.nl">get in touch</a>
+    <a class="alt" href="https://www.linkedin.com/in/ronaldlokers/">linkedin ↗</a>
+  </div>
+  <div class="lk-cv-summary">15+ years of engineering — frontend and fullstack at Coolblue, Mendix, and Oliver IT — with a career-long pull toward build tooling, CI/CD, and infrastructure. since mid-2025 fully committed to platform engineering. if i do something twice, it becomes a script.</div>
+  <div class="lk-cv-skills">{skills.map((s) => <span>{s}</span>)}</div>
+  <div class="lk-cv-jobs">
+    {jobs.map((job) => (
+      <div class="lk-cv-job">
+        <div class="row">
+          <span class="role">{job.role} <span class="org">@ {job.org}</span></span>
+          <span class="dates">{job.when}</span>
+        </div>
+        {job.desc && <p>{job.desc}</p>}
+      </div>
+    ))}
+  </div>
+</div>
