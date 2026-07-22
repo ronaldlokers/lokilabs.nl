@@ -140,7 +140,7 @@
 .lk-about-face .cmd .u { color: var(--violet); }
 .lk-about-face .cmd .a { color: var(--orange); }
 .lk-about-face .img { flex: 1; display: flex; align-items: flex-end; justify-content: center; }
-.lk-about-face img { width: 78%; max-width: 300px; display: block; }
+.lk-about-face img { width: 78%; max-width: 300px; height: auto; display: block; }
 
 /* ---------- writing list ---------- */
 .lk-postlist { display: flex; flex-direction: column; }
