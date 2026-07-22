@@ -1,0 +1,78 @@
+/* giscus custom theme — lokilabs brand */
+@font-face {
+  font-family: 'Fira Code';
+  font-weight: 400;
+  font-style: normal;
+  src: url('https://lokilabs.nl/assets/fonts/fira-code-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fira Code';
+  font-weight: 700;
+  font-style: normal;
+  src: url('https://lokilabs.nl/assets/fonts/fira-code-latin-700-normal.woff2') format('woff2');
+}
+
+main {
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-prettylights-syntax-comment: #76706C;
+  --color-prettylights-syntax-constant: #562C8B;
+  --color-prettylights-syntax-entity: #7541B8;
+  --color-prettylights-syntax-storage-modifier-import: #231E1B;
+  --color-prettylights-syntax-keyword: #E9622E;
+  --color-prettylights-syntax-string: #4C8A5C;
+
+  --color-btn-text: #231E1B;
+  --color-btn-bg: #EFEBE4;
+  --color-btn-border: #DCD6D1;
+  --color-btn-shadow: none;
+  --color-btn-inset-shadow: none;
+  --color-btn-hover-bg: #F6F2EC;
+  --color-btn-hover-border: #562C8B;
+
+  --color-btn-primary-text: #2A1650;
+  --color-btn-primary-bg: #F67D51;
+  --color-btn-primary-border: #F67D51;
+  --color-btn-primary-shadow: none;
+  --color-btn-primary-inset-shadow: none;
+  --color-btn-primary-hover-bg: #E9622E;
+  --color-btn-primary-hover-border: #E9622E;
+  --color-btn-primary-selected-bg: #E9622E;
+  --color-btn-primary-disabled-text: #FBF8F4;
+  --color-btn-primary-disabled-bg: #C7BFB5;
+  --color-btn-primary-disabled-border: #C7BFB5;
+
+  --color-fg-default: #231E1B;
+  --color-fg-muted: #76706C;
+  --color-fg-subtle: #A69C90;
+  --color-canvas-default: transparent;
+  --color-canvas-overlay: #FBF8F4;
+  --color-canvas-inset: #EFEBE4;
+  --color-canvas-subtle: #EFEBE4;
+  --color-border-default: #DCD6D1;
+  --color-border-muted: #E7E1D9;
+  --color-neutral-muted: rgba(118, 112, 108, 0.12);
+  --color-accent-fg: #7541B8;
+  --color-accent-emphasis: #7541B8;
+  --color-accent-muted: rgba(117, 65, 184, 0.35);
+  --color-accent-subtle: rgba(117, 65, 184, 0.08);
+  --color-success-fg: #4C8A5C;
+  --color-attention-fg: #E9622E;
+  --color-attention-muted: rgba(233, 98, 46, 0.35);
+  --color-attention-subtle: rgba(233, 98, 46, 0.1);
+  --color-danger-fg: #DB551D;
+  --color-danger-muted: rgba(219, 85, 29, 0.35);
+  --color-danger-subtle: rgba(219, 85, 29, 0.1);
+  --color-primer-shadow-inset: none;
+  --color-scale-gray-7: #3A342F;
+  --color-scale-blue-8: #562C8B;
+}
+
+main .gsc-comment-box-textarea {
+  font-family: 'Fira Code', ui-monospace, monospace;
+}
+
+main .gsc-comment .gsc-replies,
+main .gsc-comment > div {
+  border-radius: 12px;
+}
