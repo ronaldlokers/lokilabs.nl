@@ -25,7 +25,7 @@ const slugName = (p: (typeof projects)[number]) => p.data.title.toLowerCase();
       <a href="#lk-about">about</a>
       <a href="#lk-writing">writing</a>
       <a href="#lk-projects">projects</a>
-      <a class="lk-cta" href="/cv/" data-lk="cv:cv">cv</a>
+      <a class="lk-cta" href="#/cv">cv</a>
     </div>
   </nav>
 
@@ -38,11 +38,11 @@ const slugName = (p: (typeof projects)[number]) => p.data.title.toLowerCase();
         <p class="lk-hl l2">I’ll automate it<span class="lk-cursor" aria-hidden="true"></span></p>
         <p class="lk-hero-sub">from TypeScript to Kubernetes: i build the tooling that keeps software boring to deploy, and write down what breaks along the way.</p>
         <div class="lk-hero-meta">
-          <a class="lk-open-badge" href="/cv/" data-lk="cv:cv"><span class="dot"></span>open to platform / devops roles</a>
+          <a class="lk-open-badge" href="#/cv"><span class="dot"></span>open to platform / devops roles</a>
         </div>
         <div class="lk-hero-cta">
           <a class="lk-btn" href="#lk-about">about me →</a>
-          <a class="lk-btn ghost" href="/cv/" data-lk="cv:cv">open cv →</a>
+          <a class="lk-btn ghost" href="#/cv">open cv →</a>
         </div>
       </div>
     </section>
@@ -90,7 +90,7 @@ const slugName = (p: (typeof projects)[number]) => p.data.title.toLowerCase();
       </div>
       <div class="lk-postlist">
         {posts.map((post, i) => (
-          <a class="lk-post lk-io" style={`--i: ${i}`} href={`/writing/${post.id}/`} data-lk={`post:${post.id}`}>
+          <a class="lk-post lk-io" style={`--i: ${i}`} href={`#/posts/${post.id}`}>
             <span class="date">{fmtDate(post.data.pubDate)}</span>
             <span class="t">{post.data.title}</span>
             <span class="lk-arw" aria-hidden="true">→</span>
@@ -106,7 +106,7 @@ const slugName = (p: (typeof projects)[number]) => p.data.title.toLowerCase();
       </div>
       <div class="lk-projgrid">
         {projects.map((p, i) => (
-          <a class="lk-card lk-io" style={`--i: ${i % 3}`} href={`/projects/${p.id}/`} data-lk={`project:${p.id}`}>
+          <a class="lk-card lk-io" style={`--i: ${i % 3}`} href={`#/projects/${p.id}`}>
             <span class="lk-chrome">
               <span class="d1"></span><span class="d2"></span><span class="d3"></span>
               <span class="t">~/lokilabs/projects/{slugName(p)}</span>
@@ -167,7 +167,7 @@ const slugName = (p: (typeof projects)[number]) => p.data.title.toLowerCase();
           <div class="lk-doc-date">{fmtDate(p.data.pubDate)}</div>
           <h1>{p.data.title}</h1>
           <div class="prose"><Content /></div>
-          <div class="lk-doc-end">$ wc -w → a few hundred · thanks for reading · <a href={`/writing/${p.id}/`}>permalink →</a></div>
+          <div class="lk-doc-end">$ wc -w → a few hundred · thanks for reading</div>
         </div>
       </template>
     ))}
@@ -191,7 +191,6 @@ const slugName = (p: (typeof projects)[number]) => p.data.title.toLowerCase();
           <div class="lk-doc-links">
             {p.data.repo && <a class="repo" href={p.data.repo}>repo ↗</a>}
             {p.data.link && <a class="live" href={p.data.link}>live ↗</a>}
-            <a class="page" href={`/projects/${p.id}/`}>full page &amp; comments →</a>
           </div>
         </div>
       </template>
@@ -210,7 +209,6 @@ const slugName = (p: (typeof projects)[number]) => p.data.title.toLowerCase();
         <div class="lk-cv-actions">
           <a href="mailto:ronald@lokilabs.nl">get in touch</a>
           <a class="alt" href="https://www.linkedin.com/in/ronaldlokers/">linkedin ↗</a>
-          <a class="alt" href="/cv/">full cv / print →</a>
         </div>
         <div class="lk-cv-summary">15+ years of engineering — frontend and fullstack at Coolblue, Mendix, and Oliver IT — with a career-long pull toward build tooling, CI/CD, and infrastructure. since mid-2025 fully committed to platform engineering. if i do something twice, it becomes a script.</div>
         <div class="lk-cv-skills">{skills.map((s) => <span>{s}</span>)}</div>
@@ -233,14 +231,14 @@ const slugName = (p: (typeof projects)[number]) => p.data.title.toLowerCase();
     <div class="lk-contact-inner">
       <div class="lk-contact-label">
         <span class="l">contact</span>
-        <a class="lk-open-badge" href="/cv/" data-lk="cv:cv"><span class="dot"></span>open to new roles</a>
+        <a class="lk-open-badge" href="#/cv"><span class="dot"></span>open to new roles</a>
       </div>
       <p class="lk-contact-head">let’s automate something<span class="s">.</span></p>
       <div class="lk-contact-links">
         <a href="mailto:ronald@lokilabs.nl"><span class="p">$</span> mail <span class="v">ronald@lokilabs.nl</span></a>
         <a href="https://github.com/ronaldlokers"><span class="p">$</span> open <span class="v">github</span> ↗</a>
         <a href="https://www.linkedin.com/in/ronaldlokers/"><span class="p">$</span> open <span class="v">linkedin</span> ↗</a>
-        <a href="/cv/" data-lk="cv:cv"><span class="p">$</span> curl <span class="v">cv</span> ↓</a>
+        <a href="#/cv"><span class="p">$</span> curl <span class="v">cv</span> ↓</a>
       </div>
     </div>
     <div class="lk-contact-bar">

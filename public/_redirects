@@ -1,0 +1,11 @@
+# Single-page site: old page URLs live on as hash routes on the homepage.
+/about /#lk-about 301
+/about/ /#lk-about 301
+/writing /#lk-writing 301
+/writing/ /#lk-writing 301
+/projects /#lk-projects 301
+/projects/ /#lk-projects 301
+/cv /#/cv 301
+/cv/ /#/cv 301
+/writing/* /#/posts/:splat 301
+/projects/* /#/projects/:splat 301

@@ -25,7 +25,7 @@ function parseHash() {
 function init() {
   if (!document.getElementById('lk-top')) return;
   document.documentElement.classList.add('lk-js');
-  ctx = { timers: [], raf: null, killed: false, minWindows: [], route: null, lastTrigger: null };
+  ctx = { timers: [], raf: null, killed: false, minWindows: [], route: null };
 
   buildRegistry();
   bindNav();
@@ -36,23 +36,8 @@ function init() {
   if (parseHash()) openFromHash();
 }
 
-function destroy() {
-  if (!ctx) return;
-  ctx.killed = true;
-  ctx.timers.forEach(clearTimeout);
-  if (ctx.tickerInterval) clearInterval(ctx.tickerInterval);
-  if (ctx.raf) cancelAnimationFrame(ctx.raf);
-  if (ctx.io) ctx.io.disconnect();
-  (ctx.cleanups || []).forEach((fn) => fn());
-  document.body.style.overflow = '';
-  ctx = null;
-}
-
 const later = (fn, ms) => ctx.timers.push(setTimeout(fn, ms));
-const on = (target, ev, fn, opts) => {
-  target.addEventListener(ev, fn, opts);
-  (ctx.cleanups ||= []).push(() => target.removeEventListener(ev, fn, opts));
-};
+const on = (target, ev, fn, opts) => target.addEventListener(ev, fn, opts);
 
 /* ---------- registry from build-time templates ---------- */
 
@@ -70,14 +55,6 @@ function buildRegistry() {
 /* ---------- nav / link interception ---------- */
 
 function bindNav() {
-  on(document, 'click', (e) => {
-    const a = e.target.closest('a[data-lk]');
-    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    ctx.lastTrigger = a;
-    location.hash = hashFor(a.dataset.lk);
-  }, true);
   on(window, 'hashchange', () => openFromHash());
   on(window, 'keydown', (e) => {
     if (e.key === 'Escape' && ctx.route) { e.preventDefault(); closeOverlay(); }
@@ -113,7 +90,6 @@ function openFromHash() {
     overlay.classList.remove('shown');
     document.body.style.overflow = '';
     ctx.route = null;
-    if (ctx.lastTrigger) { ctx.lastTrigger.focus(); ctx.lastTrigger = null; }
     later(() => {
       if (ctx && !ctx.route) { overlay.hidden = true; overlay.classList.remove('maxed'); }
     }, 460);
@@ -423,5 +399,4 @@ function initGlyphs() {
   ctx.raf = requestAnimationFrame(frame);
 }
 
-document.addEventListener('astro:page-load', init);
-document.addEventListener('astro:before-swap', destroy);
+init();
