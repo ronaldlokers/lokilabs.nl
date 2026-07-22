@@ -257,12 +257,6 @@
   padding: 9px clamp(18px, 5vw, 44px); background: var(--lk-chrome);
   border-top: 1px solid var(--lk-chrome-line); font-size: 11.5px; color: var(--lk-chrome-txt);
 }
-.lk-foot-hint { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.lk-foot-hint .u { color: var(--violet); }
-.lk-foot-hint .d { color: var(--faint); }
-.lk-foot-hint .a { color: var(--orange); }
-.lk-foot-hint .h { color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lk-foot-hint .lk-mini-cursor { display: inline-block; width: 7px; height: 13px; background: var(--orange); vertical-align: -2px; animation: lk-blink 1.1s steps(1) infinite; flex-shrink: 0; }
 .lk-foot-nav { display: flex; align-items: baseline; gap: 7px; min-width: 0; color: var(--violet); text-decoration: none; }
 .lk-foot-nav:hover { color: var(--orange); }
 .lk-foot-nav .lbl { font-weight: 600; flex-shrink: 0; }
@@ -361,7 +355,7 @@
   .lk-js #lk-dbody.lk-reveal > * { animation: lk-fadeup 0.45s ease backwards; animation-delay: calc(var(--i, 0) * 55ms); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .lk-cursor, .lk-mini-cursor, .lk-open-badge .dot, .lk-pulse-dot { animation: none; }
+  .lk-cursor, .lk-open-badge .dot, .lk-pulse-dot { animation: none; }
   .lk-ticker-track { animation: none; }
   .lk-panel, .lk-scrim, .lk-post, .lk-card { transition: none; }
 }

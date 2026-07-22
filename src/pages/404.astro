@@ -2,7 +2,13 @@
 import Base from '../layouts/Base.astro';
 import Prompt from '../components/Prompt.astro';
 ---
-<Base title="404 — lokilabs" description="Page not found.">
+<Base title="404 — lokilabs" description="Page not found." chrome={false}>
+  <nav class="lk-nav" slot="header" aria-label="site">
+    <a class="lk-brand" href="/">/lokilabs <span class="p">$</span></a>
+    <div class="lk-navlinks">
+      <a class="lk-cta" href="/">cd ~</a>
+    </div>
+  </nav>
   <main id="main" class="wrap page-head">
     <Prompt cmd="cat {page}" />
     <h1>404</h1>

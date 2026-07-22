@@ -230,23 +230,23 @@ function notFoundDoc(route) {
 function mountFootNav(route, entry) {
   const prev = document.getElementById('lk-prev');
   const next = document.getElementById('lk-next');
-  const hint = document.querySelector('.lk-foot-hint');
+  const foot = document.querySelector('.lk-panel-foot');
   prev.hidden = next.hidden = true;
-  hint.hidden = false;
-  if (!entry || entry.kind === 'cv') return;
-  const list = ctx.lists[entry.kind];
-  const i = list.indexOf(entry);
-  const words = entry.kind === 'post' ? ['← newer', 'older →'] : ['← prev', 'next →'];
-  const set = (el, target, lbl) => {
-    el.href = pathFor(target.kind, target.slug);
-    el.setAttribute('data-lk', target.key);
-    el.querySelector('.lbl').textContent = lbl;
-    el.querySelector('.ttl').textContent = target.title;
-    el.hidden = false;
-  };
-  if (i > 0) set(prev, list[i - 1], words[0]);
-  if (i >= 0 && i < list.length - 1) set(next, list[i + 1], words[1]);
-  hint.hidden = !(prev.hidden && next.hidden);
+  const list = entry && entry.kind !== 'cv' ? ctx.lists[entry.kind] : null;
+  if (list) {
+    const i = list.indexOf(entry);
+    const words = entry.kind === 'post' ? ['← newer', 'older →'] : ['← prev', 'next →'];
+    const set = (el, target, lbl) => {
+      el.href = pathFor(target.kind, target.slug);
+      el.setAttribute('data-lk', target.key);
+      el.querySelector('.lbl').textContent = lbl;
+      el.querySelector('.ttl').textContent = target.title;
+      el.hidden = false;
+    };
+    if (i > 0) set(prev, list[i - 1], words[0]);
+    if (i >= 0 && i < list.length - 1) set(next, list[i + 1], words[1]);
+  }
+  foot.hidden = prev.hidden && next.hidden;
 }
 
 /* ---------- boot sequence + reveal ---------- */
