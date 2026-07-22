@@ -4,6 +4,7 @@ description: "Control a walking treadmill from the browser over Web Bluetooth â€
 tech: ["vue 3", "typescript", "web bluetooth", "github actions"]
 repo: "https://github.com/ronaldlokers/WalkFit"
 link: "https://ronaldlokers.github.io/WalkFit/"
+badge: "beta"
 order: 10
 screenshot: /assets/projects/walkfit.png
 ---

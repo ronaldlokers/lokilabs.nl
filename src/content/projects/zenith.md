@@ -4,6 +4,7 @@ description: "A job-hunt tracker that treats your search like a pipeline."
 tech: ["typescript", "cloudflare"]
 repo: "https://github.com/ronaldlokers/Zenith"
 link: "https://zenith.lokilabs.nl"
+badge: "live"
 order: 20
 featured: true
 screenshot: /assets/projects/zenith.png

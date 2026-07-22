@@ -4,6 +4,7 @@ description: "This site. Astro 7, markdown, Cloudflare Pages."
 tech: ["astro", "typescript", "cloudflare pages"]
 repo: "https://github.com/ronaldlokers/lokilabs.nl"
 link: "https://lokilabs.nl"
+badge: "live"
 order: 50
 screenshot: /assets/projects/lokilabs-nl.png
 ---

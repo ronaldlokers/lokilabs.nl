@@ -3,6 +3,7 @@ title: "dotfiles"
 description: "chezmoi-managed Arch/Omarchy setup — the machine, declared."
 tech: ["chezmoi", "shell", "lua", "arch linux"]
 repo: "https://github.com/ronaldlokers/dotfiles"
+badge: "daily use"
 order: 40
 screenshot: /assets/projects/dotfiles.png
 ---

@@ -72,15 +72,17 @@ const active = (prefix: string) => (path.startsWith(prefix) ? 'active' : undefin
       </header>
     </slot>
     <slot />
-    <footer class="site-footer">
-      <div class="site-footer__inner">
-        <span class="wordmark">/lokilabs <span class="prompt">$</span></span>
-        <nav>
-          <a href="https://github.com/ronaldlokers"><span class="a">→</span> github</a>
-          <a href="https://www.linkedin.com/in/ronaldlokers"><span class="a">→</span> linkedin</a>
-          <a class="mail" href="mailto:ronald@lokilabs.nl">ronald@lokilabs.nl</a>
-        </nav>
-      </div>
-    </footer>
+    <slot name="footer">
+      <footer class="site-footer">
+        <div class="site-footer__inner">
+          <span class="wordmark">/lokilabs <span class="prompt">$</span></span>
+          <nav>
+            <a href="https://github.com/ronaldlokers"><span class="a">→</span> github</a>
+            <a href="https://www.linkedin.com/in/ronaldlokers"><span class="a">→</span> linkedin</a>
+            <a class="mail" href="mailto:ronald@lokilabs.nl">ronald@lokilabs.nl</a>
+          </nav>
+        </div>
+      </footer>
+    </slot>
   </body>
 </html>
