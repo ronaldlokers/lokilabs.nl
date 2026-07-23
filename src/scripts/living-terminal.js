@@ -193,8 +193,12 @@ function openRoute(route, { push }) {
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
   setBackgroundInert(true);
+  // `if (ctx)` alone doesn't check whether THIS route is still the one
+  // open — a fast open-then-close (click then Escape) can let this fire
+  // after closeVisual() already ran, re-adding .shown and flashing the
+  // closed overlay visible again until its own hide-timeout catches up.
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    if (ctx) overlay.classList.add('shown');
+    if (ctx && ctx.route === route) overlay.classList.add('shown');
   }));
   if (alreadyOpen) {
     // Already inside the overlay (next/prev, taskbar restore onto a still-open
