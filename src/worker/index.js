@@ -10,6 +10,14 @@ const TICKER_LIMIT = 8;
 
 const GH_HEADERS = { 'User-Agent': 'lokilabs.nl-ticker', Accept: 'application/vnd.github+json' };
 
+async function getDefaultBranch(repo, cache) {
+  if (cache.has(repo)) return cache.get(repo);
+  const res = await fetch(`https://api.github.com/repos/${repo}`, { headers: GH_HEADERS });
+  const branch = res.ok ? (await res.json()).default_branch : 'main';
+  cache.set(repo, branch);
+  return branch;
+}
+
 async function fetchRecentCommits() {
   const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/events/public`, { headers: GH_HEADERS });
   if (!res.ok) throw new Error(`github events ${res.status}`);
@@ -19,12 +27,17 @@ async function fetchRecentCommits() {
   // it), only payload.head — the sha of the push's newest commit. Look each
   // one up individually to get its message.
   const pushes = events.filter((e) => e.type === 'PushEvent' && e.payload && e.payload.head && e.repo);
+  const defaultBranches = new Map();
   const commits = [];
   for (const event of pushes) {
     if (commits.length >= TICKER_LIMIT) break;
     const repo = event.repo.name;
     const sha = event.payload.head;
     try {
+      // Only show commits that landed on the repo's default branch — skip
+      // feature-branch pushes.
+      const branch = await getDefaultBranch(repo, defaultBranches);
+      if (event.payload.ref !== `refs/heads/${branch}`) continue;
       const cRes = await fetch(`https://api.github.com/repos/${repo}/commits/${sha}`, { headers: GH_HEADERS });
       if (!cRes.ok) continue;
       const commit = await cRes.json();
