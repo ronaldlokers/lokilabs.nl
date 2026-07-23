@@ -594,10 +594,19 @@ function startTicker() {
     a.innerHTML = html;
     if (b) b.innerHTML = html;
   };
-  fetch('/api/ticker')
-    .then((r) => (r.ok ? r.json() : []))
-    .then((data) => { commits = Array.isArray(data) ? data : []; render(); })
-    .catch(() => {});
+  // A single failed/slow load used to leave the ticker blank for the whole
+  // session — .catch(() => {}) with no retry. Back off and try a few more
+  // times before giving up; a persistent outage still degrades gracefully
+  // (ticker just stays empty), it just isn't sunk by one transient blip.
+  const loadTicker = (attempt) => {
+    fetch('/api/ticker')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('http ' + r.status))))
+      .then((data) => { commits = Array.isArray(data) ? data : []; render(); })
+      .catch(() => {
+        if (attempt < 3) later(() => loadTicker(attempt + 1), 5000 * (attempt + 1));
+      });
+  };
+  loadTicker(0);
   ctx.tickerInterval = setInterval(render, 1000);
 }
 
