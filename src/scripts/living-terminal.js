@@ -144,6 +144,17 @@ function bindNav() {
 
 /* ---------- overlay open / close ---------- */
 
+// A manual JS focus trap alone isn't fully reliable — e.g. mounting giscus's
+// cross-origin iframe mid-navigation can shift native tab order out from
+// under it. `inert` makes everything outside the dialog genuinely
+// unfocusable at the platform level, independent of any such timing race.
+const BG_INERT_SELECTOR = '.skip-link, .lk-nav, #main > :not(#lk-overlay):not(#lk-taskbar), #lk-contact';
+function setBackgroundInert(on) {
+  document.querySelectorAll(BG_INERT_SELECTOR).forEach((el) => {
+    if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+  });
+}
+
 // Enhance a server-rendered open overlay (deep link): the content is already
 // in the DOM, so wire it up without cloning or replaying the boot sequence.
 function adoptOpen(route) {
@@ -152,6 +163,7 @@ function adoptOpen(route) {
   overlay.hidden = false;
   overlay.classList.add('shown');
   document.body.style.overflow = 'hidden';
+  setBackgroundInert(true);
   const body = document.getElementById('lk-dbody');
   body.classList.add('lk-reveal');
   [...body.children].forEach((el, i) => el.style.setProperty('--i', i));
@@ -180,6 +192,7 @@ function openRoute(route, { push }) {
   mountDetail(route);
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
+  setBackgroundInert(true);
   requestAnimationFrame(() => requestAnimationFrame(() => {
     if (ctx) overlay.classList.add('shown');
   }));
@@ -216,6 +229,7 @@ function closeVisual() {
   overlay.classList.remove('shown');
   document.body.style.overflow = '';
   ctx.route = null;
+  setBackgroundInert(false);
   if (ctx.lastFocused) {
     ctx.lastFocused.focus({ preventScroll: true });
     ctx.lastFocused = null;
