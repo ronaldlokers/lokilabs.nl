@@ -91,3 +91,41 @@ test('focusing the tab-trap sentinel returns focus to the first control', async 
   await page.locator('#lk-focus-end').focus();
   await expect(page.locator('.lk-tl .close')).toBeFocused();
 });
+
+test('a fast open-then-close does not flash the overlay back visible', async ({ page }) => {
+  // openRoute() schedules requestAnimationFrame(() => requestAnimationFrame(
+  // () => overlay.classList.add('shown'))) to open, which used to only
+  // guard on `if (ctx)` — closing before those ~2 frames elapsed could let
+  // it fire after closeVisual() already ran, re-adding .shown. The race
+  // window is only 1-2 frames wide, so this doesn't reliably reproduce the
+  // pre-fix bug under Playwright's own click/keypress timing — it's a
+  // sanity check on end-state, not a tight trap for the exact race.
+  await page.goto('/');
+  const overlay = page.locator('#lk-overlay');
+  await page.locator('.lk-projgrid .lk-card').first().click();
+  await page.keyboard.press('Escape');
+
+  // Give the stale rAF (2 frames, then closeVisual's 460ms hide-timeout)
+  // every chance to fire before asserting it didn't leave the overlay shown.
+  await page.waitForTimeout(600);
+  await expect(overlay).not.toHaveClass(/shown/);
+  await expect(overlay).toBeHidden();
+});
+
+test('CV print button fires window.print() without a CSP violation', async ({ page }) => {
+  const cspErrors: string[] = [];
+  page.on('console', (msg) => {
+    if (msg.type() === 'error' && /Content Security Policy/i.test(msg.text())) cspErrors.push(msg.text());
+  });
+
+  await page.goto('/cv/');
+  await page.evaluate(() => {
+    (window as any).__printed = false;
+    window.print = () => { (window as any).__printed = true; };
+  });
+
+  await page.locator('button[data-print]').click();
+
+  expect(await page.evaluate(() => (window as any).__printed)).toBe(true);
+  expect(cspErrors).toEqual([]);
+});
