@@ -6,6 +6,9 @@ dist/
 .wrangler/
 # playwright MCP screenshots/logs from local testing
 .playwright-mcp/
+# playwright test runner output
+playwright-report/
+test-results/
 
 # dependencies
 node_modules/

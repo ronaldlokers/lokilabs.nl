@@ -26,6 +26,12 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm exec playwright test
+
       - name: Check internal links
         uses: lycheeverse/lychee-action@v2
         with:
