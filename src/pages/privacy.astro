@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="privacy — lokilabs" description="What this site loads, what it doesn't collect, and why.">
+  <main id="main" class="lk-section" style="padding-top: 130px;">
+    <div class="lk-doc">
+      <h1>privacy</h1>
+      <div class="prose" style="max-width: 640px;">
+        <p>This site has no accounts, no forms, and no database — there's
+        nothing here to sign up for or hand data to. This page covers the
+        few things that do run.</p>
+
+        <h2>Analytics</h2>
+        <p><a href="https://developers.cloudflare.com/web-analytics/">Cloudflare Web Analytics</a> counts page views.
+        It's cookieless and doesn't fingerprint visitors —
+        Cloudflare's own privacy notes cover exactly what it collects.</p>
+
+        <p>Separately, this site runs a small first-party counter for two
+        specific actions: opening the CV, and clicking the mail/GitHub/LinkedIn
+        links. It's a handful of anonymous numbers in a key-value store — no
+        cookies, no per-visitor identifiers, nothing tied to who you are, just
+        "how many times has this happened."</p>
+
+        <h2>Comments</h2>
+        <p>Project pages can show comments via <a href="https://giscus.app">giscus</a>, which stores them as GitHub
+        Discussions on this site's own repository. Opening a project page loads
+        a widget from giscus.app in its own embedded frame — governed by
+        <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement">GitHub's</a> privacy policy, not this site's. It only loads on project pages, and
+        only once you actually open one.</p>
+
+        <h2>Everything else</h2>
+        <p>Fonts, images, and scripts are all self-hosted — nothing else phones
+        home. Questions: <a href="mailto:ronald@lokilabs.nl">ronald@lokilabs.nl</a>.</p>
+      </div>
+    </div>
+  </main>
+</Base>
