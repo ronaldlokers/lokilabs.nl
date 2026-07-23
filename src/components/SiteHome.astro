@@ -159,6 +159,13 @@ const overlayOpen = !!(openPost || openProject || openCv);
         <a id="lk-prev" class="lk-foot-nav" href="#" hidden><span class="lbl"></span><span class="ttl"></span></a>
         <a id="lk-next" class="lk-foot-nav next" href="#" hidden><span class="ttl"></span><span class="lbl"></span></a>
       </div>
+      <!-- Tab-trap end marker. A keydown-based trap can't catch Tab once
+           focus moves inside giscus's cross-origin iframe — its keydown
+           events never reach this window. Reaching this (always the last
+           tabbable node) fires a normal focus event in THIS document
+           regardless of what happened inside the iframe, and wraps back
+           to the first real control. -->
+      <span id="lk-focus-end" tabindex="0" aria-hidden="true"></span>
     </div>
   </div>
 

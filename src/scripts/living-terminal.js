@@ -120,6 +120,16 @@ function bindNav() {
   on(overlay.querySelector('.lk-tl .close'), 'click', closeOverlay);
   on(overlay.querySelector('.lk-tl .max'), 'click', () => overlay.classList.toggle('maxed'));
   on(overlay.querySelector('.lk-tl .min'), 'click', minimize);
+  // Forward-tabbing off the end of the panel — including out of giscus's
+  // iframe, which a keydown-based trap can't intercept (see trapFocus) —
+  // always lands here next, since it's the last tabbable node. A focus
+  // event on a normal element in this document fires reliably regardless
+  // of what happened inside the iframe.
+  on(document.getElementById('lk-focus-end'), 'focus', () => {
+    if (!ctx.route) return;
+    const focusables = panelFocusables();
+    (focusables[0] || overlay.querySelector('.lk-panel')).focus();
+  });
   bindTaskstrip();
 }
 
@@ -210,20 +220,30 @@ function closeVisual() {
   }, 460);
 }
 
-// role="dialog" aria-modal="true" claims modality it didn't enforce — Tab
-// could walk straight out of the panel into the fixed nav / page behind the
-// scrim. Cycle focus within the panel's focusable elements instead.
-function trapFocus(e) {
+function panelFocusables() {
   const panel = document.querySelector('.lk-panel');
-  const all = panel.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+  const all = panel.querySelectorAll('a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])');
   // querySelectorAll doesn't know about hidden foot-nav links (e.g. #lk-next
   // when there's no newer item) — offsetParent excludes anything display:none.
-  const focusables = [...all].filter((el) => el.offsetParent !== null);
+  // #lk-focus-end matches [tabindex] too; drop it here, it's handled separately.
+  return [...all].filter((el) => el.offsetParent !== null && el.id !== 'lk-focus-end');
+}
+
+// role="dialog" aria-modal="true" claims modality it didn't enforce — Tab
+// could walk straight out of the panel into the fixed nav / page behind the
+// scrim. This only handles Shift+Tab off the first element (a normal
+// same-document keydown, always reliable); forward overflow is handled by
+// the #lk-focus-end sentinel instead, since it also has to work when the
+// last real control is giscus's cross-origin iframe — see the 'focus'
+// listener bound to that sentinel in bindNav().
+function trapFocus(e) {
+  if (!e.shiftKey) return;
+  const focusables = panelFocusables();
   if (!focusables.length) return;
-  const first = focusables[0];
-  const last = focusables[focusables.length - 1];
-  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  if (document.activeElement === focusables[0]) {
+    e.preventDefault();
+    focusables[focusables.length - 1].focus();
+  }
 }
 
 function closeOverlay() {

@@ -232,6 +232,9 @@
 /* ---------- detail overlay ---------- */
 #lk-overlay { position: fixed; inset: 0; z-index: 90; }
 #lk-overlay[hidden] { display: none; }
+/* Visually hidden but still a real tab stop — see the comment on the
+   element itself in SiteHome.astro. */
+#lk-focus-end { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .lk-scrim {
   position: absolute; inset: 0; background: rgba(35, 18, 62, 0); cursor: pointer;
   transition: background 0.35s ease, backdrop-filter 0.35s ease;
