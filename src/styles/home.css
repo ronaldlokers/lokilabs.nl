@@ -306,16 +306,16 @@
 /* overlay cv */
 .lk-cv-role { font-size: 15px; font-weight: 600; color: var(--orange); margin-top: 6px; }
 .lk-cv-actions { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; }
-.lk-cv-actions a {
+.lk-cv-actions a, .lk-cv-actions button {
   display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700;
-  padding: 11px 22px; border-radius: 8px; text-decoration: none;
-  background: var(--orange); color: var(--paper);
+  padding: 11px 22px; border-radius: 8px; text-decoration: none; border: none;
+  background: var(--orange); color: var(--paper); font-family: var(--mono); cursor: pointer;
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
-.lk-cv-actions a:hover { background: var(--lk-orange-line); color: var(--paper); }
-.lk-cv-actions a:active { transform: scale(0.96); }
-.lk-cv-actions a.alt { background: none; border: 1px solid var(--line-soft); color: var(--purple); font-weight: 600; }
-.lk-cv-actions a.alt:hover { border-color: var(--violet); color: var(--violet); }
+.lk-cv-actions a:hover, .lk-cv-actions button:hover { background: var(--lk-orange-line); color: var(--paper); }
+.lk-cv-actions a:active, .lk-cv-actions button:active { transform: scale(0.96); }
+.lk-cv-actions a.alt, .lk-cv-actions button.alt { background: none; border: 1px solid var(--line-soft); color: var(--purple); font-weight: 600; }
+.lk-cv-actions a.alt:hover, .lk-cv-actions button.alt:hover { border-color: var(--violet); color: var(--violet); }
 .lk-cv-summary { margin-top: 18px; font-size: 13px; line-height: 1.8; color: #56504B; }
 .lk-cv-skills { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 7px; }
 .lk-cv-skills span { font-size: 11px; font-weight: 600; color: var(--paper); background: var(--violet); border-radius: 6px; padding: 5px 11px; }
