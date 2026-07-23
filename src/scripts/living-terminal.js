@@ -525,11 +525,16 @@ function bindTaskstrip() {
     if (Math.abs(dx) > 4) ctx.taskDragMoved = true;
     s.scrollLeft = drag.sl - dx;
   });
-  on(window, 'pointerup', () => {
+  const endDrag = () => {
     drag = null;
     s.style.cursor = 'grab';
     later(() => { if (ctx) ctx.taskDragMoved = false; }, 0);
-  });
+  };
+  on(window, 'pointerup', endDrag);
+  // A drag interrupted by a system gesture (touch scroll takeover, OS-level
+  // interruption) fires pointercancel, not pointerup — without this, `drag`
+  // stays truthy and the cursor stays stuck on 'grabbing'.
+  on(window, 'pointercancel', endDrag);
   on(s, 'wheel', (e) => {
     if (e.deltaY && s.scrollWidth > s.clientWidth) { s.scrollLeft += e.deltaY; e.preventDefault(); }
   }, { passive: false });

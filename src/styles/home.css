@@ -244,12 +244,16 @@
   position: absolute; top: 5vh; left: 50%; width: min(900px, 94vw); max-height: 90vh;
   display: flex; flex-direction: column; overflow: hidden;
   background: var(--surface); border: 1px solid var(--lk-chrome-line);
-  border-radius: 14px; box-shadow: 0 44px 100px -34px rgba(40, 15, 76, 0.65); /* was 13px — matches .lk-chrome/.lk-card's 14px */
+  border-radius: var(--lk-radius-lg); box-shadow: 0 44px 100px -34px rgba(40, 15, 76, 0.65); /* was 13px — matches .lk-chrome/.lk-card's 14px */
   opacity: 0; transform: translateX(-50%) scale(0.95);
   transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     width 0.35s ease, max-height 0.35s ease, top 0.35s ease, bottom 0.35s ease;
   outline: none;
 }
+/* Programmatic focus() on open doesn't count as :focus-visible in some
+   browsers, so give the panel a visible cue on open regardless — otherwise
+   a keyboard user has no signal focus moved into the dialog until they Tab. */
+.lk-panel:focus { outline: 2px solid var(--violet); outline-offset: -2px; }
 #lk-overlay.shown .lk-panel { opacity: 1; transform: translateX(-50%) scale(1); }
 #lk-overlay.maxed .lk-panel { top: 18px; bottom: 18px; width: calc(100% - 36px); max-height: none; }
 .lk-panel-head {
