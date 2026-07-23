@@ -147,7 +147,7 @@
 .lk-about-face .cmd { padding: 18px 22px 0; font-size: 11px; color: var(--muted); }
 .lk-about-face .cmd .u { color: var(--violet); }
 .lk-about-face .cmd .a { color: var(--orange); }
-.lk-about-face .img { flex: 1; display: flex; align-items: flex-end; justify-content: center; }
+.lk-about-face .img { flex: 1; display: flex; align-items: flex-start; justify-content: center; }
 .lk-about-face img { width: 78%; max-width: 300px; height: auto; display: block; }
 
 /* ---------- writing list ---------- */
