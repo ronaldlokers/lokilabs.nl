@@ -191,9 +191,13 @@
 /* ---------- contact footer ---------- */
 .lk-contact {
   background: radial-gradient(900px 500px at 25% 90%, #6B3AAE 0%, var(--purple) 60%);
-  padding: 100px clamp(20px, 5vw, 40px) 50px;
+  padding: 100px 0 50px;
 }
-.lk-contact-inner { max-width: 1200px; margin: 0 auto; }
+/* Horizontal padding lives here (not on .lk-contact) so it's inside the
+   1200px cap, matching .lk-section/.lk-hero-inner — otherwise this content
+   sits ~40px further out than every section above it once the viewport is
+   wide enough for the 1200px cap to bind. */
+.lk-contact-inner { max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px); }
 .lk-contact-label { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
 .lk-contact-label .l { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--lk-lav-mut); }
 .lk-contact-label .lk-open-badge { font-size: 11px; padding: 5px 12px; gap: 7px; }
@@ -209,7 +213,9 @@
 .lk-contact-links .p { color: var(--orange); }
 .lk-contact-links .v { color: var(--paper); }
 .lk-contact-bar {
-  margin: 80px calc(-1 * clamp(20px, 5vw, 40px)) -50px;
+  /* .lk-contact no longer has horizontal padding to cancel out — this bar
+     is a direct child of it, so it's flush full-width by default now. */
+  margin: 80px 0 -50px;
   background: var(--orange); border-top: 1px solid var(--lk-orange-line);
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
   padding: 15px clamp(20px, 5vw, 40px);
