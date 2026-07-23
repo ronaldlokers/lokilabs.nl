@@ -428,24 +428,31 @@ function startTicker() {
   const a = document.getElementById('lk-tick-a');
   const b = document.getElementById('lk-tick-b');
   if (!a) return;
-  const t0 = Date.now();
   const sep = '<span style="color: rgba(251,248,244,0.45); margin: 0 18px;">&middot;</span>';
   const mono = (t) => '<span style="color:rgba(40,15,76,0.85);">' + t + '</span>';
-  const ago = (baseMin) => (baseMin + Math.floor((Date.now() - t0) / 60000)) + 'm ago';
-  const commits = [
-    [mono('a3f9c1') + ' feat: zenith deploy via flux', 2],
-    [mono('7b2e04') + ' fix: move etcd off SD cards', 11],
-    [mono('c81d5a') + ' feat: sops + age secrets', 26],
-    [mono('e0492f') + ' chore: bump grafana', 43],
-    [mono('1af7bd') + ' feat: 4th node joined', 58],
-  ];
+  const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const ago = (iso) => {
+    const mins = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60000));
+    if (mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    return Math.floor(hrs / 24) + 'd ago';
+  };
+  let commits = [];
   const render = () => {
-    if (ctx.killed) return;
-    const html = commits.map(([s, m]) => s + ' <span style="color:rgba(40,15,76,0.6);">(' + ago(m) + ')</span>').join(sep) + sep;
+    if (ctx.killed || !commits.length) return;
+    const html = commits.map((c) =>
+      mono(esc(c.sha)) + ' ' + esc(c.message) +
+      ' <span style="color:rgba(40,15,76,0.55); font-size: 11px;">' + esc(c.repo) + '</span>' +
+      ' <span style="color:rgba(40,15,76,0.6);">(' + ago(c.date) + ')</span>'
+    ).join(sep) + sep;
     a.innerHTML = html;
     if (b) b.innerHTML = html;
   };
-  render();
+  fetch('/api/ticker')
+    .then((r) => (r.ok ? r.json() : []))
+    .then((data) => { commits = Array.isArray(data) ? data : []; render(); })
+    .catch(() => {});
   ctx.tickerInterval = setInterval(render, 1000);
 }
 
