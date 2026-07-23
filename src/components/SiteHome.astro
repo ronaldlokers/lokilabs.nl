@@ -128,7 +128,7 @@ const overlayOpen = !!(openPost || openProject || openCv);
           <span class="lk-card-body">
             <span class="lk-card-head">
               <span class="n">{slugName(p.data.title)}</span>
-              {p.data.badge && <span class="lk-badge">{p.data.badge}</span>}
+              {p.data.badge && <span class="lk-badge" data-badge={p.data.badge}>{p.data.badge}</span>}
             </span>
             <span class="blurb">{p.data.description}</span>
             <span class="open">open →</span>

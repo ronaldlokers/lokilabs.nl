@@ -11,7 +11,7 @@ const name = project.data.title.toLowerCase();
 <div class="lk-doc project">
   <div class="lk-doc-head">
     <h1>{name}</h1>
-    {project.data.badge && <span class="lk-badge">{project.data.badge}</span>}
+    {project.data.badge && <span class="lk-badge" data-badge={project.data.badge}>{project.data.badge}</span>}
   </div>
   <div class="lk-doc-desc">{project.data.description}</div>
   {project.data.tech.length > 0 && <div class="lk-doc-tags">{project.data.tech.map((t) => <span>{t}</span>)}</div>}
