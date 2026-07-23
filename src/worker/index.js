@@ -127,6 +127,28 @@ async function handleTrack(request, env, ctx) {
   return new Response('method not allowed', { status: 405 });
 }
 
+// CSP violation reports (public/_headers' report-to / report-uri point
+// here) — the print-button regression this session shipped was invisible
+// to every check until a human clicked it; logging violations means the
+// next one at least shows up in Workers Logs instead of needing that.
+async function handleCspReport(request) {
+  try {
+    const body = await request.json();
+    const reports = Array.isArray(body) ? body : [body];
+    for (const r of reports) {
+      const detail = r.body || r['csp-report'] || r;
+      console.error('CSP violation', {
+        blockedUri: detail['blocked-uri'] || detail.blockedURL,
+        directive: detail['violated-directive'] || detail.effectiveDirective,
+        documentUri: detail['document-uri'] || detail.documentURL,
+      });
+    }
+  } catch {
+    // malformed report body — nothing useful to log, don't error the request
+  }
+  return new Response(null, { status: 204 });
+}
+
 async function bumpCounter(env, key) {
   const kvKey = `track:${key}`;
   // Read-modify-write, not atomic — KV has no increment op. A lost update
@@ -141,6 +163,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/ticker') return handleTicker(env, ctx);
     if (url.pathname === '/api/track') return handleTrack(request, env, ctx);
+    if (url.pathname === '/api/csp-report') return handleCspReport(request);
     if (url.pathname.startsWith('/api/')) return new Response('not found', { status: 404 });
     return env.ASSETS.fetch(request);
   },
