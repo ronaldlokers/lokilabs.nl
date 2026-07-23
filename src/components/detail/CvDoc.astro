@@ -15,7 +15,7 @@ import { jobs, skills } from '../../data/history';
     {jobs.map((job) => (
       <div class="lk-cv-job">
         <div class="row">
-          <span class="role">{job.role} <span class="org">@ {job.org}</span></span>
+          <span class="role">{job.role} {job.org && <span class="org">@ {job.org}</span>}{job.tag && <span class="tag">{job.tag}</span>}</span>
           <span class="dates">{job.when}</span>
         </div>
         {job.desc && <p>{job.desc}</p>}
