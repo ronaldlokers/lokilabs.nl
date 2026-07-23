@@ -53,13 +53,13 @@
 .lk-hero-prompt { font-size: 14px; color: var(--lk-lav-mut); margin: 0 0 30px; }
 .lk-hero-prompt .u { color: var(--lilac); }
 .lk-hero-prompt .a { color: var(--orange); }
-.lk-hero-prompt .d { color: var(--lk-lav-dim); }
+.lk-hero-prompt .d { color: var(--nav-muted); } /* was --lk-lav-dim, 2.98:1 on purple — fails WCAG AA */
 .lk-hero-prompt .c { color: var(--paper); }
 .lk-hl {
   font-size: clamp(38px, 8.4vw, 112px); font-weight: 700;
   letter-spacing: -0.045em; line-height: 1.0; color: var(--paper); margin: 0;
 }
-.lk-hl.l2 { color: var(--orange); }
+.lk-hl.l2 { color: var(--orange-light); } /* was --orange, 2.94:1 on purple — fails even the 3:1 large-text floor */
 .lk-cursor {
   display: inline-block; width: 0.44em; height: 0.78em; background: var(--orange);
   margin-left: 0.08em; vertical-align: -0.06em; animation: lk-blink 1.1s steps(1) infinite;
