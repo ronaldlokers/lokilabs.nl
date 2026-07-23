@@ -45,6 +45,14 @@ jobs:
           check "/robots.txt" 200
           check "/this-should-404" 404
 
+      - name: Check security headers are actually served
+        run: |
+          set -e
+          headers=$(curl -sI https://lokilabs.nl/)
+          echo "$headers" | grep -qi '^content-security-policy:' || { echo "FAIL: no CSP header on /"; exit 1; }
+          echo "$headers" | grep -qi '^x-frame-options:' || { echo "FAIL: no X-Frame-Options header on /"; exit 1; }
+          echo "ok: security headers present"
+
       - name: Check hashed asset caching
         run: |
           set -e

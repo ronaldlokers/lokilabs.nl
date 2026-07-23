@@ -8,6 +8,7 @@ const staticCards: Record<string, OgCard> = {
   cv: { title: 'CV — Ronald Lokers', tags: ['open to platform / devops roles'] },
   projects: { title: 'Projects' },
   writing: { title: 'Writing' },
+  privacy: { title: 'Privacy — lokilabs' },
 };
 
 export async function getStaticPaths() {
