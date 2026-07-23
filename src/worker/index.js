@@ -14,6 +14,13 @@ const TICKER_LIMIT = 8;
 // run just serves slightly stale data until the next one succeeds, rather
 // than triggering a thundering herd.
 const TICKER_TTL = 7500;
+// Timestamp of the cron's last successful run, read by /api/healthz —
+// separate from KV_KEY's own TTL so a stale/expired cache still reports a
+// precise "how long has it actually been" instead of just vanishing.
+const TICKER_LAST_SUCCESS_KEY = 'ticker:lastSuccessAt';
+// One missed hourly run tolerated before /api/healthz reports unhealthy —
+// matches TICKER_TTL's own tolerance.
+const HEALTHZ_MAX_AGE_MS = TICKER_TTL * 1000;
 
 // Optional GITHUB_TOKEN secret (wrangler secret put GITHUB_TOKEN) raises the
 // rate limit from 60/hr unauthenticated to 5000/hr — no scopes needed, every
@@ -158,12 +165,31 @@ async function bumpCounter(env, key) {
   await env.TICKER_KV.put(kvKey, String(current + 1));
 }
 
+// Polled by an external uptime monitor (Uptime Kuma or similar) — reports
+// whether the ticker cron is actually still running, not just whether the
+// worker itself responds. console.error alone only surfaces if someone
+// goes looking at Workers Logs; a monitor polling this catches the cron
+// silently stopping, not just it throwing.
+async function handleHealthz(env) {
+  const lastSuccess = await env.TICKER_KV.get(TICKER_LAST_SUCCESS_KEY);
+  if (!lastSuccess) {
+    return Response.json({ ok: false, reason: 'ticker cron has never succeeded' }, { status: 503, headers: { 'Cache-Control': 'no-store' } });
+  }
+  const ageMs = Date.now() - Date.parse(lastSuccess);
+  const ok = Number.isFinite(ageMs) && ageMs <= HEALTHZ_MAX_AGE_MS;
+  return Response.json(
+    { ok, lastSuccessAt: lastSuccess, ageSeconds: Math.round(ageMs / 1000) },
+    { status: ok ? 200 : 503, headers: { 'Cache-Control': 'no-store' } }
+  );
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === '/api/ticker') return handleTicker(env, ctx);
     if (url.pathname === '/api/track') return handleTrack(request, env, ctx);
     if (url.pathname === '/api/csp-report') return handleCspReport(request);
+    if (url.pathname === '/api/healthz') return handleHealthz(env);
     if (url.pathname.startsWith('/api/')) return new Response('not found', { status: 404 });
     return env.ASSETS.fetch(request);
   },
@@ -171,7 +197,10 @@ export default {
   async scheduled(controller, env, ctx) {
     ctx.waitUntil(
       fetchRecentCommits(env)
-        .then((commits) => env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: TICKER_TTL }))
+        .then((commits) => Promise.all([
+          env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: TICKER_TTL }),
+          env.TICKER_KV.put(TICKER_LAST_SUCCESS_KEY, new Date().toISOString()),
+        ]))
         .catch((err) => console.error('ticker refresh failed', err))
     );
   },
