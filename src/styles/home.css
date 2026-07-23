@@ -418,6 +418,10 @@
   #lk-overlay .lk-scrim, .lk-panel-head, .lk-panel-foot, #lk-boot {
     display: none !important;
   }
+  /* CV action buttons (get in touch / linkedin) are meaningless on paper. */
+  .lk-cv-actions {
+    display: none !important;
+  }
   #lk-overlay.shown .lk-panel {
     position: static !important; width: 100% !important;
     max-width: none !important; max-height: none !important;
