@@ -95,6 +95,13 @@ function bindNav() {
     const route = parseKey(a.dataset.lk);
     if (route.kind === 'section') goToSection(route, { push: true });
     else openRoute(route, { push: true });
+    if (route.kind === 'cv') trackEvent('cv');
+  });
+  // Real outbound links (mailto/github/linkedin) — don't intercept the
+  // navigation, just fire the beacon alongside it.
+  on(document, 'click', (e) => {
+    const t = e.target.closest('a[data-track]');
+    if (t) trackEvent(t.dataset.track);
   });
   on(window, 'popstate', () => {
     const route = parsePath(location.pathname);
@@ -225,6 +232,17 @@ function closeOverlay() {
   if (history.state && history.state.lk) { history.back(); return; }
   history.replaceState({}, '', '/');
   closeVisual();
+}
+
+// Fire-and-forget first-party event ping (CV opens, contact clicks) — never
+// blocks or delays the thing the user actually clicked to do.
+function trackEvent(key) {
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon('/api/track', key);
+    else fetch('/api/track', { method: 'POST', body: key, keepalive: true }).catch(() => {});
+  } catch {
+    // best-effort only
+  }
 }
 
 // Section links (/about/, /writing/, /projects/) just scroll the homepage —
