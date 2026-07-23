@@ -295,7 +295,7 @@
 .lk-doc-tags { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 7px; }
 /* Outlined, lowercase — reads as "descriptive category," distinct from
    .lk-badge's solid-filled, uppercase "status" treatment next to it. */
-.lk-doc-tags span { font-size: 10.5px; color: var(--violet); background: none; border: 1px solid var(--line-soft); border-radius: 5px; padding: 2px 9px; }
+.lk-doc-tags span { font-size: 10.5px; color: var(--violet); background: none; border: 1px solid var(--lk-chrome-line); border-radius: 5px; padding: 2px 9px; }
 .lk-shot { margin-top: 26px; }
 .lk-shot img { width: 100%; display: block; }
 .lk-doc .prose { margin-top: 24px; }
