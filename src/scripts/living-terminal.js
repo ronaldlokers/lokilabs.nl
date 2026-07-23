@@ -99,7 +99,6 @@ function bindNav() {
     const route = parseKey(a.dataset.lk);
     if (route.kind === 'section') goToSection(route, { push: true });
     else openRoute(route, { push: true });
-    if (route.kind === 'cv') trackEvent('cv');
   });
   // Real outbound links (mailto/github/linkedin) — don't intercept the
   // navigation, just fire the beacon alongside it.
@@ -169,6 +168,7 @@ function adoptOpen(route) {
   [...body.children].forEach((el, i) => el.style.setProperty('--i', i));
   mountFootNav(route, ctx.registry.get(routeKey(route)));
   if (route.kind === 'project') mountGiscus();
+  if (route.kind === 'cv') trackEvent('cv');
   history.replaceState({ lk: false }, '', location.href);
 }
 
@@ -190,6 +190,10 @@ function openRoute(route, { push }) {
   if (alreadyOpen) history.replaceState(history.state, '', path);
   else if (push) history.pushState({ lk: true }, '', path);
   mountDetail(route);
+  // Tracked here (not just the a[data-lk] click handler) so taskbar restore
+  // and back/forward into the CV route are counted too, not just the first
+  // in-app click — those were silently missing before.
+  if (route.kind === 'cv') trackEvent('cv');
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
   setBackgroundInert(true);
@@ -203,9 +207,11 @@ function openRoute(route, { push }) {
   if (alreadyOpen) {
     // Already inside the overlay (next/prev, taskbar restore onto a still-open
     // panel) — swap content in place, don't replay the boot sequence, it's
-    // meant for the first open, not every click. If the previous route's boot
-    // was still mid-flight, its finish() is now cancelled (bootId mismatch)
-    // and will never hide the cover itself — clear it here instead.
+    // meant for the first open, not every click. Bump bootId so a still
+    // in-flight boot chain's `id !== ctx.bootId` checks start failing and
+    // its timers stop (the DOM hide below is not enough by itself — without
+    // this the stale chain still runs for up to ~1.5s against a hidden log).
+    ctx.bootId++;
     const boot = document.getElementById('lk-boot');
     if (boot && !boot.hidden) { boot.hidden = true; boot.style.opacity = '0'; }
     staggerBody();
@@ -519,11 +525,16 @@ function bindTaskstrip() {
     if (Math.abs(dx) > 4) ctx.taskDragMoved = true;
     s.scrollLeft = drag.sl - dx;
   });
-  on(window, 'pointerup', () => {
+  const endDrag = () => {
     drag = null;
     s.style.cursor = 'grab';
     later(() => { if (ctx) ctx.taskDragMoved = false; }, 0);
-  });
+  };
+  on(window, 'pointerup', endDrag);
+  // A drag interrupted by a system gesture (touch scroll takeover, OS-level
+  // interruption) fires pointercancel, not pointerup — without this, `drag`
+  // stays truthy and the cursor stays stuck on 'grabbing'.
+  on(window, 'pointercancel', endDrag);
   on(s, 'wheel', (e) => {
     if (e.deltaY && s.scrollWidth > s.clientWidth) { s.scrollLeft += e.deltaY; e.preventDefault(); }
   }, { passive: false });
