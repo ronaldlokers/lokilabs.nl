@@ -154,6 +154,18 @@ function setBackgroundInert(on) {
   });
 }
 
+// `body.style.overflow = 'hidden'` is a documented no-op for iOS Safari's
+// rubber-band scroll — the page behind the overlay can still scroll under a
+// touch drag. Block touchmove outside the panel's own scrollable body
+// instead, which iOS does respect.
+function preventBgTouchScroll(e) {
+  if (!e.target.closest('#lk-dbody')) e.preventDefault();
+}
+function lockBodyScroll(on) {
+  if (on) document.addEventListener('touchmove', preventBgTouchScroll, { passive: false });
+  else document.removeEventListener('touchmove', preventBgTouchScroll);
+}
+
 // Enhance a server-rendered open overlay (deep link): the content is already
 // in the DOM, so wire it up without cloning or replaying the boot sequence.
 function adoptOpen(route) {
@@ -163,6 +175,7 @@ function adoptOpen(route) {
   overlay.classList.add('shown');
   document.body.style.overflow = 'hidden';
   setBackgroundInert(true);
+  lockBodyScroll(true);
   const body = document.getElementById('lk-dbody');
   body.classList.add('lk-reveal');
   [...body.children].forEach((el, i) => el.style.setProperty('--i', i));
@@ -197,6 +210,7 @@ function openRoute(route, { push }) {
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
   setBackgroundInert(true);
+  lockBodyScroll(true);
   // `if (ctx)` alone doesn't check whether THIS route is still the one
   // open — a fast open-then-close (click then Escape) can let this fire
   // after closeVisual() already ran, re-adding .shown and flashing the
@@ -240,6 +254,7 @@ function closeVisual() {
   document.body.style.overflow = '';
   ctx.route = null;
   setBackgroundInert(false);
+  lockBodyScroll(false);
   if (ctx.lastFocused) {
     ctx.lastFocused.focus({ preventScroll: true });
     ctx.lastFocused = null;
@@ -579,10 +594,19 @@ function startTicker() {
     a.innerHTML = html;
     if (b) b.innerHTML = html;
   };
-  fetch('/api/ticker')
-    .then((r) => (r.ok ? r.json() : []))
-    .then((data) => { commits = Array.isArray(data) ? data : []; render(); })
-    .catch(() => {});
+  // A single failed/slow load used to leave the ticker blank for the whole
+  // session — .catch(() => {}) with no retry. Back off and try a few more
+  // times before giving up; a persistent outage still degrades gracefully
+  // (ticker just stays empty), it just isn't sunk by one transient blip.
+  const loadTicker = (attempt) => {
+    fetch('/api/ticker')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('http ' + r.status))))
+      .then((data) => { commits = Array.isArray(data) ? data : []; render(); })
+      .catch(() => {
+        if (attempt < 3) later(() => loadTicker(attempt + 1), 5000 * (attempt + 1));
+      });
+  };
+  loadTicker(0);
   ctx.tickerInterval = setInterval(render, 1000);
 }
 
