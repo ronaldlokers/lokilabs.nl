@@ -325,6 +325,7 @@
 .lk-cv-actions a:active, .lk-cv-actions button:active { transform: scale(0.96); }
 .lk-cv-actions a.alt, .lk-cv-actions button.alt { background: none; border: 1px solid var(--line-soft); color: var(--purple); font-weight: 600; }
 .lk-cv-actions a.alt:hover, .lk-cv-actions button.alt:hover { border-color: var(--violet); color: var(--violet); }
+.lk-cv-print-contact { display: none; }
 .lk-cv-summary { margin-top: 18px; font-size: 13px; line-height: 1.8; color: #56504B; }
 .lk-cv-skills { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 7px; }
 .lk-cv-skills span { font-size: 11px; font-weight: 600; color: var(--paper); background: var(--violet); border-radius: 5px; padding: 5px 11px; }
@@ -438,9 +439,15 @@
   #lk-overlay .lk-scrim, .lk-panel-head, .lk-panel-foot, #lk-boot {
     display: none !important;
   }
-  /* CV action buttons (get in touch / linkedin) are meaningless on paper. */
+  /* CV action buttons (get in touch / linkedin / print) are meaningless on
+     paper — but they're also the only place that carries the email and
+     LinkedIn URL, so swap them for plain text instead of just hiding them. */
   .lk-cv-actions {
     display: none !important;
+  }
+  .lk-cv-print-contact {
+    display: block !important;
+    margin-top: 20px; font-size: 13px; color: #56504B;
   }
   #lk-overlay.shown .lk-panel {
     position: static !important; width: 100% !important;

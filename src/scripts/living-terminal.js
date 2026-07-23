@@ -46,7 +46,11 @@ function parsePath(pathname) {
 }
 
 function init() {
-  if (!document.getElementById('lk-top')) return;
+  // #lk-top exists on every page (it's also the shared footer's "back to
+  // top" fragment target) — #lk-overlay is what actually marks a page as
+  // the SiteHome shell with the router's DOM (nav interception, overlay,
+  // taskbar) available to wire up.
+  if (!document.getElementById('lk-overlay')) return;
   document.documentElement.classList.add('lk-js');
   ctx = { timers: [], raf: null, killed: false, minWindows: [], route: null, lastFocused: null, bootId: 0 };
 
@@ -103,6 +107,11 @@ function bindNav() {
     const t = e.target.closest('a[data-track]');
     if (t) trackEvent(t.dataset.track);
   });
+  // window.print() delegated here (not an inline onclick) so the CSP's
+  // script-src, which has no 'unsafe-inline', doesn't block it.
+  on(document, 'click', (e) => {
+    if (e.target.closest('[data-print]')) window.print();
+  });
   on(window, 'popstate', () => {
     const route = parsePath(location.pathname);
     if (route && route.kind === 'section') goToSection(route, { push: false });
@@ -135,6 +144,17 @@ function bindNav() {
 
 /* ---------- overlay open / close ---------- */
 
+// A manual JS focus trap alone isn't fully reliable — e.g. mounting giscus's
+// cross-origin iframe mid-navigation can shift native tab order out from
+// under it. `inert` makes everything outside the dialog genuinely
+// unfocusable at the platform level, independent of any such timing race.
+const BG_INERT_SELECTOR = '.skip-link, .lk-nav, #main > :not(#lk-overlay):not(#lk-taskbar), #lk-contact';
+function setBackgroundInert(on) {
+  document.querySelectorAll(BG_INERT_SELECTOR).forEach((el) => {
+    if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+  });
+}
+
 // Enhance a server-rendered open overlay (deep link): the content is already
 // in the DOM, so wire it up without cloning or replaying the boot sequence.
 function adoptOpen(route) {
@@ -143,6 +163,7 @@ function adoptOpen(route) {
   overlay.hidden = false;
   overlay.classList.add('shown');
   document.body.style.overflow = 'hidden';
+  setBackgroundInert(true);
   const body = document.getElementById('lk-dbody');
   body.classList.add('lk-reveal');
   [...body.children].forEach((el, i) => el.style.setProperty('--i', i));
@@ -171,6 +192,7 @@ function openRoute(route, { push }) {
   mountDetail(route);
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
+  setBackgroundInert(true);
   requestAnimationFrame(() => requestAnimationFrame(() => {
     if (ctx) overlay.classList.add('shown');
   }));
@@ -207,6 +229,7 @@ function closeVisual() {
   overlay.classList.remove('shown');
   document.body.style.overflow = '';
   ctx.route = null;
+  setBackgroundInert(false);
   if (ctx.lastFocused) {
     ctx.lastFocused.focus({ preventScroll: true });
     ctx.lastFocused = null;
