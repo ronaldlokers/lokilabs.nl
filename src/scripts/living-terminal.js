@@ -5,10 +5,12 @@ let ctx = null;
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// A "route" is { kind: 'post'|'project'|'cv', slug }. Detail content lives at
-// real URLs (/writing/x/, /projects/x/, /cv/) and is driven with the History
-// API — the overlay is opened without a full navigation, and the same URLs
-// are real static pages for deep links, crawlers, OG images and giscus.
+// A "route" is { kind: 'post'|'project'|'cv'|'section', slug }. Detail
+// content lives at real URLs (/writing/x/, /projects/x/, /cv/) and is driven
+// with the History API — the overlay is opened without a full navigation,
+// and the same URLs are real static pages for deep links, crawlers, OG
+// images and giscus. 'section' routes (/about/, /writing/, /projects/) are
+// real paths too, but just scroll to the matching homepage section.
 function parseKey(key) {
   const [kind, slug] = key.split(':');
   return { kind, slug };
@@ -18,9 +20,15 @@ function routeKey(r) {
   return r.kind + ':' + (r.slug || 'cv');
 }
 
+// Section routes (/about/, /writing/, /projects/) are real, bookmarkable
+// paths to the matching homepage section — not overlay-openable, just a
+// scroll target.
+const SECTION_IDS = { about: 'lk-about', writing: 'lk-writing', projects: 'lk-projects' };
+
 function pathFor(kind, slug) {
   if (kind === 'post') return '/writing/' + slug + '/';
   if (kind === 'project') return '/projects/' + slug + '/';
+  if (kind === 'section') return '/' + slug + '/';
   return '/cv/';
 }
 
@@ -31,6 +39,9 @@ function parsePath(pathname) {
   m = p.match(/^\/projects\/([\w-]+)$/);
   if (m) return { kind: 'project', slug: m[1] };
   if (p === '/cv') return { kind: 'cv', slug: 'cv' };
+  if (p === '/about') return { kind: 'section', slug: 'about' };
+  if (p === '/writing') return { kind: 'section', slug: 'writing' };
+  if (p === '/projects') return { kind: 'section', slug: 'projects' };
   return null;
 }
 
@@ -51,7 +62,8 @@ function init() {
   if (openKey) adoptOpen(parseKey(openKey));
   else {
     const route = parsePath(location.pathname);
-    if (route) openRoute(route, { push: false });
+    if (route && route.kind === 'section') goToSection(route, { push: false, instant: true });
+    else if (route) openRoute(route, { push: false });
   }
 }
 
@@ -80,11 +92,14 @@ function bindNav() {
     const a = e.target.closest('a[data-lk]');
     if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault();
-    openRoute(parseKey(a.dataset.lk), { push: true });
+    const route = parseKey(a.dataset.lk);
+    if (route.kind === 'section') goToSection(route, { push: true });
+    else openRoute(route, { push: true });
   });
   on(window, 'popstate', () => {
     const route = parsePath(location.pathname);
-    if (route) openRoute(route, { push: false });
+    if (route && route.kind === 'section') goToSection(route, { push: false });
+    else if (route) openRoute(route, { push: false });
     else closeVisual();
   });
   on(window, 'keydown', (e) => {
@@ -165,6 +180,15 @@ function closeOverlay() {
   closeVisual();
 }
 
+// Section links (/about/, /writing/, /projects/) just scroll the homepage —
+// no overlay. Close whatever's open first so the target section is visible.
+function goToSection(route, { push, instant }) {
+  if (ctx.route) closeVisual();
+  if (push) history.pushState({ lk: false }, '', pathFor(route.kind, route.slug));
+  const el = document.getElementById(SECTION_IDS[route.slug]);
+  if (el) el.scrollIntoView({ behavior: instant || reduced() ? 'auto' : 'smooth', block: 'start' });
+}
+
 function minimize() {
   const r = ctx.route;
   if (r) {
@@ -232,7 +256,7 @@ function notFoundDoc(route) {
     '<div class="lk-doc-desc" style="background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px; padding: 18px 22px; margin-top: 18px;">' +
     '<div>bash: cat ' + String(route.slug || '').replace(/[^\w-]/g, '') + ': No such file or directory</div>' +
     '<div style="margin-top: 6px; color: var(--faint);">the path you followed doesn’t exist — the project or post may have been renamed or removed.</div></div>' +
-    '<div class="lk-doc-links"><a class="repo" href="#lk-projects">cd ~/projects</a> <a class="page" href="#lk-writing">cd ~/writing</a></div>';
+    '<div class="lk-doc-links"><a class="repo" href="/projects/" data-lk="section:projects">cd ~/projects</a> <a class="page" href="/writing/" data-lk="section:writing">cd ~/writing</a></div>';
   return div;
 }
 

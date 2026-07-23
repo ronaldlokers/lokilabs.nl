@@ -100,7 +100,7 @@
 .lk-ticker-track > span { font-size: 13px; font-weight: 600; color: var(--paper); letter-spacing: 0.5px; }
 
 /* ---------- sections ---------- */
-.lk-section { max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px) 110px; }
+.lk-section { max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px) 110px; scroll-margin-top: 84px; }
 .lk-section.about { padding-top: 100px; padding-bottom: 90px; }
 .lk-section.projects { padding-bottom: 120px; }
 .lk-sechead { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 40px; }

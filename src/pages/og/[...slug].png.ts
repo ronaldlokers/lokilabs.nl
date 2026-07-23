@@ -4,7 +4,10 @@ import { renderOgImage, type OgCard } from '../../lib/og';
 
 const staticCards: Record<string, OgCard> = {
   home: { title: "Do it twice? I'll automate it" },
+  about: { title: 'About Ronald Lokers', tags: ['platform engineering', 'kubernetes', 'gitops'] },
   cv: { title: 'CV — Ronald Lokers', tags: ['open to platform / devops roles'] },
+  projects: { title: 'Projects' },
+  writing: { title: 'Writing' },
 };
 
 export async function getStaticPaths() {
