@@ -90,10 +90,24 @@ async function handleTicker(env, ctx) {
 // this keeps it a one-visit check rather than a login flow to build.
 const TRACK_KEYS = ['cv', 'mailto', 'github', 'linkedin'];
 
+// Best-effort per-IP throttle — same non-atomic read-modify-write as
+// bumpCounter, so it's a rough cap, not a hard guarantee. Enough to blunt a
+// casual script without needing a Durable Object for a vanity counter.
+const TRACK_RATE_LIMIT = 20;
+async function isRateLimited(env, ip) {
+  const kvKey = `ratelimit:track:${ip}`;
+  const count = Number((await env.TICKER_KV.get(kvKey)) || 0);
+  if (count >= TRACK_RATE_LIMIT) return true;
+  await env.TICKER_KV.put(kvKey, String(count + 1), { expirationTtl: 60 });
+  return false;
+}
+
 async function handleTrack(request, env, ctx) {
   if (request.method === 'POST') {
     const key = (await request.text()).trim();
     if (!TRACK_KEYS.includes(key)) return new Response('bad key', { status: 400 });
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    if (await isRateLimited(env, ip)) return new Response('rate limited', { status: 429 });
     ctx.waitUntil(bumpCounter(env, key));
     return new Response(null, { status: 204 });
   }
