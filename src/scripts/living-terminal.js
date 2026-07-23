@@ -149,6 +149,7 @@ function openRoute(route, { push }) {
   if (alreadyOpen) history.replaceState(history.state, '', path);
   else if (push) history.pushState({ lk: true }, '', path);
   mountDetail(route);
+  hideBehindBoot();
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
   requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -156,6 +157,18 @@ function openRoute(route, { push }) {
   }));
   later(() => revealDetail(route), 200);
   overlay.querySelector('.lk-panel').focus({ preventScroll: true });
+}
+
+// Cover the real content the instant it's mounted, not 200ms later when
+// runBoot() gets around to it — otherwise the actual doc flashes visible
+// underneath before the fake boot sequence starts covering it.
+function hideBehindBoot() {
+  if (reduced()) return;
+  const boot = document.getElementById('lk-boot');
+  if (!boot) return;
+  boot.style.transition = 'none';
+  boot.hidden = false;
+  boot.style.opacity = '1';
 }
 
 function closeVisual() {
@@ -308,8 +321,9 @@ function runBoot(route, done) {
   const dir = entry ? entry.dir : '~/lokilabs';
   const file = entry ? entry.file : nm;
   const sub = route.kind === 'project' ? 'projects' : route.kind === 'post' ? 'writing' : null;
-  boot.hidden = false;
-  boot.style.opacity = '1';
+  // hideBehindBoot() already made this visible instantly (no transition) the
+  // moment the route opened — restore the transition here so finish() below
+  // fades it back out smoothly instead of snapping.
   boot.style.transition = 'opacity 0.42s ease';
   const ok = '[<span style="color:#2E9E63;">  OK  </span>]';
   const steps = [
