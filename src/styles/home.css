@@ -130,6 +130,14 @@
 .lk-promptline .u { color: var(--violet); }
 .lk-promptline .a { color: var(--orange); }
 .lk-about-txt p { margin: 0 0 14px; }
+.lk-about-txt h3 {
+  font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; margin: 20px 0 10px;
+}
+.lk-about-txt ul { margin: 0 0 14px; padding-left: 18px; }
+.lk-about-txt li { margin-bottom: 6px; }
+.lk-about-txt a { color: var(--violet); }
+.lk-about-txt a:hover { color: var(--orange); }
 .lk-about-tl {
   display: flex; flex-direction: column; gap: 9px;
   border-left: 2px solid var(--orange); padding-left: 16px; font-size: 12px; margin-top: 20px;
