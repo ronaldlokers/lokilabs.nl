@@ -48,7 +48,7 @@ function parsePath(pathname) {
 function init() {
   if (!document.getElementById('lk-top')) return;
   document.documentElement.classList.add('lk-js');
-  ctx = { timers: [], raf: null, killed: false, minWindows: [], route: null };
+  ctx = { timers: [], raf: null, killed: false, minWindows: [], route: null, lastFocused: null, bootId: 0 };
 
   buildRegistry();
   bindNav();
@@ -103,7 +103,9 @@ function bindNav() {
     else closeVisual();
   });
   on(window, 'keydown', (e) => {
-    if (e.key === 'Escape' && ctx.route) { e.preventDefault(); closeOverlay(); }
+    if (!ctx.route) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeOverlay(); }
+    else if (e.key === 'Tab') trapFocus(e);
   });
 
   const overlay = document.getElementById('lk-overlay');
@@ -144,18 +146,30 @@ function openRoute(route, { push }) {
   // behavior (back() vs replace-to-root) still matches how this session
   // actually got here.
   const alreadyOpen = !!ctx.route;
+  if (!alreadyOpen) ctx.lastFocused = document.activeElement;
   ctx.route = route;
   const path = pathFor(route.kind, route.slug);
   if (alreadyOpen) history.replaceState(history.state, '', path);
   else if (push) history.pushState({ lk: true }, '', path);
   mountDetail(route);
-  hideBehindBoot();
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
   requestAnimationFrame(() => requestAnimationFrame(() => {
     if (ctx) overlay.classList.add('shown');
   }));
-  later(() => revealDetail(route), 200);
+  if (alreadyOpen) {
+    // Already inside the overlay (next/prev, taskbar restore onto a still-open
+    // panel) — swap content in place, don't replay the boot sequence, it's
+    // meant for the first open, not every click. If the previous route's boot
+    // was still mid-flight, its finish() is now cancelled (bootId mismatch)
+    // and will never hide the cover itself — clear it here instead.
+    const boot = document.getElementById('lk-boot');
+    if (boot && !boot.hidden) { boot.hidden = true; boot.style.opacity = '0'; }
+    staggerBody();
+  } else {
+    hideBehindBoot();
+    later(() => revealDetail(route), 200);
+  }
   overlay.querySelector('.lk-panel').focus({ preventScroll: true });
 }
 
@@ -176,6 +190,10 @@ function closeVisual() {
   overlay.classList.remove('shown');
   document.body.style.overflow = '';
   ctx.route = null;
+  if (ctx.lastFocused) {
+    ctx.lastFocused.focus({ preventScroll: true });
+    ctx.lastFocused = null;
+  }
   later(() => {
     if (ctx && !ctx.route) {
       overlay.hidden = true;
@@ -183,6 +201,22 @@ function closeVisual() {
       document.getElementById('lk-dbody').classList.remove('lk-reveal');
     }
   }, 460);
+}
+
+// role="dialog" aria-modal="true" claims modality it didn't enforce — Tab
+// could walk straight out of the panel into the fixed nav / page behind the
+// scrim. Cycle focus within the panel's focusable elements instead.
+function trapFocus(e) {
+  const panel = document.querySelector('.lk-panel');
+  const all = panel.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+  // querySelectorAll doesn't know about hidden foot-nav links (e.g. #lk-next
+  // when there's no newer item) — offsetParent excludes anything display:none.
+  const focusables = [...all].filter((el) => el.offsetParent !== null);
+  if (!focusables.length) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
 }
 
 function closeOverlay() {
@@ -316,6 +350,12 @@ function runBoot(route, done) {
   const boot = document.getElementById('lk-boot');
   const log = document.getElementById('lk-bootlog');
   if (!boot || !log) { done(); return; }
+  // ctx.killed was checked here but never set anywhere, so a boot sequence
+  // interrupted by fast navigation (next/prev, double-click) never actually
+  // stopped — two chains wrote into the same #lk-bootlog and interleaved.
+  // A per-call generation id fixes it without touching ctx.killed, which is
+  // a separate, page-lifetime teardown flag for the ticker/hero-canvas loops.
+  const id = ++ctx.bootId;
   const entry = ctx.registry.get(route.kind + ':' + route.slug);
   const nm = route.slug;
   const dir = entry ? entry.dir : '~/lokilabs';
@@ -337,7 +377,7 @@ function runBoot(route, done) {
   let i = 0;
   log.innerHTML = '';
   const finish = () => {
-    if (ctx.killed) return;
+    if (id !== ctx.bootId) return;
     boot.style.opacity = '0';
     done();
     later(() => { boot.hidden = true; }, 440);
@@ -346,19 +386,19 @@ function runBoot(route, done) {
   let fi = 0;
   let spun = 0;
   const spin = () => {
-    if (ctx.killed) return;
+    if (id !== ctx.bootId) return;
     log.innerHTML = html + '<span style="color:#E9622E;">' + frames[fi % frames.length] + '</span> rendering ' + file + '…\n';
     fi++; spun++;
     if (spun < 13) later(spin, 65);
     else { log.innerHTML = html + '<span style="color:#2E9E63;">✓</span> done — opening.\n'; later(finish, 300); }
   };
   const step = () => {
-    if (ctx.killed) return;
+    if (id !== ctx.bootId) return;
     if (i < steps.length) { html += steps[i] + '\n'; log.innerHTML = html; i++; later(step, 165); return; }
     let pct = 0;
     const barBase = html;
     const bar = () => {
-      if (ctx.killed) return;
+      if (id !== ctx.bootId) return;
       pct = Math.min(100, pct + 7 + Math.random() * 15);
       const f = Math.round(pct / 5);
       log.innerHTML = barBase + 'fetching ' + file + '  [<span style="color:#E9622E;">' + '█'.repeat(f) + '</span>' + '░'.repeat(20 - f) + '] ' + Math.round(pct) + '%\n';

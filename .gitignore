@@ -24,3 +24,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# product-team-review tracking (not for commit)
+.product-team-review/

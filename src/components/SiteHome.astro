@@ -140,12 +140,12 @@ const overlayOpen = !!(openPost || openProject || openCv);
 
   <div id="lk-overlay" class={overlayOpen ? 'shown' : undefined} data-open={openKey ?? undefined} hidden={!overlayOpen}>
     <div class="lk-scrim"></div>
-    <div class="lk-panel" role="dialog" aria-modal="true" aria-label="detail" tabindex="-1">
+    <div class="lk-panel" role="dialog" aria-modal="true" aria-labelledby="lk-ptitle" tabindex="-1">
       <div class="lk-panel-head">
         <span class="lk-tl">
-          <button class="close" title="close" type="button"><span>×</span></button>
-          <button class="min" title="minimize" type="button"><span>−</span></button>
-          <button class="max" title="maximize" type="button"><span>+</span></button>
+          <button class="close" title="close" aria-label="close" type="button"><span>×</span></button>
+          <button class="min" title="minimize" aria-label="minimize" type="button"><span>−</span></button>
+          <button class="max" title="maximize" aria-label="maximize" type="button"><span>+</span></button>
         </span>
         <span class="lk-panel-title" id="lk-ptitle">{openTab}</span>
       </div>
