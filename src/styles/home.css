@@ -223,6 +223,7 @@
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
   padding: 15px clamp(20px, 5vw, 40px);
 }
+.lk-contact-bar-links { display: flex; gap: 18px; }
 .lk-contact-bar .top { font-size: 11px; font-weight: 600; color: var(--purple); text-decoration: none; }
 .lk-contact-bar .top:hover { color: var(--cta-ink); }
 .lk-contact-bar .wm { font-size: 14px; font-weight: 700; color: var(--cta-ink); }
@@ -231,6 +232,9 @@
 /* ---------- detail overlay ---------- */
 #lk-overlay { position: fixed; inset: 0; z-index: 90; }
 #lk-overlay[hidden] { display: none; }
+/* Visually hidden but still a real tab stop — see the comment on the
+   element itself in SiteHome.astro. */
+#lk-focus-end { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .lk-scrim {
   position: absolute; inset: 0; background: rgba(35, 18, 62, 0); cursor: pointer;
   transition: background 0.35s ease, backdrop-filter 0.35s ease;
@@ -240,7 +244,7 @@
   position: absolute; top: 5vh; left: 50%; width: min(900px, 94vw); max-height: 90vh;
   display: flex; flex-direction: column; overflow: hidden;
   background: var(--surface); border: 1px solid var(--lk-chrome-line);
-  border-radius: 13px; box-shadow: 0 44px 100px -34px rgba(40, 15, 76, 0.65);
+  border-radius: 14px; box-shadow: 0 44px 100px -34px rgba(40, 15, 76, 0.65); /* was 13px — matches .lk-chrome/.lk-card's 14px */
   opacity: 0; transform: translateX(-50%) scale(0.95);
   transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     width 0.35s ease, max-height 0.35s ease, top 0.35s ease, bottom 0.35s ease;
@@ -289,7 +293,9 @@
 .lk-doc-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .lk-doc-desc { margin-top: 14px; font-size: 13.5px; line-height: 1.8; color: #56504B; }
 .lk-doc-tags { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 7px; }
-.lk-doc-tags span { font-size: 10.5px; color: var(--violet); background: var(--lk-tint); border-radius: 5px; padding: 3px 10px; }
+/* Outlined, lowercase — reads as "descriptive category," distinct from
+   .lk-badge's solid-filled, uppercase "status" treatment next to it. */
+.lk-doc-tags span { font-size: 10.5px; color: var(--violet); background: none; border: 1px solid var(--line-soft); border-radius: 5px; padding: 2px 9px; }
 .lk-shot { margin-top: 26px; }
 .lk-shot img { width: 100%; display: block; }
 .lk-doc .prose { margin-top: 24px; }
@@ -321,7 +327,7 @@
 .lk-cv-actions a.alt:hover, .lk-cv-actions button.alt:hover { border-color: var(--violet); color: var(--violet); }
 .lk-cv-summary { margin-top: 18px; font-size: 13px; line-height: 1.8; color: #56504B; }
 .lk-cv-skills { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 7px; }
-.lk-cv-skills span { font-size: 11px; font-weight: 600; color: var(--paper); background: var(--violet); border-radius: 6px; padding: 5px 11px; }
+.lk-cv-skills span { font-size: 11px; font-weight: 600; color: var(--paper); background: var(--violet); border-radius: 5px; padding: 5px 11px; }
 .lk-cv-jobs { margin-top: 36px; display: flex; flex-direction: column; gap: 20px; }
 .lk-cv-job { border-bottom: 1px solid var(--line-soft); padding-bottom: 18px; }
 .lk-cv-job .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: baseline; }
@@ -396,6 +402,12 @@
   .lk-hero-meta a { font-size: 11px; padding: 7px 13px; border-radius: 14px; }
   .lk-hero-cta a { flex: 1 1 auto; text-align: center; justify-content: center; }
   .lk-about-txt { border-right: none; border-bottom: 1px solid var(--lk-chrome-line); }
+  /* .lk-about-face's flex:1 stretched it to match the text column's height
+     when they sat side by side — once stacked on mobile that just leaves a
+     flat lavender block padded well past the portrait itself. Size to
+     content instead. */
+  .lk-about-face { flex: none; }
+  .lk-about-face .img { flex: none; padding: 22px 0 30px; }
   .lk-panel {
     top: env(safe-area-inset-top, 0px); bottom: env(safe-area-inset-bottom, 0px);
     left: 0; width: 100%; max-height: none; border-radius: 0;
