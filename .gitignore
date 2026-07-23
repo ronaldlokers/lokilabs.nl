@@ -4,6 +4,8 @@ dist/
 .astro/
 # local wrangler dev state
 .wrangler/
+# playwright MCP screenshots/logs from local testing
+.playwright-mcp/
 
 # dependencies
 node_modules/
