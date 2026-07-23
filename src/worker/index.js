@@ -7,6 +7,13 @@
 const GITHUB_USER = 'ronaldlokers';
 const KV_KEY = 'commits';
 const TICKER_LIMIT = 8;
+// The cron runs hourly; caching for exactly that long means a single missed
+// or delayed run fully expires the cache, and every concurrent visitor in
+// that window independently cold-fetches (a ~17-call chain against GitHub's
+// API each). Cache for 2 cron intervals plus buffer instead — a lone missed
+// run just serves slightly stale data until the next one succeeds, rather
+// than triggering a thundering herd.
+const TICKER_TTL = 7500;
 
 // Optional GITHUB_TOKEN secret (wrangler secret put GITHUB_TOKEN) raises the
 // rate limit from 60/hr unauthenticated to 5000/hr — no scopes needed, every
@@ -76,9 +83,10 @@ async function handleTicker(env, ctx) {
   // and seed it so subsequent requests hit KV.
   try {
     const commits = await fetchRecentCommits(env);
-    ctx.waitUntil(env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: 3600 }));
+    ctx.waitUntil(env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: TICKER_TTL }));
     return Response.json(commits, { headers: { 'Cache-Control': 'public, max-age=300' } });
   } catch (err) {
+    console.error('ticker cold-fetch failed', err);
     return Response.json([], { headers: { 'Cache-Control': 'public, max-age=60' } });
   }
 }
@@ -140,7 +148,7 @@ export default {
   async scheduled(controller, env, ctx) {
     ctx.waitUntil(
       fetchRecentCommits(env)
-        .then((commits) => env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: 3600 }))
+        .then((commits) => env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: TICKER_TTL }))
         .catch((err) => console.error('ticker refresh failed', err))
     );
   },
