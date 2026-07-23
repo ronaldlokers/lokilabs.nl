@@ -207,9 +207,11 @@ function openRoute(route, { push }) {
   if (alreadyOpen) {
     // Already inside the overlay (next/prev, taskbar restore onto a still-open
     // panel) — swap content in place, don't replay the boot sequence, it's
-    // meant for the first open, not every click. If the previous route's boot
-    // was still mid-flight, its finish() is now cancelled (bootId mismatch)
-    // and will never hide the cover itself — clear it here instead.
+    // meant for the first open, not every click. Bump bootId so a still
+    // in-flight boot chain's `id !== ctx.bootId` checks start failing and
+    // its timers stop (the DOM hide below is not enough by itself — without
+    // this the stale chain still runs for up to ~1.5s against a hidden log).
+    ctx.bootId++;
     const boot = document.getElementById('lk-boot');
     if (boot && !boot.hidden) { boot.hidden = true; boot.style.opacity = '0'; }
     staggerBody();
