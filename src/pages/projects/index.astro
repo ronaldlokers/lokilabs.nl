@@ -14,9 +14,15 @@ const host = (url: string) => new URL(url).host;
     <div>
       {projects.map((p) => (
         <a class="projcard" href={`/projects/${p.id}/`}>
-          <span class="avatar">{p.data.title.charAt(0).toLowerCase()}</span>
+          <span class="avatar">
+            {p.data.screenshot
+              ? <img src={p.data.screenshot} alt="" loading="lazy" />
+              : p.data.title.charAt(0).toLowerCase()}
+          </span>
           <span class="grow">
-            <span class="t">{p.data.title} {p.data.link && <small>→ {host(p.data.link)}</small>}</span>
+            <span class="t">
+              {p.data.title} {p.data.badge && <span class="badge">{p.data.badge}</span>} {p.data.link && <small>→ {host(p.data.link)}</small>}
+            </span>
             <p>{p.data.description}</p>
             <span class="tags">{p.data.tech.map((t) => <span class="tag">{t}</span>)}</span>
           </span>

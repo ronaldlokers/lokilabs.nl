@@ -4,11 +4,15 @@ import Base from '../../layouts/Base.astro';
 import Prompt from '../../components/Prompt.astro';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects', ({ data }) => !data.draft);
-  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+  const projects = (await getCollection('projects', ({ data }) => !data.draft))
+    .sort((a, b) => a.data.order - b.data.order);
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, older: projects[i - 1] ?? null, newer: projects[i + 1] ?? null },
+  }));
 }
 
-const { project } = Astro.props;
+const { project, older, newer } = Astro.props;
 const { Content } = await render(project);
 
 const breadcrumbLd = {
@@ -31,7 +35,9 @@ const breadcrumbLd = {
   <section class="hero-detail">
     <div class="wrap">
       <Prompt cmd="./run" cwd={`/lokilabs/${project.id}`} purple />
-      <h1 style="text-transform: lowercase;">{project.data.title}</h1>
+      <h1 style="text-transform: lowercase;">
+        {project.data.title} {project.data.badge && <span class="badge">{project.data.badge}</span>}
+      </h1>
       <p class="sub">{project.data.description}</p>
       <div class="tags-purple">{project.data.tech.map((t) => <span class="tag">{t}</span>)}</div>
       <div class="btn-row">
@@ -52,6 +58,23 @@ const breadcrumbLd = {
     <div class="prose">
       <Content />
     </div>
+
+    {(older || newer) && (
+      <nav class="postnav" aria-label="project navigation">
+        {older
+          ? <a class="postnav-card" href={`/projects/${older.id}/`}>
+              <span class="dir">← older</span>
+              <span class="pt">{older.data.title}</span>
+            </a>
+          : <span class="postnav-spacer"></span>}
+        {newer
+          ? <a class="postnav-card next" href={`/projects/${newer.id}/`}>
+              <span class="dir">newer →</span>
+              <span class="pt">{newer.data.title}</span>
+            </a>
+          : <span class="postnav-spacer"></span>}
+      </nav>
+    )}
 
     <section class="comments" aria-label="comments">
       <p class="seclabel" style="margin-top: 40px;">comments</p>

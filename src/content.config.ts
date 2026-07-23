@@ -25,6 +25,7 @@ const projects = defineCollection({
     order: z.number().default(0),
     featured: z.boolean().default(false),
     screenshot: z.string().optional(),
+    badge: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });

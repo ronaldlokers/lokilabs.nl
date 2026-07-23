@@ -42,7 +42,7 @@ const host = (url: string) => new URL(url).host;
               ? <span class="shot"><img src={p.data.screenshot} alt={`${p.data.title} screenshot`} /></span>
               : <span class="shot">screenshot</span>}
             <span class="body" style="display: block;">
-              <span class="t">{p.data.title} {p.data.link && <small>{host(p.data.link)}</small>}</span>
+              <span class="t">{p.data.title} {p.data.badge && <span class="badge">{p.data.badge}</span>} {p.data.link && <small>{host(p.data.link)}</small>}</span>
               <p>{p.data.description}</p>
             </span>
           </a>

@@ -3,10 +3,10 @@ title: "Zenith"
 description: "A job-hunt tracker that treats your search like a pipeline."
 tech: ["typescript", "cloudflare"]
 repo: "https://github.com/ronaldlokers/Zenith"
-link: "https://zenith.lokilabs.nl"
 order: 20
 featured: true
 screenshot: /assets/projects/zenith.png
+badge: "beta"
 ---
 
 ## The result
