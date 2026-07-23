@@ -20,6 +20,7 @@ function ghHeaders(env) {
 async function getDefaultBranch(repo, cache, env) {
   if (cache.has(repo)) return cache.get(repo);
   const res = await fetch(`https://api.github.com/repos/${repo}`, { headers: ghHeaders(env) });
+  if (!res.ok) console.error(`getDefaultBranch(${repo}) failed (${res.status}), assuming 'main' — a repo whose real default differs will silently drop from the ticker`);
   const branch = res.ok ? (await res.json()).default_branch : 'main';
   cache.set(repo, branch);
   return branch;
