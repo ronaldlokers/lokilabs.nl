@@ -46,7 +46,11 @@ function parsePath(pathname) {
 }
 
 function init() {
-  if (!document.getElementById('lk-top')) return;
+  // #lk-top exists on every page (it's also the shared footer's "back to
+  // top" fragment target) — #lk-overlay is what actually marks a page as
+  // the SiteHome shell with the router's DOM (nav interception, overlay,
+  // taskbar) available to wire up.
+  if (!document.getElementById('lk-overlay')) return;
   document.documentElement.classList.add('lk-js');
   ctx = { timers: [], raf: null, killed: false, minWindows: [], route: null, lastFocused: null, bootId: 0 };
 
