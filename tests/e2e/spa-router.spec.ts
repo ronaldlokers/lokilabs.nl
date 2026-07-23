@@ -33,7 +33,7 @@ test('closes via the close button and restores the URL', async ({ page }) => {
   await expect(page).toHaveURL(/\/$/);
 });
 
-test('closes via scrim click', async ({ page }) => {
+test('closes via scrim click and restores the URL', async ({ page }) => {
   await page.goto('/');
   await page.locator('.lk-projgrid .lk-card').first().click();
 
@@ -42,6 +42,7 @@ test('closes via scrim click', async ({ page }) => {
 
   await page.locator('.lk-scrim').click({ position: { x: 5, y: 5 } });
   await expect(overlay).not.toHaveClass(/shown/);
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test('rapid next/prev navigation does not leave the boot cover stuck', async ({ page }) => {
@@ -74,11 +75,13 @@ test('shift+tab from the first control wraps to the last', async ({ page }) => {
   await expect(closeBtn).toBeFocused();
 
   await page.keyboard.press('Shift+Tab');
-  await expect(closeBtn).not.toBeFocused();
-  const stillInPanel = await page.evaluate(
-    () => !!document.querySelector('.lk-panel')?.contains(document.activeElement)
-  );
-  expect(stillInPanel).toBe(true);
+  const landedOnLastFocusable = await page.evaluate(() => {
+    const panel = document.querySelector('.lk-panel') as HTMLElement;
+    const all = panel.querySelectorAll('a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])');
+    const focusables = [...all].filter((el) => (el as HTMLElement).offsetParent !== null && el.id !== 'lk-focus-end');
+    return focusables.length > 0 && focusables[focusables.length - 1] === document.activeElement;
+  });
+  expect(landedOnLastFocusable).toBe(true);
 });
 
 test('focusing the tab-trap sentinel returns focus to the first control', async ({ page }) => {
