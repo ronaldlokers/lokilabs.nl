@@ -68,6 +68,13 @@ Optionally, raise the ticker's GitHub API rate limit from 60/hr to
 gh auth token | npx wrangler secret put GITHUB_TOKEN
 ```
 
+`/api/healthz` reports whether the hourly ticker cron is actually still
+running — `200` if it succeeded within the last ~2 hours (one missed run
+tolerated), `503` otherwise, with a JSON body giving the last success time.
+Point an external uptime monitor (e.g. Uptime Kuma) at it to catch the cron
+silently stopping — `console.error` alone only shows up if someone happens
+to check the Workers Logs.
+
 ## Adding content
 
 Drop a markdown file in `src/content/writing/` or `src/content/projects/`
