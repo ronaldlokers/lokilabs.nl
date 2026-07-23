@@ -273,6 +273,8 @@
 .lk-doc-desc { margin-top: 14px; font-size: 13.5px; line-height: 1.8; color: #56504B; }
 .lk-doc-tags { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 7px; }
 .lk-doc-tags span { font-size: 10.5px; color: var(--violet); background: var(--lk-tint); border-radius: 5px; padding: 3px 10px; }
+.lk-shot { margin-top: 26px; }
+.lk-shot img { width: 100%; display: block; }
 .lk-doc .prose { margin-top: 24px; }
 .lk-doc-links { margin-top: 36px; display: flex; gap: 20px; flex-wrap: wrap; font-size: 12.5px; font-weight: 600; }
 .lk-doc-links a { text-decoration: none; }

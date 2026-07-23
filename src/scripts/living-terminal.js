@@ -244,7 +244,6 @@ function mountFootNav(route, entry) {
   const list = entry && entry.kind !== 'cv' ? ctx.lists[entry.kind] : null;
   if (list) {
     const i = list.indexOf(entry);
-    const words = entry.kind === 'post' ? ['← newer', 'older →'] : ['← prev', 'next →'];
     const set = (el, target, lbl) => {
       el.href = pathFor(target.kind, target.slug);
       el.setAttribute('data-lk', target.key);
@@ -252,8 +251,13 @@ function mountFootNav(route, entry) {
       el.querySelector('.ttl').textContent = target.title;
       el.hidden = false;
     };
-    if (i > 0) set(prev, list[i - 1], words[0]);
-    if (i >= 0 && i < list.length - 1) set(next, list[i + 1], words[1]);
+    // Writing is listed newest-first, projects oldest-first — pick whichever
+    // neighbor is actually older/newer so prev is always "older" and next
+    // is always "newer", regardless of the underlying list direction.
+    const older = entry.kind === 'post' ? list[i + 1] : list[i - 1];
+    const newer = entry.kind === 'post' ? list[i - 1] : list[i + 1];
+    if (older) set(prev, older, '← older');
+    if (newer) set(next, newer, 'newer →');
   }
   foot.hidden = prev.hidden && next.hidden;
 }

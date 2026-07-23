@@ -15,6 +15,15 @@ const name = project.data.title.toLowerCase();
   </div>
   <div class="lk-doc-desc">{project.data.description}</div>
   {project.data.tech.length > 0 && <div class="lk-doc-tags">{project.data.tech.map((t) => <span>{t}</span>)}</div>}
+  {project.data.screenshot && (
+    <div class="lk-term lk-shot">
+      <div class="lk-chrome">
+        <span class="d1"></span><span class="d2"></span><span class="d3"></span>
+        <span class="t">{name}</span>
+      </div>
+      <img src={project.data.screenshot} alt={`${project.data.title} screenshot`} loading="lazy" />
+    </div>
+  )}
   <div class="prose"><Content /></div>
   <div class="lk-doc-links">
     {project.data.repo && <a class="repo" href={project.data.repo}>repo ↗</a>}
