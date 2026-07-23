@@ -251,11 +251,11 @@ function mountFootNav(route, entry) {
       el.querySelector('.ttl').textContent = target.title;
       el.hidden = false;
     };
-    // Writing is listed newest-first, projects oldest-first — pick whichever
-    // neighbor is actually older/newer so prev is always "older" and next
-    // is always "newer", regardless of the underlying list direction.
-    const older = entry.kind === 'post' ? list[i + 1] : list[i - 1];
-    const newer = entry.kind === 'post' ? list[i - 1] : list[i + 1];
+    // Both lists are newest-first (writing by descending pubDate, projects
+    // by ascending `order` — lower order is the newer/more prominent one),
+    // so the next entry in list order is always the older neighbor.
+    const older = list[i + 1];
+    const newer = list[i - 1];
     if (older) set(prev, older, '← older');
     if (newer) set(next, newer, 'newer →');
   }
