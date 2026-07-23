@@ -122,8 +122,17 @@ function openRoute(route, { push }) {
   const key = routeKey(route);
   ctx.minWindows = ctx.minWindows.filter((w) => w.key !== key);
   renderTaskbar();
+  // Navigating within an already-open overlay (next/prev, taskbar restore
+  // onto a still-open panel) must not stack a new history entry per item —
+  // otherwise closing only pops back to the previously viewed item instead
+  // of out of the overlay. Keep the existing entry's `lk` flag so close
+  // behavior (back() vs replace-to-root) still matches how this session
+  // actually got here.
+  const alreadyOpen = !!ctx.route;
   ctx.route = route;
-  if (push) history.pushState({ lk: true }, '', pathFor(route.kind, route.slug));
+  const path = pathFor(route.kind, route.slug);
+  if (alreadyOpen) history.replaceState(history.state, '', path);
+  else if (push) history.pushState({ lk: true }, '', path);
   mountDetail(route);
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
