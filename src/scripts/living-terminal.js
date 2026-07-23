@@ -99,7 +99,6 @@ function bindNav() {
     const route = parseKey(a.dataset.lk);
     if (route.kind === 'section') goToSection(route, { push: true });
     else openRoute(route, { push: true });
-    if (route.kind === 'cv') trackEvent('cv');
   });
   // Real outbound links (mailto/github/linkedin) — don't intercept the
   // navigation, just fire the beacon alongside it.
@@ -169,6 +168,7 @@ function adoptOpen(route) {
   [...body.children].forEach((el, i) => el.style.setProperty('--i', i));
   mountFootNav(route, ctx.registry.get(routeKey(route)));
   if (route.kind === 'project') mountGiscus();
+  if (route.kind === 'cv') trackEvent('cv');
   history.replaceState({ lk: false }, '', location.href);
 }
 
@@ -190,6 +190,10 @@ function openRoute(route, { push }) {
   if (alreadyOpen) history.replaceState(history.state, '', path);
   else if (push) history.pushState({ lk: true }, '', path);
   mountDetail(route);
+  // Tracked here (not just the a[data-lk] click handler) so taskbar restore
+  // and back/forward into the CV route are counted too, not just the first
+  // in-app click — those were silently missing before.
+  if (route.kind === 'cv') trackEvent('cv');
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
   setBackgroundInert(true);
