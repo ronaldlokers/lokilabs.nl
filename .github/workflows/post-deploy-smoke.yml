@@ -1,0 +1,58 @@
+name: post-deploy-smoke
+
+# Runs after every push to main, once Cloudflare Workers Builds has had
+# time to deploy. Checks the LIVE site — ci.yml's link checker only
+# validates the build output before deploy, which is exactly the gap that
+# let a stale public/_redirects file 301-redirect real pages to dead
+# routes in production until someone happened to check by hand.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Cloudflare Workers Builds to deploy
+        # No Cloudflare API token wired in here to poll deploy status, so
+        # this is a fixed guess rather than an exact wait — generous enough
+        # for this site's build size. Re-run manually (workflow_dispatch)
+        # if a slow deploy causes a false failure.
+        run: sleep 90
+
+      - name: Check key routes
+        run: |
+          set -e
+          base=https://lokilabs.nl
+          check() {
+            path="$1"; expect="$2"
+            code=$(curl -so /dev/null -w '%{http_code}' "$base$path")
+            if [ "$code" != "$expect" ]; then
+              echo "FAIL: $path expected $expect, got $code"
+              exit 1
+            fi
+            echo "ok: $path -> $code"
+          }
+          check "/" 200
+          check "/about/" 200
+          check "/projects/" 200
+          check "/writing/" 200
+          check "/cv/" 200
+          check "/api/ticker" 200
+          check "/rss.xml" 200
+          check "/sitemap-index.xml" 200
+          check "/robots.txt" 200
+          check "/this-should-404" 404
+
+      - name: Check hashed asset caching
+        run: |
+          set -e
+          asset=$(curl -s https://lokilabs.nl/ | grep -o '/_astro/[^"]*\.css' | head -1)
+          if [ -z "$asset" ]; then
+            echo "FAIL: no hashed asset found on homepage to check"
+            exit 1
+          fi
+          cache=$(curl -sI "https://lokilabs.nl$asset" | grep -i '^cache-control:')
+          echo "$asset -> $cache"
+          echo "$cache" | grep -qi 'immutable' || { echo "FAIL: hashed asset missing immutable cache-control"; exit 1; }

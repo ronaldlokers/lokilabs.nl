@@ -82,10 +82,42 @@ async function handleTicker(env, ctx) {
   }
 }
 
+// First-party, cookie-free click counter — the site's only "analytics"
+// beyond Cloudflare Web Analytics' own pageviews. Allowlisted event keys
+// only, so a client can't create arbitrary KV entries. Reads plain, no
+// auth: it's just aggregate counts, low stakes for a personal site, and
+// this keeps it a one-visit check rather than a login flow to build.
+const TRACK_KEYS = ['cv', 'mailto', 'github', 'linkedin'];
+
+async function handleTrack(request, env, ctx) {
+  if (request.method === 'POST') {
+    const key = (await request.text()).trim();
+    if (!TRACK_KEYS.includes(key)) return new Response('bad key', { status: 400 });
+    ctx.waitUntil(bumpCounter(env, key));
+    return new Response(null, { status: 204 });
+  }
+  if (request.method === 'GET') {
+    const counts = {};
+    for (const key of TRACK_KEYS) counts[key] = Number((await env.TICKER_KV.get(`track:${key}`)) || 0);
+    return Response.json(counts, { headers: { 'Cache-Control': 'no-store' } });
+  }
+  return new Response('method not allowed', { status: 405 });
+}
+
+async function bumpCounter(env, key) {
+  const kvKey = `track:${key}`;
+  // Read-modify-write, not atomic — KV has no increment op. A lost update
+  // under truly concurrent hits is possible; at this site's traffic that's
+  // a rounding error, not a correctness bug worth a Durable Object for.
+  const current = Number((await env.TICKER_KV.get(kvKey)) || 0);
+  await env.TICKER_KV.put(kvKey, String(current + 1));
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === '/api/ticker') return handleTicker(env, ctx);
+    if (url.pathname === '/api/track') return handleTrack(request, env, ctx);
     if (url.pathname.startsWith('/api/')) return new Response('not found', { status: 404 });
     return env.ASSETS.fetch(request);
   },
