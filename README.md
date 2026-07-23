@@ -68,22 +68,6 @@ Optionally, raise the ticker's GitHub API rate limit from 60/hr to
 gh auth token | npx wrangler secret put GITHUB_TOKEN
 ```
 
-Optionally, get alerted if the hourly ticker cron stops running or starts
-failing. [healthchecks.io](https://healthchecks.io) (free tier) pings you
-if an expected ping doesn't arrive — catches a cron that silently stops
-firing, not just one that throws:
-
-1. Create a check there with a 1 hour period (Cloudflare's cron schedule
-   in `wrangler.jsonc`) and some grace period, e.g. 15 minutes.
-2. Copy its ping URL and set it as a secret:
-
-```bash
-npx wrangler secret put HEALTHCHECK_URL
-```
-
-The worker pings that URL on every successful run, and `<url>/fail` on
-every failed one — unset, this is a no-op.
-
 ## Adding content
 
 Drop a markdown file in `src/content/writing/` or `src/content/projects/`

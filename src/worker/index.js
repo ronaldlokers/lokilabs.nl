@@ -158,20 +158,6 @@ async function bumpCounter(env, key) {
   await env.TICKER_KV.put(kvKey, String(current + 1));
 }
 
-// Dead-man's-switch: pings a healthchecks.io-compatible URL on every cron
-// run, success or failure, so a cron that silently stops running at all
-// gets caught too — not just one that runs and throws (the console.error
-// below is only visible if someone happens to go looking). Optional: only
-// pings if the secret is set (wrangler secret put HEALTHCHECK_URL).
-async function pingHealthcheck(env, suffix) {
-  if (!env.HEALTHCHECK_URL) return;
-  try {
-    await fetch(env.HEALTHCHECK_URL + suffix);
-  } catch {
-    // best-effort only — a failed ping shouldn't fail the cron run itself
-  }
-}
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -185,14 +171,8 @@ export default {
   async scheduled(controller, env, ctx) {
     ctx.waitUntil(
       fetchRecentCommits(env)
-        .then(async (commits) => {
-          await env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: TICKER_TTL });
-          await pingHealthcheck(env, '');
-        })
-        .catch(async (err) => {
-          console.error('ticker refresh failed', err);
-          await pingHealthcheck(env, '/fail');
-        })
+        .then((commits) => env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: TICKER_TTL }))
+        .catch((err) => console.error('ticker refresh failed', err))
     );
   },
 };
