@@ -395,3 +395,34 @@
   }
   #lk-overlay.shown .lk-panel { transform: none; }
 }
+
+/* ---------- print (cv, or any open detail overlay) ---------- */
+/* .lk-nav / #lk-overlay are position:fixed, and the homepage sections sit in
+   normal flow behind whichever overlay is open — printed as-is, the fixed
+   overlay repeats on every page the tall underlying document forces, i.e.
+   the CV prints as several duplicate pages. When an overlay is open, print
+   only its content, unpositioned so it paginates normally instead. */
+@media print {
+  .lk-nav, #lk-taskbar { display: none !important; }
+  body:has(#lk-overlay.shown) #lk-top,
+  body:has(#lk-overlay.shown) #lk-about,
+  body:has(#lk-overlay.shown) #lk-writing,
+  body:has(#lk-overlay.shown) #lk-projects,
+  body:has(#lk-overlay.shown) .lk-ticker,
+  body:has(#lk-overlay.shown) .lk-contact {
+    display: none !important;
+  }
+  #lk-overlay.shown {
+    position: static !important;
+  }
+  #lk-overlay .lk-scrim, .lk-panel-head, .lk-panel-foot, #lk-boot {
+    display: none !important;
+  }
+  #lk-overlay.shown .lk-panel {
+    position: static !important; width: 100% !important;
+    max-width: none !important; max-height: none !important;
+    transform: none !important; opacity: 1 !important;
+    box-shadow: none !important; border: none !important; background: #fff !important;
+  }
+  #lk-dbody { overflow: visible !important; max-height: none !important; }
+}
