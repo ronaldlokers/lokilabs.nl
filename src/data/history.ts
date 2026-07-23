@@ -3,7 +3,6 @@ export type Job = {
   role: string;
   org: string;
   desc?: string;
-  state?: 'current' | 'past';
 };
 
 export const jobs: Job[] = [
@@ -12,7 +11,6 @@ export const jobs: Job[] = [
     role: 'Career switch → platform engineering',
     org: 'lokilabs',
     desc: 'A health break turned pivot: built a multi-node Kubernetes cluster (Raspberry Pi CM5) run like production — GitOps with FluxCD, full Prometheus/Grafana observability. Fully cleared and eager to get back to work.',
-    state: 'current',
   },
   {
     when: 'may 2024 → nov 2024',
@@ -37,34 +35,29 @@ export const jobs: Job[] = [
     role: 'Front-end developer',
     org: 'Redhotminute',
     desc: 'Frontend and email templates in a .NET environment for Landal GreenParks, Van der Valk, Kia, Domino’s Pizza, and North Sea Jazz.',
-    state: 'past',
   },
   {
     when: '2009 → 2010',
     role: 'Senior web nerd',
     org: 'medianerds',
     desc: 'Built and managed websites and newsletters.',
-    state: 'past',
   },
   {
     when: '2007 → 2009',
     role: 'Interactive Designer',
     org: 'Pixel Reclame Producties',
     desc: 'Websites and newsletters for SMBs (valid XHTML!), plus SEO/SEA advisory.',
-    state: 'past',
   },
   {
     when: '2006 → 2007',
     role: 'Webdeveloper',
     org: 'Crea10 Communicatie',
-    state: 'past',
   },
   {
     when: '2005 → 2015',
     role: 'Owner / Front-end developer',
     org: 'h2o media',
     desc: 'Side business building websites for local clients, long before it was called freelancing.',
-    state: 'past',
   },
 ];
 
