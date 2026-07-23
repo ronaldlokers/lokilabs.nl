@@ -103,6 +103,11 @@ function bindNav() {
     const t = e.target.closest('a[data-track]');
     if (t) trackEvent(t.dataset.track);
   });
+  // window.print() delegated here (not an inline onclick) so the CSP's
+  // script-src, which has no 'unsafe-inline', doesn't block it.
+  on(document, 'click', (e) => {
+    if (e.target.closest('[data-print]')) window.print();
+  });
   on(window, 'popstate', () => {
     const route = parsePath(location.pathname);
     if (route && route.kind === 'section') goToSection(route, { push: false });
