@@ -8,18 +8,25 @@ const GITHUB_USER = 'ronaldlokers';
 const KV_KEY = 'commits';
 const TICKER_LIMIT = 8;
 
-const GH_HEADERS = { 'User-Agent': 'lokilabs.nl-ticker', Accept: 'application/vnd.github+json' };
+// Optional GITHUB_TOKEN secret (wrangler secret put GITHUB_TOKEN) raises the
+// rate limit from 60/hr unauthenticated to 5000/hr — no scopes needed, every
+// call here reads public data. Works fine unset, just tighter on quota.
+function ghHeaders(env) {
+  const headers = { 'User-Agent': 'lokilabs.nl-ticker', Accept: 'application/vnd.github+json' };
+  if (env && env.GITHUB_TOKEN) headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
+  return headers;
+}
 
-async function getDefaultBranch(repo, cache) {
+async function getDefaultBranch(repo, cache, env) {
   if (cache.has(repo)) return cache.get(repo);
-  const res = await fetch(`https://api.github.com/repos/${repo}`, { headers: GH_HEADERS });
+  const res = await fetch(`https://api.github.com/repos/${repo}`, { headers: ghHeaders(env) });
   const branch = res.ok ? (await res.json()).default_branch : 'main';
   cache.set(repo, branch);
   return branch;
 }
 
-async function fetchRecentCommits() {
-  const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/events/public`, { headers: GH_HEADERS });
+async function fetchRecentCommits(env) {
+  const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/events/public`, { headers: ghHeaders(env) });
   if (!res.ok) throw new Error(`github events ${res.status}`);
   const events = await res.json();
 
@@ -36,9 +43,9 @@ async function fetchRecentCommits() {
     try {
       // Only show commits that landed on the repo's default branch — skip
       // feature-branch pushes.
-      const branch = await getDefaultBranch(repo, defaultBranches);
+      const branch = await getDefaultBranch(repo, defaultBranches, env);
       if (event.payload.ref !== `refs/heads/${branch}`) continue;
-      const cRes = await fetch(`https://api.github.com/repos/${repo}/commits/${sha}`, { headers: GH_HEADERS });
+      const cRes = await fetch(`https://api.github.com/repos/${repo}/commits/${sha}`, { headers: ghHeaders(env) });
       if (!cRes.ok) continue;
       const commit = await cRes.json();
       const message = commit.commit && commit.commit.message;
@@ -67,7 +74,7 @@ async function handleTicker(env, ctx) {
   // Cold cache (first deploy, before the first cron run) — fetch live once
   // and seed it so subsequent requests hit KV.
   try {
-    const commits = await fetchRecentCommits();
+    const commits = await fetchRecentCommits(env);
     ctx.waitUntil(env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: 3600 }));
     return Response.json(commits, { headers: { 'Cache-Control': 'public, max-age=300' } });
   } catch (err) {
@@ -85,7 +92,7 @@ export default {
 
   async scheduled(controller, env, ctx) {
     ctx.waitUntil(
-      fetchRecentCommits()
+      fetchRecentCommits(env)
         .then((commits) => env.TICKER_KV.put(KV_KEY, JSON.stringify(commits), { expirationTtl: 3600 }))
         .catch((err) => console.error('ticker refresh failed', err))
     );
