@@ -3,6 +3,7 @@ title: "homelab"
 description: "GitOps-managed Kubernetes cluster on Raspberry Pi CM5 — run like production."
 tech: ["kubernetes", "k3s", "fluxcd", "longhorn", "metallb", "prometheus", "grafana"]
 repo: "https://github.com/ronaldlokers/homelab"
+badge: "production"
 order: 0
 featured: true
 screenshot: /assets/projects/homelab.png

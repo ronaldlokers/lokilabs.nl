@@ -1,0 +1,16 @@
+---
+import { fmtDate } from '../../lib/date';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'writing'>;
+  Content: any;
+}
+const { post, Content } = Astro.props;
+---
+<div class="lk-doc">
+  <div class="lk-doc-date">{fmtDate(post.data.pubDate)}</div>
+  <h1>{post.data.title}</h1>
+  <div class="prose"><Content /></div>
+  <div class="lk-doc-end">$ wc -w → a few hundred · thanks for reading</div>
+</div>

@@ -1,20 +1,20 @@
 ---
-import { ClientRouter } from 'astro:transitions';
 import '@fontsource/fira-code/400.css';
 import '@fontsource/fira-code/500.css';
 import '@fontsource/fira-code/700.css';
 import '../styles/global.css';
+import '../styles/home.css';
 
 interface Props {
   title: string;
   description: string;
+  chrome?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, chrome = true } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
 const ogSlug = path === '/' ? 'home' : path.replace(/^\/|\/$/g, '');
 const ogImage = new URL(`/og/${ogSlug}.png`, Astro.site);
-const active = (prefix: string) => (path.startsWith(prefix) ? 'active' : undefined);
 ---
 <!doctype html>
 <html lang="en">
@@ -54,33 +54,52 @@ const active = (prefix: string) => (path.startsWith(prefix) ? 'active' : undefin
       ],
     })} />
     <script defer is:inline src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7963c7055a374937acd09a9a2535f60d"}'></script>
-    <ClientRouter />
   </head>
   <body>
     <a class="skip-link" href="#main">skip to content</a>
-    <slot name="header">
-      <header class="site-header">
-        <div class="site-header__inner">
-          <a class="wordmark" href="/">/lokilabs <span class="prompt">$</span></a>
-          <nav class="site-nav">
-            <a href="/about/" class={active('/about')}>about</a>
-            <a href="/projects/" class={active('/projects')}>projects</a>
-            <a href="/writing/" class={active('/writing')}>writing</a>
-            <a href="/cv/" class={active('/cv')}>cv</a>
-          </nav>
-        </div>
-      </header>
-    </slot>
-    <slot />
-    <footer class="site-footer">
-      <div class="site-footer__inner">
-        <span class="wordmark">/lokilabs <span class="prompt">$</span></span>
-        <nav>
-          <a href="https://github.com/ronaldlokers"><span class="a">→</span> github</a>
-          <a href="https://www.linkedin.com/in/ronaldlokers"><span class="a">→</span> linkedin</a>
-          <a class="mail" href="mailto:ronald@lokilabs.nl">ronald@lokilabs.nl</a>
+    {chrome ? (
+      <slot name="header">
+        <nav class="lk-nav" aria-label="site">
+          <a class="lk-brand" href="/">/lokilabs <span class="p">$</span></a>
+          <div class="lk-navlinks">
+            <a href="/about/" data-lk="section:about">about</a>
+            <a href="/writing/" data-lk="section:writing">writing</a>
+            <a href="/projects/" data-lk="section:projects">projects</a>
+            <a class="lk-cta" href="/cv/" data-lk="cv:cv">cv</a>
+          </div>
         </nav>
-      </div>
-    </footer>
+      </slot>
+    ) : (
+      <slot name="header" />
+    )}
+    <slot />
+    {chrome ? (
+      <slot name="footer">
+        <footer id="lk-contact" class="lk-contact" aria-label="contact">
+          <div class="lk-contact-inner">
+            <div class="lk-contact-label">
+              <span class="l">contact</span>
+              <a class="lk-open-badge" href="/cv/" data-lk="cv:cv"><span class="dot"></span>open to new roles</a>
+            </div>
+            <p class="lk-contact-head">let’s automate something<span class="s">.</span></p>
+            <div class="lk-contact-links">
+              <a href="mailto:ronald@lokilabs.nl"><span class="p">$</span> mail <span class="v">ronald@lokilabs.nl</span></a>
+              <a href="https://github.com/ronaldlokers"><span class="p">$</span> open <span class="v">github</span> ↗</a>
+              <a href="https://www.linkedin.com/in/ronaldlokers/"><span class="p">$</span> open <span class="v">linkedin</span> ↗</a>
+              <a href="/cv/" data-lk="cv:cv"><span class="p">$</span> curl <span class="v">cv</span> ↓</a>
+            </div>
+          </div>
+          <div class="lk-contact-bar">
+            <a class="top" href="#lk-top">↑ back to top</a>
+            <span class="wm">/lokilabs <span class="p">$</span></span>
+          </div>
+        </footer>
+      </slot>
+    ) : (
+      <slot name="footer" />
+    )}
+    <script>
+      import '../scripts/living-terminal.js';
+    </script>
   </body>
 </html>

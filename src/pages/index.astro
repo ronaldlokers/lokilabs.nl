@@ -1,69 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Prompt from '../components/Prompt.astro';
-
-const projects = (await getCollection('projects', ({ data }) => !data.draft && data.featured))
-  .sort((a, b) => a.data.order - b.data.order);
-const posts = (await getCollection('writing', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
-import { fmtDate } from '../lib/date';
-const host = (url: string) => new URL(url).host;
+import SiteHome from '../components/SiteHome.astro';
 ---
 <Base
   title="lokilabs — Ronald Lokers"
   description="From TypeScript to Kubernetes: I build the tooling that keeps software boring to deploy, and write down what breaks along the way."
 >
-  <main id="main">
-  <section class="hero">
-    <div class="wrap">
-      <div class="hero-tile" transition:name="portrait"><img src="/assets/face-line-violet.png" alt="Ronald Lokers, line-art portrait" /></div>
-      <div style="flex: 1;">
-        <Prompt cmd="whoami" purple />
-        <h1>Do it twice?<br />I'll automate it<span class="cursor" aria-hidden="true"></span></h1>
-        <p class="sub">From TypeScript to Kubernetes: I build the tooling that keeps software boring to deploy, and write down what breaks along the way.</p>
-        <p style="margin: -12px 0 28px;"><span class="hire-badge on-purple">open to platform / devops roles</span></p>
-        <div class="btn-row">
-          <a class="btn" href="/about/">about me →</a>
-          <a class="btn ghost" href="https://github.com/ronaldlokers">github</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <p class="seclabel">selected work</p>
-      <div class="workgrid">
-        {projects.map((p) => (
-          <a class="workcard" href={`/projects/${p.id}/`}>
-            {p.data.screenshot
-              ? <span class="shot"><img src={p.data.screenshot} alt={`${p.data.title} screenshot`} /></span>
-              : <span class="shot">screenshot</span>}
-            <span class="body" style="display: block;">
-              <span class="t">{p.data.title} {p.data.link && <small>{host(p.data.link)}</small>}</span>
-              <p>{p.data.description}</p>
-            </span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <p class="seclabel">latest writing</p>
-      {posts.map((post) => (
-        <a class="postrow" href={`/writing/${post.id}/`}>
-          <span class="grow">
-            <span class="date">{fmtDate(post.data.pubDate)}</span>
-            <span class="t" style="display: block;">{post.data.title}</span>
-          </span>
-          <span class="go">→</span>
-        </a>
-      ))}
-    </div>
-  </section>
-  </main>
+  <SiteHome />
 </Base>

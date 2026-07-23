@@ -3,6 +3,7 @@ title: "sugarrush"
 description: "Terminal UI for Nightscout CGM blood glucose data."
 tech: ["rust", "ratatui", "nightscout"]
 repo: "https://github.com/ronaldlokers/sugarrush"
+badge: "daily use"
 order: 30
 screenshot: /assets/projects/sugarrush.png
 ---
