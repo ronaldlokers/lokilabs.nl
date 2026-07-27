@@ -139,13 +139,13 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.orange}"
-    textColor: "{colors.purple}"
+    textColor: "{colors.cta-ink}"
     rounded: "{rounded.md}"
     padding: "12px 24px"
     typography: "{typography.micro}"
   button-primary-hover:
     backgroundColor: "#FF7A3D"
-    textColor: "{colors.purple}"
+    textColor: "{colors.cta-ink}"
   button-ghost:
     backgroundColor: "transparent"
     textColor: "{colors.lav}"
@@ -155,9 +155,19 @@ components:
     textColor: "{colors.paper}"
   nav-cta:
     backgroundColor: "{colors.orange}"
-    textColor: "{colors.purple}"
+    textColor: "{colors.cta-ink}"
     rounded: "{rounded.md}"
     padding: "7px 16px"
+  contact-mail:
+    backgroundColor: "{colors.orange}"
+    textColor: "{colors.cta-ink}"
+    rounded: "{rounded.md}"
+    padding: "15px 26px"
+  contact-cv:
+    backgroundColor: "transparent"
+    textColor: "{colors.lav}"
+    rounded: "{rounded.md}"
+    padding: "14px 24px"
   open-badge:
     backgroundColor: "rgba(40, 15, 76, 0.5)"
     textColor: "#FFB98F"
