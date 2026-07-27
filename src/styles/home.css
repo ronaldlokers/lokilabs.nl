@@ -37,11 +37,13 @@
 .lk-navlinks { display: flex; align-items: center; gap: 26px; font-size: 12.5px; font-weight: 500; }
 .lk-navlinks a { color: var(--lk-lav); text-decoration: none; }
 .lk-navlinks a:hover { color: var(--paper); }
+/* Text on an ember fill is --cta-ink, not --purple: #562C8B on #E9622E is
+   only 2.93:1 and fails AA for this 12.5px label. #2A1650 measures 4.70:1. */
 .lk-navlinks a.lk-cta {
-  color: var(--purple); background: var(--orange); padding: 7px 16px; border-radius: 8px;
+  color: var(--cta-ink); background: var(--orange); padding: 7px 16px; border-radius: 8px;
   font-weight: 700; transition: transform 0.15s ease, background 0.15s ease;
 }
-.lk-navlinks a.lk-cta:hover { background: #FF7A3D; color: var(--purple); }
+.lk-navlinks a.lk-cta:hover { background: #FF7A3D; color: var(--cta-ink); }
 .lk-navlinks a.lk-cta:active { transform: scale(0.96); }
 
 /* ---------- hero ---------- */
@@ -80,11 +82,11 @@
 }
 .lk-hero-cta { margin-top: 34px; display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
 .lk-btn {
-  background: var(--orange); color: var(--purple); font-size: 13px; font-weight: 700;
+  background: var(--orange); color: var(--cta-ink); font-size: 13px; font-weight: 700;
   padding: 12px 24px; border-radius: 8px; line-height: 1; text-decoration: none;
   transition: transform 0.15s ease, background 0.15s ease;
 }
-.lk-btn:hover { background: #FF7A3D; color: var(--purple); }
+.lk-btn:hover { background: #FF7A3D; color: var(--cta-ink); }
 .lk-btn:active { transform: scale(0.96); }
 .lk-btn.ghost {
   background: transparent; border: 1px solid #7A52B8; color: var(--lk-lav); font-weight: 600;
@@ -141,6 +143,13 @@
 .lk-about-txt li { margin-bottom: 6px; }
 .lk-about-txt a { color: var(--violet); }
 .lk-about-txt a:hover { color: var(--orange); }
+/* The one action in this block that matters shouldn't look like the repo
+   link two paragraphs up. */
+.lk-about-txt a.lk-about-mail {
+  font-weight: 700; color: var(--purple); text-decoration-color: var(--orange);
+  text-decoration-thickness: 2px; text-underline-offset: 3px; white-space: nowrap;
+}
+.lk-about-txt a.lk-about-mail:hover { color: var(--orange); text-decoration-color: var(--orange); }
 .lk-about-tl {
   display: flex; flex-direction: column; gap: 9px;
   border-left: 2px solid var(--orange); padding-left: 16px; font-size: 12px; margin-top: 20px;
@@ -213,11 +222,35 @@
   line-height: 1.0; color: var(--paper); max-width: 720px; margin: 0;
 }
 .lk-contact-head .s { color: var(--orange); }
-.lk-contact-links { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 14px 40px; font-size: 15px; }
-.lk-contact-links a { color: var(--lk-lav); text-decoration: none; }
+/* The footer is the last screen before a visitor leaves for good, and mail is
+   the one action the site is actually measured on — so it gets the solid ember
+   treatment the nav gives the CV, and github/linkedin drop to a quieter row
+   below rather than sitting at equal weight beside it. */
+.lk-contact-primary { margin-top: 34px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+.lk-contact-mail {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--orange); color: var(--cta-ink); font-size: 15px; font-weight: 700;
+  padding: 15px 26px; border-radius: 8px; line-height: 1; text-decoration: none;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.lk-contact-mail .p, .lk-contact-mail .v { color: var(--cta-ink); }
+.lk-contact-mail:hover { background: #FF7A3D; color: var(--cta-ink); }
+.lk-contact-mail:active { transform: scale(0.96); }
+.lk-contact-cv {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid #7A52B8; color: var(--lk-lav); font-size: 15px; font-weight: 600;
+  padding: 14px 24px; border-radius: 8px; line-height: 1; text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.lk-contact-cv .p { color: var(--orange); }
+.lk-contact-cv .v { color: var(--paper); }
+.lk-contact-cv:hover { border-color: var(--lk-lav-mut); color: var(--paper); }
+.lk-contact-cv:active { transform: scale(0.96); }
+.lk-contact-links { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px 32px; font-size: 13px; }
+.lk-contact-links a { color: var(--lk-lav-mut); text-decoration: none; }
 .lk-contact-links a:hover { color: var(--paper); }
 .lk-contact-links .p { color: var(--orange); }
-.lk-contact-links .v { color: var(--paper); }
+.lk-contact-links .v { color: var(--lk-lav); }
 .lk-contact-bar {
   /* .lk-contact no longer has horizontal padding to cancel out — this bar
      is a direct child of it, so it's flush full-width by default now. */
@@ -227,7 +260,7 @@
   padding: 15px clamp(20px, 5vw, 40px);
 }
 .lk-contact-bar-links { display: flex; gap: 18px; }
-.lk-contact-bar .top { font-size: 11px; font-weight: 600; color: var(--purple); text-decoration: none; }
+.lk-contact-bar .top { font-size: 11px; font-weight: 600; color: var(--cta-ink); text-decoration: none; }
 .lk-contact-bar .top:hover { color: var(--cta-ink); }
 .lk-contact-bar .wm { font-size: 14px; font-weight: 700; color: var(--cta-ink); }
 .lk-contact-bar .wm .p { color: var(--paper); }
@@ -322,10 +355,12 @@
 /* overlay cv */
 .lk-cv-role { font-size: 15px; font-weight: 600; color: var(--orange); margin-top: 6px; }
 .lk-cv-actions { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; }
+/* --paper on --orange is 3.17:1 — fine for the large ticker, not for a 13px
+   button label. --cta-ink is 4.70:1 on the same fill. */
 .lk-cv-actions a, .lk-cv-actions button {
   display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700;
   padding: 11px 22px; border-radius: 8px; text-decoration: none; border: none;
-  background: var(--orange); color: var(--paper); font-family: var(--mono); cursor: pointer;
+  background: var(--orange); color: var(--cta-ink); font-family: var(--mono); cursor: pointer;
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .lk-cv-actions a:hover, .lk-cv-actions button:hover { background: var(--lk-orange-line); color: var(--paper); }
@@ -348,6 +383,42 @@
 }
 .lk-cv-job .dates { font-size: 11px; color: var(--orange); }
 .lk-cv-job p { font-size: 12.5px; line-height: 1.75; color: #56504B; margin: 7px 0 0; }
+
+/* education */
+.lk-cv-subhead {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; margin: 34px 0 14px;
+}
+.lk-cv-edu { display: flex; flex-direction: column; gap: 11px; }
+.lk-cv-edu-row {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  align-items: baseline; font-size: 12.5px;
+}
+.lk-cv-edu-row .what { font-weight: 600; color: var(--purple); }
+.lk-cv-edu-row .where { font-weight: 400; color: var(--muted); }
+.lk-cv-edu-row .dates { font-size: 11px; color: var(--orange); }
+
+/* closing ask */
+.lk-cv-close { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line-soft); }
+.lk-cv-close-line { font-size: 12.5px; color: var(--muted); margin: 0 0 16px; }
+.lk-cv-close-line .p { color: var(--orange); }
+.lk-cv-close-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.lk-cv-close-mail {
+  display: inline-flex; align-items: center; font-size: 13px; font-weight: 700;
+  padding: 12px 24px; border-radius: 8px; text-decoration: none;
+  background: var(--orange); color: var(--cta-ink);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.lk-cv-close-mail:hover { background: #FF7A3D; color: var(--cta-ink); }
+.lk-cv-close-mail:active { transform: scale(0.96); }
+.lk-cv-close-alt {
+  display: inline-flex; align-items: center; font-size: 13px; font-weight: 600;
+  padding: 11px 22px; border-radius: 8px; text-decoration: none;
+  border: 1px solid var(--line-soft); color: var(--purple);
+  transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.lk-cv-close-alt:hover { border-color: var(--violet); color: var(--violet); }
+.lk-cv-close-alt:active { transform: scale(0.96); }
 
 /* ---------- minimized taskbar ---------- */
 #lk-taskbar {
@@ -403,7 +474,9 @@
 @media (max-width: 680px) {
   .lk-nav { padding: calc(10px + env(safe-area-inset-top)) 14px 10px; }
   .lk-navlinks { gap: 13px; font-size: 11px; }
-  .lk-navlinks a.lk-cta { padding: 6px 10px; }
+  /* was 6px 10px — a 33x30px tap target for the highest-value action on the
+     site. Taller without making the fixed bar noticeably deeper. */
+  .lk-navlinks a.lk-cta { padding: 11px 14px; }
   .lk-post { grid-template-columns: 78px 1fr auto; gap: 10px; padding: 15px 8px; }
   .lk-post .t { font-size: 13.5px; }
   .lk-post .date { font-size: 10px; }
@@ -416,6 +489,13 @@
      content instead. */
   .lk-about-face { flex: none; }
   .lk-about-face .img { flex: none; padding: 22px 0 30px; }
+  /* The traffic lights stay 13px visually, but a 13px tap target for "close
+     the CV" on a phone is a precision ask. Widen the gap and hang an
+     invisible 27px hit area off each one — clears the 24px floor without the
+     three targets overlapping each other. */
+  .lk-tl { gap: 14px; }
+  .lk-tl button { position: relative; }
+  .lk-tl button::after { content: ''; position: absolute; inset: -7px; }
   .lk-panel {
     top: env(safe-area-inset-top, 0px); bottom: env(safe-area-inset-bottom, 0px);
     left: 0; width: 100%; max-height: none; border-radius: 0;
@@ -449,9 +529,12 @@
   /* CV action buttons (get in touch / linkedin / print) are meaningless on
      paper — but they're also the only place that carries the email and
      LinkedIn URL, so swap them for plain text instead of just hiding them. */
-  .lk-cv-actions {
+  .lk-cv-actions, .lk-cv-close-actions {
     display: none !important;
   }
+  /* The closing prompt is a screen device; on paper the contact line above
+     already carries the address. */
+  .lk-cv-close-line { display: none !important; }
   .lk-cv-print-contact {
     display: block !important;
     margin-top: 20px; font-size: 13px; color: #56504B;

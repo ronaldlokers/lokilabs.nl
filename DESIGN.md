@@ -139,13 +139,13 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.orange}"
-    textColor: "{colors.purple}"
+    textColor: "{colors.cta-ink}"
     rounded: "{rounded.md}"
     padding: "12px 24px"
     typography: "{typography.micro}"
   button-primary-hover:
     backgroundColor: "#FF7A3D"
-    textColor: "{colors.purple}"
+    textColor: "{colors.cta-ink}"
   button-ghost:
     backgroundColor: "transparent"
     textColor: "{colors.lav}"
@@ -155,9 +155,19 @@ components:
     textColor: "{colors.paper}"
   nav-cta:
     backgroundColor: "{colors.orange}"
-    textColor: "{colors.purple}"
+    textColor: "{colors.cta-ink}"
     rounded: "{rounded.md}"
     padding: "7px 16px"
+  contact-mail:
+    backgroundColor: "{colors.orange}"
+    textColor: "{colors.cta-ink}"
+    rounded: "{rounded.md}"
+    padding: "15px 26px"
+  contact-cv:
+    backgroundColor: "transparent"
+    textColor: "{colors.lav}"
+    rounded: "{rounded.md}"
+    padding: "14px 24px"
   open-badge:
     backgroundColor: "rgba(40, 15, 76, 0.5)"
     textColor: "#FFB98F"
@@ -344,6 +354,14 @@ Light are legible on Deep Violet. Raw Ember Orange (2.94:1) and Lavender Dim
 (2.98:1) are decoration-only there and are already annotated as such in the
 source. Test any new on-purple color before shipping it.
 
+**The Ember Fill Rule.** The pairing runs both ways, and the reverse direction
+is the one that shipped broken: text *on* an Ember Orange fill is **Deep Ink
+Violet** (`#2A1650`, 4.70:1), never Deep Violet (2.93:1) and never Paper
+(3.17:1). This governs every primary button — the nav CV CTA, the hero CTA, the
+CV actions, the footer mail button. Paper on Ember survives only where the type
+is large enough for the 3:1 floor, which today means the commit ticker and
+nothing else.
+
 ## Typography
 
 **Display Font:** Fira Code (fallback `ui-monospace`, `SFMono-Regular`, `Menlo`)
@@ -416,8 +434,8 @@ between list items. The contrast between section-scale air and component-scale
 density is what keeps a mono-only page from reading as a wall of text.
 
 The hero is `min-height: 100vh` and vertically centered. Project cards use
-`repeat(auto-fit, minmax(300px, 1fr))` with a 22px gap — two columns at desktop,
-one below ~660px, no explicit breakpoint. Post rows are a three-column grid
+`repeat(auto-fit, minmax(300px, 1fr))` with a 22px gap — three columns at
+1440px, two at laptop widths, one below ~660px, no explicit breakpoint. Post rows are a three-column grid
 (`110px 1fr auto`: date, title, arrow) that compresses to `78px 1fr auto` on
 mobile. Sections carry `scroll-margin-top: 84px` to clear the fixed nav.
 
@@ -498,9 +516,10 @@ decoration and are `aria-hidden`.
 ### Buttons
 
 - **Shape:** softly rounded (8px), never pill, never square.
-- **Primary:** solid Ember Orange ground with Deep Violet text, 700 weight, 13px,
-  `12px 24px` padding. On violet grounds this pairing is the CTA; the same button
-  appears in the nav at `7px 16px`.
+- **Primary:** solid Ember Orange ground with Deep Ink Violet text (see The
+  Ember Fill Rule), 700 weight, 13px, `12px 24px` padding. On violet grounds
+  this pairing is the CTA; the same button appears in the nav at `7px 16px` and
+  in the contact footer at `15px 26px` for the mail action.
 - **Hover / Focus:** background brightens to `#FF7A3D`, 0.15s ease. Text color
   holds.
 - **Active:** `transform: scale(0.96)` — a real press. Every button, chip, card,

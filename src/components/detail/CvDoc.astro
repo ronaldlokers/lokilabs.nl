@@ -1,5 +1,5 @@
 ---
-import { jobs, skills } from '../../data/history';
+import { jobs, skills, education } from '../../data/history';
 ---
 <div class="lk-doc">
   <h1>ronald lokers</h1>
@@ -22,5 +22,24 @@ import { jobs, skills } from '../../data/history';
         {job.desc && <p>{job.desc}</p>}
       </div>
     ))}
+  </div>
+  <h2 class="lk-cv-subhead">education</h2>
+  <div class="lk-cv-edu">
+    {education.map((e) => (
+      <div class="lk-cv-edu-row">
+        <span class="what">{e.what} <span class="where">· {e.where}</span></span>
+        <span class="dates">{e.when}</span>
+      </div>
+    ))}
+  </div>
+  {/* The CV is where the decision gets made — it used to end on a 2005 side
+      gig and nothing else. Ask for the reply while the evidence is still on
+      screen. */}
+  <div class="lk-cv-close">
+    <p class="lk-cv-close-line"><span class="p">$</span> echo "still reading? let's talk."</p>
+    <div class="lk-cv-close-actions">
+      <a class="lk-cv-close-mail" href="mailto:ronald@lokilabs.nl" data-track="mailto">get in touch →</a>
+      <a class="lk-cv-close-alt" href="https://www.linkedin.com/in/ronaldlokers/" data-track="linkedin">linkedin ↗</a>
+    </div>
   </div>
 </div>
