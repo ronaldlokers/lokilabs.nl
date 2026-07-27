@@ -1,0 +1,438 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-27T13:53:46Z",
+  "title": "Design System: lokilabs.nl",
+  "extensions": {
+    "colorMeta": {
+      "orange": {
+        "role": "primary",
+        "displayName": "Ember Orange",
+        "canonical": "#E9622E",
+        "cssVar": "--orange",
+        "tonalRamp": ["#3A1408", "#5C210C", "#8A3312", "#B5471C", "#E9622E", "#F28558", "#F8AE8C", "#FDDDCB"]
+      },
+      "orange-hover": {
+        "role": "primary",
+        "displayName": "Ember Hover",
+        "canonical": "#FF7A3D",
+        "note": "The hover state of every primary button. Ember only ever gets lighter on hover, never darker."
+      },
+      "badge-border": {
+        "role": "primary",
+        "displayName": "Badge Border",
+        "canonical": "#FF8A50",
+        "note": "1px outline of the open-to-work pill on deep violet."
+      },
+      "badge-text": {
+        "role": "primary",
+        "displayName": "Badge Text",
+        "canonical": "#FFB98F",
+        "note": "Lifted ember tint, legible on the pill's translucent deep-violet ground."
+      },
+      "orange-light": {
+        "role": "primary",
+        "displayName": "Ember Light",
+        "canonical": "#F67D51",
+        "cssVar": "--orange-light",
+        "note": "The on-violet substitute. Raw Ember Orange is 2.94:1 on Deep Violet and fails the 3:1 large-text floor."
+      },
+      "orange-line": {
+        "role": "primary",
+        "displayName": "Ember Line",
+        "canonical": "#C24A17",
+        "cssVar": "--lk-orange-line"
+      },
+      "purple": {
+        "role": "secondary",
+        "displayName": "Deep Violet",
+        "canonical": "#562C8B",
+        "cssVar": "--purple",
+        "tonalRamp": ["#16091F", "#26123A", "#3A1C5B", "#4A2474", "#562C8B", "#7C55AE", "#A98BCE", "#DCCCEC"]
+      },
+      "violet": {
+        "role": "secondary",
+        "displayName": "Signal Violet",
+        "canonical": "#7541B8",
+        "cssVar": "--violet",
+        "tonalRamp": ["#1D0F30", "#2F1950", "#472573", "#5E3396", "#7541B8", "#9B72CE", "#C2A6E3", "#E6D8F5"]
+      },
+      "violet-lift": {
+        "role": "secondary",
+        "displayName": "Violet Lift",
+        "canonical": "#6B3AAE",
+        "note": "The bright stop of every radial gradient — where the light appears to come from. Never a flat fill."
+      },
+      "ghost-border": {
+        "role": "secondary",
+        "displayName": "Ghost Border",
+        "canonical": "#7A52B8",
+        "note": "1px outline of a ghost button on violet ground."
+      },
+      "cta-ink": {
+        "role": "secondary",
+        "displayName": "Deep Ink Violet",
+        "canonical": "#2A1650",
+        "cssVar": "--cta-ink"
+      },
+      "taskbar-deep": {
+        "role": "secondary",
+        "displayName": "Taskbar Deep",
+        "canonical": "#231145",
+        "note": "Gradient partner to Deep Ink Violet at the bottom of the taskbar."
+      },
+      "lilac": {
+        "role": "tertiary",
+        "displayName": "Lilac",
+        "canonical": "#D1B0FF",
+        "cssVar": "--lilac",
+        "note": "Brightest step of the on-violet text ramp; the username in a prompt line."
+      },
+      "nav-muted": {
+        "role": "tertiary",
+        "displayName": "Nav Muted",
+        "canonical": "#C9B8E8",
+        "cssVar": "--nav-muted"
+      },
+      "lav": {
+        "role": "tertiary",
+        "displayName": "Lavender",
+        "canonical": "#E2D5F6",
+        "cssVar": "--lk-lav",
+        "note": "Body copy on Deep Violet."
+      },
+      "lav-mut": {
+        "role": "tertiary",
+        "displayName": "Lavender Muted",
+        "canonical": "#BBA0E6",
+        "cssVar": "--lk-lav-mut"
+      },
+      "lav-dim": {
+        "role": "tertiary",
+        "displayName": "Lavender Dim",
+        "canonical": "#9B7FD0",
+        "cssVar": "--lk-lav-dim",
+        "note": "Decoration only. 2.98:1 on Deep Violet — never text there."
+      },
+      "tint": {
+        "role": "tertiary",
+        "displayName": "Violet Tint",
+        "canonical": "#EFE7F8",
+        "cssVar": "--lk-tint",
+        "tonalRamp": ["#241B33", "#3A2B52", "#55407A", "#7A61A3", "#A48FC7", "#C7B6E0", "#E2D5F6", "#EFE7F8"],
+        "note": "The hover ground on paper — the violet light falling on the page."
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#FBF8F4",
+        "cssVar": "--paper",
+        "tonalRamp": ["#100E0C", "#231E1B", "#3A342F", "#5C554E", "#76706C", "#A69C90", "#DCD6D1", "#FBF8F4"],
+        "note": "The warm beige-brown neutral axis the whole system is built on. Ink through Paper are steps of this one ramp."
+      },
+      "card-face": {
+        "role": "neutral",
+        "displayName": "Card Face",
+        "canonical": "#FFFFFF",
+        "note": "The only pure white in the system — makes a project card read as a sheet lying on the paper."
+      },
+      "card-hover": {
+        "role": "neutral",
+        "displayName": "Card Hover",
+        "canonical": "#F4EEFB",
+        "note": "The card under violet light."
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "canonical": "#EFEBE4",
+        "cssVar": "--surface",
+        "note": "The terminal interior."
+      },
+      "chrome": {
+        "role": "neutral",
+        "displayName": "Chrome",
+        "canonical": "#E0D8CC",
+        "cssVar": "--lk-chrome"
+      },
+      "chrome-line": {
+        "role": "neutral",
+        "displayName": "Chrome Line",
+        "canonical": "#DAD2C6",
+        "cssVar": "--lk-chrome-line"
+      },
+      "chrome-txt": {
+        "role": "neutral",
+        "displayName": "Chrome Text",
+        "canonical": "#8A8178",
+        "cssVar": "--lk-chrome-txt"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#231E1B",
+        "cssVar": "--ink",
+        "note": "A warm near-black. Never #000."
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "#3A342F",
+        "cssVar": "--ink-soft"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#76706C",
+        "cssVar": "--muted"
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Faint",
+        "canonical": "#A69C90",
+        "cssVar": "--faint"
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "#DCD6D1",
+        "cssVar": "--line"
+      },
+      "line-soft": {
+        "role": "neutral",
+        "displayName": "Line Soft",
+        "canonical": "#E7E1D9",
+        "cssVar": "--line-soft"
+      },
+      "dot-idle": {
+        "role": "neutral",
+        "displayName": "Idle Dot",
+        "canonical": "#B7AE9E",
+        "cssVar": "--lk-dot-idle",
+        "note": "The third traffic light — the one that isn't lit."
+      },
+      "badge-bg": {
+        "role": "neutral",
+        "displayName": "Badge Ground",
+        "canonical": "#FBE4D8",
+        "cssVar": "--lk-badge-bg"
+      },
+      "footer-mail": {
+        "role": "neutral",
+        "displayName": "Footer Mail",
+        "canonical": "#9A938C",
+        "note": "The email address on the Ink footer band — the one neutral tuned for a dark ground."
+      },
+      "glyph-close": {
+        "role": "neutral",
+        "displayName": "Glyph Close",
+        "canonical": "#5A1500",
+        "note": "The × inside the Ember traffic light — a darkened version of its own dot, so it reads as engraved."
+      },
+      "glyph-max": {
+        "role": "neutral",
+        "displayName": "Glyph Max",
+        "canonical": "#4A4235",
+        "note": "The + inside the Idle traffic light."
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "Ready Green",
+        "canonical": "#1F7A4D",
+        "tonalRamp": ["#061A10", "#0C2E1D", "#12492E", "#19613C", "#1F7A4D", "#3FA372", "#7FC7A2", "#DFF0E5"],
+        "note": "Status only — production/live badges. Never an accent."
+      },
+      "ok-bg": {
+        "role": "tertiary",
+        "displayName": "Ready Green Ground",
+        "canonical": "#DFF0E5"
+      },
+      "ok-link": {
+        "role": "tertiary",
+        "displayName": "Live Link Green",
+        "canonical": "#2E9E63"
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero and contact headlines only. Two lines max, second line in Ember Light." },
+      "headline": { "displayName": "Headline", "purpose": "Section heads with an Ember trailing slash; overlay document titles." },
+      "title": { "displayName": "Title", "purpose": "Project card names. Post row titles are the 600/16px sibling." },
+      "body": { "displayName": "Body", "purpose": "Base page copy at 15px/1.6. Reading columns cap at 880px." },
+      "body-dense": { "displayName": "Body Dense", "purpose": "Terminal interiors and card blurbs — 12.5px at 1.8." },
+      "label": { "displayName": "Label", "purpose": "Uppercase eyebrows and in-terminal group headings, tracked +1.5 to +3px." },
+      "micro": { "displayName": "Micro", "purpose": "Status badges — 10px uppercase, tracked +1px." },
+      "title-sm": { "displayName": "Title Small", "purpose": "Post row titles — the softer sibling of Title." },
+      "doc-headline": { "displayName": "Doc Headline", "purpose": "Page titles on document (.wrap) surfaces." },
+      "doc-subhead": { "displayName": "Doc Subhead", "purpose": "Prose h2 inside written content." },
+      "wordmark": { "displayName": "Wordmark", "purpose": "The brand in the solid violet document header." },
+      "prose": { "displayName": "Prose", "purpose": "Written body copy at 14px/1.75, capped at 880px." },
+      "body-sm": { "displayName": "Body Small", "purpose": "Overlay document descriptions and CV summaries." }
+    },
+    "overlays": [
+      { "name": "nav-veil", "value": "rgba(86, 44, 139, 0.85)", "purpose": "Fixed nav ground, over a 14px backdrop blur." },
+      { "name": "scrim", "value": "rgba(35, 18, 62, 0.55)", "purpose": "Overlay scrim, animated from transparent with a 4px blur." },
+      { "name": "pill-ground", "value": "rgba(40, 15, 76, 0.5)", "purpose": "The open-to-work pill's translucent ground on violet." },
+      { "name": "hairline-08", "value": "rgba(255, 255, 255, 0.08)", "purpose": "Bottom border of the nav; taskbar chip fill." },
+      { "name": "hairline-10", "value": "rgba(255, 255, 255, 0.1)", "purpose": "Divider inside the taskbar brand." },
+      { "name": "hairline-16", "value": "rgba(255, 255, 255, 0.16)", "purpose": "Taskbar chip border." }
+    ],
+    "fonts": [
+      { "family": "Fira Code", "weights": [400, 500, 700], "source": "@fontsource/fira-code", "role": "everything" }
+    ],
+    "shadows": [
+      { "name": "window-lift", "value": "0 18px 40px -24px rgba(86, 44, 139, 0.35)", "purpose": "The about terminal resting on the paper." },
+      { "name": "panel-float", "value": "0 44px 100px -34px rgba(40, 15, 76, 0.65)", "purpose": "The detail overlay, lifted over a violet-scrimmed page." },
+      { "name": "taskbar-rise", "value": "0 -12px 30px -18px rgba(0, 0, 0, 0.6)", "purpose": "Upward shadow under the minimized-window bar." }
+    ],
+    "motion": [
+      { "name": "press", "value": "transform 0.15s ease", "purpose": "Button and CTA state change; pairs with scale(0.96) on :active." },
+      { "name": "surface-shift", "value": "background 0.25s ease, border-color 0.25s ease", "purpose": "Card and row hover — the violet light falling on paper." },
+      { "name": "ease-window", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Overlay panel entrance and all fade-up reveals." },
+      { "name": "reveal-stagger", "value": "calc(var(--i, 0) * 55ms)", "purpose": "Per-child delay on scroll and overlay reveals (60ms on section items)." },
+      { "name": "cursor-blink", "value": "1.1s steps(1) infinite", "purpose": "The hero cursor. Hard step, never a fade." },
+      { "name": "ticker-marquee", "value": "34s linear infinite", "purpose": "Commit ticker scroll; pauses on hover." },
+      { "name": "status-pulse", "value": "2s ease-in-out infinite", "purpose": "The open-to-work dot, opacity 1 to 0.35." }
+    ],
+    "breakpoints": [
+      { "name": "home", "value": "680px", "purpose": "Living-terminal surfaces — hero, sections, overlay, taskbar." },
+      { "name": "doc", "value": "640px", "purpose": "Document-page chrome — header, footer, .wrap gutter." }
+    ],
+    "containers": [
+      { "name": "living-terminal", "value": "1200px", "purpose": "Hero, sections, contact, taskbar." },
+      { "name": "document", "value": "880px", "purpose": "Reading pages using .wrap." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The CTA everywhere — solid Ember on violet or paper, with a real press.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">open cv →</a>",
+      "css": ".ds-btn-primary { display: inline-block; font-family: 'Fira Code', ui-monospace, monospace; background: #E9622E; color: #562C8B; font-size: 13px; font-weight: 700; padding: 12px 24px; border-radius: 8px; line-height: 1; text-decoration: none; transition: transform 0.15s ease, background 0.15s ease; } .ds-btn-primary:hover { background: #FF7A3D; color: #562C8B; } .ds-btn-primary:focus-visible { outline: 2px solid #7541B8; outline-offset: 2px; } .ds-btn-primary:active { transform: scale(0.96); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "The secondary action on violet ground — outlined, never filled.",
+      "html": "<div class=\"ds-onviolet\"><a class=\"ds-btn-ghost\" href=\"#\">read the writing</a></div>",
+      "css": ".ds-onviolet { background: radial-gradient(600px 300px at 75% 20%, #6B3AAE 0%, #562C8B 55%); padding: 28px; border-radius: 14px; } .ds-btn-ghost { display: inline-block; font-family: 'Fira Code', ui-monospace, monospace; background: transparent; border: 1px solid #7A52B8; color: #E2D5F6; font-size: 13px; font-weight: 600; padding: 12px 24px; border-radius: 8px; line-height: 1; text-decoration: none; transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease; } .ds-btn-ghost:hover { border-color: #BBA0E6; color: #FBF8F4; } .ds-btn-ghost:focus-visible { outline: 2px solid #F67D51; outline-offset: 2px; } .ds-btn-ghost:active { transform: scale(0.96); }"
+    },
+    {
+      "name": "Open-To-Work Pill",
+      "kind": "chip",
+      "refersTo": "open-badge",
+      "description": "The only true pill in the system — a pulsing Ember dot on translucent deep violet.",
+      "html": "<div class=\"ds-onviolet2\"><a class=\"ds-openbadge\" href=\"#\"><span class=\"dot\"></span>open to new roles</a></div>",
+      "css": "@keyframes ds-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } } .ds-onviolet2 { background: #562C8B; padding: 24px; border-radius: 14px; } .ds-openbadge { font-family: 'Fira Code', ui-monospace, monospace; border: 1px solid #FF8A50; background: rgba(40, 15, 76, 0.5); color: #FFB98F; border-radius: 20px; padding: 8px 16px; font-size: 12.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; } .ds-openbadge:hover { background: #E9622E; color: #2A1650; border-color: #E9622E; } .ds-openbadge .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #E9622E; margin-right: 8px; flex-shrink: 0; animation: ds-pulse 2s ease-in-out infinite; } @media (prefers-reduced-motion: reduce) { .ds-openbadge .dot { animation: none; } }"
+    },
+    {
+      "name": "Prompt Line",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The system's signature. A real, parseable shell prompt introducing a section or hero.",
+      "html": "<p class=\"ds-prompt\"><span class=\"u\">ronald</span> <span class=\"a\">→</span> <span class=\"d\">~/lokilabs</span> <span class=\"a\">$</span> <span class=\"c\">whoami</span><span class=\"cur\"></span></p>",
+      "css": "@keyframes ds-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } } .ds-prompt { font-family: 'Fira Code', ui-monospace, monospace; font-size: 13px; color: #76706C; margin: 0; } .ds-prompt .u { color: #7541B8; } .ds-prompt .a { color: #E9622E; } .ds-prompt .d { color: #A69C90; } .ds-prompt .c { color: #231E1B; } .ds-prompt .cur { display: inline-block; width: 0.44em; height: 0.78em; background: #E9622E; margin-left: 0.08em; vertical-align: -0.06em; animation: ds-blink 1.1s steps(1) infinite; } @media (prefers-reduced-motion: reduce) { .ds-prompt .cur { animation: none; } }"
+    },
+    {
+      "name": "Project Card",
+      "kind": "card",
+      "refersTo": "card-project",
+      "description": "A terminal window as a card — chrome bar with traffic lights, then the body. Hover is violet light, not lift.",
+      "html": "<a class=\"ds-card\" href=\"#\"><span class=\"ds-chrome\"><span class=\"d1\"></span><span class=\"d2\"></span><span class=\"d3\"></span><span class=\"t\">homelab.md</span></span><span class=\"ds-card-body\"><span class=\"ds-card-head\"><span class=\"n\">homelab</span><span class=\"ds-badge\">production</span></span><span class=\"blurb\">Three-node HA Kubernetes on Raspberry Pi CM5, GitOps with FluxCD, full Prometheus/Grafana observability.</span><span class=\"open\">open →</span></span></a>",
+      "css": ".ds-card { font-family: 'Fira Code', ui-monospace, monospace; display: flex; flex-direction: column; border: 1px solid #E2D9CC; border-radius: 14px; background: #FFFFFF; overflow: hidden; color: #231E1B; text-decoration: none; max-width: 360px; transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease; } .ds-card:hover { background: #F4EEFB; border-color: #C9B4E8; } .ds-card:focus-visible { outline: 2px solid #7541B8; outline-offset: 2px; } .ds-card:active { transform: scale(0.99); } .ds-chrome { height: 38px; background: #EFEBE4; display: flex; align-items: center; gap: 7px; padding: 0 16px; } .ds-chrome .d1, .ds-chrome .d2, .ds-chrome .d3 { width: 10px; height: 10px; border-radius: 50%; } .ds-chrome .d1 { background: #E9622E; } .ds-chrome .d2 { background: #7541B8; } .ds-chrome .d3 { background: #B7AE9E; } .ds-chrome .t { margin-left: 8px; font-size: 10.5px; color: #8A8178; } .ds-card-body { padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 11px; } .ds-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; } .ds-card-head .n { font-size: 21px; font-weight: 700; letter-spacing: -1px; color: #562C8B; } .ds-card .blurb { font-size: 12.5px; line-height: 1.7; color: #76706C; } .ds-card .open { font-size: 12px; font-weight: 600; color: #E9622E; } .ds-badge { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-radius: 5px; padding: 3px 9px; color: #1F7A4D; background: #DFF0E5; white-space: nowrap; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-status",
+      "description": "Solid + uppercase means status. Orange is the default; production/live go green, daily use goes violet.",
+      "html": "<span class=\"ds-badge-row\"><span class=\"ds-b\">beta</span><span class=\"ds-b prod\">production</span><span class=\"ds-b daily\">daily use</span></span>",
+      "css": ".ds-badge-row { display: inline-flex; gap: 8px; font-family: 'Fira Code', ui-monospace, monospace; } .ds-b { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-radius: 5px; padding: 3px 9px; color: #C24A17; background: #FBE4D8; white-space: nowrap; } .ds-b.prod { color: #1F7A4D; background: #DFF0E5; } .ds-b.daily { color: #7541B8; background: #EFE7F8; }"
+    },
+    {
+      "name": "Tag Pill",
+      "kind": "chip",
+      "refersTo": "tag-chip",
+      "description": "Outlined + lowercase means category — the deliberate counterweight to the solid status badge.",
+      "html": "<span class=\"ds-tags\"><span>kubernetes</span><span>fluxcd</span><span>raspberry pi</span></span>",
+      "css": ".ds-tags { display: inline-flex; flex-wrap: wrap; gap: 7px; font-family: 'Fira Code', ui-monospace, monospace; } .ds-tags span { font-size: 10.5px; color: #7541B8; background: none; border: 1px solid #DAD2C6; border-radius: 5px; padding: 2px 9px; }"
+    },
+    {
+      "name": "Post Row",
+      "kind": "custom",
+      "refersTo": "post-row",
+      "description": "The writing list unit — date, title, arrow. Hover grounds it in Violet Tint and nudges the arrow.",
+      "html": "<a class=\"ds-post\" href=\"#\"><span class=\"date\">2026-05-14</span><span class=\"t\">three control planes on a raspberry pi</span><span class=\"arw\">→</span></a>",
+      "css": ".ds-post { font-family: 'Fira Code', ui-monospace, monospace; display: grid; grid-template-columns: 110px 1fr auto; align-items: baseline; gap: 18px; padding: 19px 14px; border-top: 1px solid #E7E1D9; color: inherit; border-radius: 10px; text-decoration: none; max-width: 620px; transition: background 0.2s ease, transform 0.15s ease; } .ds-post:hover { background: #EFE7F8; } .ds-post:focus-visible { outline: 2px solid #7541B8; outline-offset: -2px; } .ds-post:active { transform: scale(0.99); } .ds-post .date { font-size: 11px; color: #E9622E; } .ds-post .t { font-size: 16px; font-weight: 600; color: #562C8B; } .ds-post .arw { color: #E9622E; display: inline-block; transition: transform 0.2s ease; } .ds-post:hover .arw { transform: translateX(4px); }"
+    },
+    {
+      "name": "Terminal Window",
+      "kind": "custom",
+      "refersTo": "terminal-window",
+      "description": "The recurring silhouette — 14px radius, chrome bar with traffic lights, Surface interior, violet-tinted lift.",
+      "html": "<div class=\"ds-term\"><div class=\"ds-term-chrome\"><span class=\"d1\"></span><span class=\"d2\"></span><span class=\"d3\"></span><span class=\"t\">about.sh</span></div><div class=\"ds-term-body\"><p class=\"pl\"><span class=\"u\">ronald</span> <span class=\"a\">→</span> ~/lokilabs <span class=\"a\">$</span> cat about.md</p><p>15 years of frontend, now building the pipelines that keep software boring to deploy.</p><h3>currently</h3><ul><li>Raspberry Pi CM5 Kubernetes cluster, run like production</li></ul></div></div>",
+      "css": ".ds-term { font-family: 'Fira Code', ui-monospace, monospace; border: 1px solid #DAD2C6; border-radius: 14px; background: #EFEBE4; overflow: hidden; box-shadow: 0 18px 40px -24px rgba(86, 44, 139, 0.35); max-width: 520px; } .ds-term-chrome { height: 44px; background: #E0D8CC; display: flex; align-items: center; gap: 8px; padding: 0 20px; } .ds-term-chrome .d1, .ds-term-chrome .d2, .ds-term-chrome .d3 { width: 11px; height: 11px; border-radius: 50%; } .ds-term-chrome .d1 { background: #E9622E; } .ds-term-chrome .d2 { background: #7541B8; } .ds-term-chrome .d3 { background: #B7AE9E; } .ds-term-chrome .t { margin-left: 10px; font-size: 11px; color: #8A8178; } .ds-term-body { padding: 26px 28px 30px; font-size: 12.5px; line-height: 1.8; color: #3A342F; } .ds-term-body p { margin: 0 0 14px; } .ds-term-body .pl { color: #76706C; } .ds-term-body .pl .u { color: #7541B8; } .ds-term-body .pl .a { color: #E9622E; } .ds-term-body h3 { font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase; color: #76706C; font-weight: 600; margin: 20px 0 10px; } .ds-term-body ul { margin: 0; padding-left: 18px; } .ds-term-body li { margin-bottom: 6px; }"
+    },
+    {
+      "name": "Fixed Navigation",
+      "kind": "nav",
+      "refersTo": "nav-cta",
+      "description": "Blurred deep violet bar; the CV link is the only orange element and the highest-value action on the site.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-brand\" href=\"#\">/lokilabs <span class=\"p\">$</span></a><span class=\"ds-navlinks\"><a href=\"#\">about</a><a href=\"#\">writing</a><a href=\"#\">projects</a><a class=\"ds-cta\" href=\"#\">cv</a></span></nav>",
+      "css": ".ds-nav { font-family: 'Fira Code', ui-monospace, monospace; display: flex; align-items: center; justify-content: space-between; padding: 14px 30px; background: rgba(86, 44, 139, 0.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; } .ds-brand { font-size: 15px; font-weight: 700; letter-spacing: -0.5px; color: #FBF8F4; text-decoration: none; } .ds-brand .p { color: #E9622E; } .ds-navlinks { display: flex; align-items: center; gap: 26px; font-size: 12.5px; font-weight: 500; } .ds-navlinks a { color: #E2D5F6; text-decoration: none; } .ds-navlinks a:hover { color: #FBF8F4; } .ds-navlinks a.ds-cta { color: #562C8B; background: #E9622E; padding: 7px 16px; border-radius: 8px; font-weight: 700; transition: transform 0.15s ease, background 0.15s ease; } .ds-navlinks a.ds-cta:hover { background: #FF7A3D; color: #562C8B; } .ds-navlinks a.ds-cta:active { transform: scale(0.96); }"
+    },
+    {
+      "name": "Commit Ticker",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Full-bleed Ember band of real recent commits — the system's proof-of-life device. Pauses on hover.",
+      "html": "<div class=\"ds-ticker\"><div class=\"ds-ticker-track\"><span>$ git log --oneline &nbsp;·&nbsp; feat: add /api/healthz &nbsp;·&nbsp; fix: hero contrast on purple &nbsp;·&nbsp; chore: bump astro &nbsp;·&nbsp;</span><span>$ git log --oneline &nbsp;·&nbsp; feat: add /api/healthz &nbsp;·&nbsp; fix: hero contrast on purple &nbsp;·&nbsp; chore: bump astro &nbsp;·&nbsp;</span></div></div>",
+      "css": "@keyframes ds-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } } .ds-ticker { font-family: 'Fira Code', ui-monospace, monospace; background: #E9622E; overflow: hidden; padding: 12px 0; border-top: 1px solid #C24A17; border-bottom: 1px solid #C24A17; } .ds-ticker-track { display: inline-flex; white-space: nowrap; width: max-content; animation: ds-marquee 34s linear infinite; } .ds-ticker:hover .ds-ticker-track { animation-play-state: paused; } .ds-ticker-track > span { font-size: 13px; font-weight: 600; color: #FBF8F4; letter-spacing: 0.5px; } @media (prefers-reduced-motion: reduce) { .ds-ticker-track { animation: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Paper Terminal",
+    "overview": "Every terminal aesthetic starts from the same premise — black screen, glowing text — and this system inverts it. The world is warm paper stock (#FBF8F4), the kind of off-white that reads as a printed page rather than a UI surface. Deep Violet is not a background; it is a light source. It floods the hero and the contact footer as a radial glow, it tints the nav through a blur, it is the color of every shadow. The terminal itself appears as a physical object placed on the paper: a bordered window with a chrome bar and three colored dots, sitting in its own violet-tinted pool of light. Text is ink on paper; the machine is the thing casting light onto it.\n\nThe density is tight and technical — Fira Code at 12.5px through 15px, 1.7–1.8 line-height, hairline dividers, small uppercase labels with wide tracking — but the temperature is warm throughout. Nothing here is cold gray. Neutrals are built on a beige-brown axis (#231E1B ink, #EFEBE4 surface, #DCD6D1 lines), so the system reads as workshop, not console. Ember Orange does one job and does it constantly: it marks whatever is alive. Cursors blink orange, prompt sigils are orange, dates are orange, arrows are orange, every CTA is a solid orange block, and the commit ticker is a full-bleed orange band. When something in this interface is orange, it is signaling.\n\nThe interaction language is a desktop OS, played straight rather than winked at. Documents open in a window that boots with a fake log, can be minimized to a taskbar at the bottom of the screen, maximized, and closed by traffic lights. This is the one place the system spends real complexity, and it does so because the product's whole argument is craft. It is explicitly not a dark-mode hacker terminal, and explicitly not a corporate SaaS portfolio: no phosphor green on black, no glassmorphism on a mesh gradient, no sans-serif body font anywhere.",
+    "keyCharacteristics": [
+      "Warm paper world, violet light source, ember signal — three roles, no fourth.",
+      "One typeface (Fira Code) for absolutely everything, including 112px display.",
+      "Terminal windows as physical objects: chrome bar, traffic lights, boot log.",
+      "Flat surfaces everywhere; shadow is reserved for windows and is violet, never gray.",
+      "Headings track tight and negative; labels track wide and uppercase.",
+      "Real machine motion — a blinking cursor, a marquee ticker, a pulsing status dot."
+    ],
+    "rules": [
+      { "name": "The Ember Rule", "body": "Ember Orange means this is alive or this is the action. It is never decoration, never a background for reading text, and never used for two different meanings on the same screen. Its constancy is what makes the blinking cursor legible as a signal rather than an ornament.", "section": "colors" },
+      { "name": "The Inverted Terminal Rule", "body": "Dark is never the background of a page. Deep Violet behaves as light — gradients, glows, blurs, tinted shadows — and Ink appears only as text or as a deliberate solid band (footer, code block). A full-bleed dark page would break the metaphor at the root.", "section": "colors" },
+      { "name": "The Purple Contrast Rule", "body": "Only Paper, Lilac, Nav Muted, Lavender, and Ember Light are legible on Deep Violet. Raw Ember Orange (2.94:1) and Lavender Dim (2.98:1) are decoration-only there and are already annotated as such in the source. Test any new on-purple color before shipping it.", "section": "colors" },
+      { "name": "The One Face Rule", "body": "Fira Code, everywhere, forever. There is no secondary family and no sans-serif fallback in the stack. Hierarchy comes from size, weight, tracking, and color — never from a second typeface.", "section": "typography" },
+      { "name": "The Tracking Inversion Rule", "body": "Type tracks tighter as it gets bigger (-0.045em at display, -2px at section heads, -1px at card titles) and wider as it gets smaller (+1px at badges, +1.5px at group headings, +3px at eyebrows). Default normal tracking belongs only to body copy.", "section": "typography" },
+      { "name": "The Prompt Line Rule", "body": "Sections and headings are introduced by a real shell prompt — ronald → ~/lokilabs $ whoami — with the user in Violet or Lilac, the arrow and $ in Ember, the path dimmed, and the command in the brightest available text color. It is the system's signature, and it must parse as a plausible command, never as decorative gibberish.", "section": "typography" },
+      { "name": "The Two Caps Rule", "body": "1200px for living-terminal surfaces, 880px for reading documents. A new surface picks one and commits; splitting the difference makes the contact footer sit visibly out of line with the sections above it — a bug this system has already fixed once.", "section": "layout" },
+      { "name": "The Window Rule", "body": "If it does not have a chrome bar with traffic lights, it does not get a shadow. Cards, rows, badges, and buttons are flat at rest and stay flat on hover; they respond with background and border changes instead.", "section": "elevation" },
+      { "name": "The Traffic Light Rule", "body": "Every terminal object opens with the same three dots, in the same order, in the same colors: Ember (close), Signal Violet (minimize), Idle (inert). On the interactive overlay they are real buttons whose glyphs (× − +) fade in on hover or focus; everywhere else they are pure decoration and are aria-hidden.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do use Ember Orange for exactly one meaning per screen: this is live, or this is the action.",
+      "Do put a real, parseable shell prompt above a section or hero headline (ronald → ~/lokilabs $ whoami), with the $ and → in Ember.",
+      "Do give every terminal object the full chrome bar — three dots in Ember / Signal Violet / Idle, plus a lowercase filename in Chrome Text.",
+      "Do tighten tracking as type grows (-0.045em display, -2px heads) and open it as type shrinks (+1px badges, +3px eyebrows).",
+      "Do respond to :active with scale(0.96) on buttons and scale(0.99) on cards and rows. Physical feedback is the component philosophy.",
+      "Do swap to Ember Light (#F67D51) for any orange text placed on Deep Violet; raw Ember fails contrast there at 2.94:1.",
+      "Do kill every animation under prefers-reduced-motion: reduce — cursor, marquee, pulse, panel transitions, reveal staggers.",
+      "Do keep hover on paper surfaces in the violet family (Violet Tint ground, violet border) — the light falling on the page."
+    ],
+    "donts": [
+      "Don't build a dark page. Deep Violet is a light source and Ink is text; a full dark-mode surface breaks The Inverted Terminal Rule.",
+      "Don't introduce phosphor green, matrix rain, or any dark-mode hacker terminal signifier. This is a confirmed anti-reference.",
+      "Don't introduce glassmorphism cards on a mesh gradient, stock photography, or a sans-serif body font. Corporate-SaaS-portfolio is a confirmed anti-reference.",
+      "Don't add a second typeface. Fira Code carries every role.",
+      "Don't put a shadow on anything without a chrome bar, and never use a gray shadow — the palette is violet-tinted only.",
+      "Don't use Lavender Dim (#9B7FD0) for text on Deep Violet; it measures 2.98:1 and is decoration-only.",
+      "Don't use pure black, pure white as a page ground, or a cool gray. The neutral axis is warm beige-brown; the only #FFFFFF in the system is the project card face.",
+      "Don't mix the badge treatments: solid + uppercase is status, outlined + lowercase is category. Reversing them destroys the distinction where they sit side by side.",
+      "Don't give an element both a fill and a shadow to signal importance. Importance here is Ember, tone, and motion — never elevation."
+    ]
+  }
+}

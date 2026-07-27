@@ -32,3 +32,6 @@ pnpm-debug.log*
 
 # product-team-review tracking (not for commit)
 .product-team-review/
+
+# impeccable live-mode session journals (local recovery state)
+.impeccable/live/sessions/
