@@ -3,25 +3,17 @@
   --orange-light: #F67D51;
   --violet: #7541B8;
   --purple: #562C8B;
-  --purple-tag: #6B44A0;
-  --purple-ghost: #7E5EA8;
   --ink: #231E1B;
   --ink-soft: #3A342F;
   --muted: #76706C;
   --faint: #A69C90;
   --surface: #EFEBE4;
-  --raised: #F6F2EC;
   --paper: #FBF8F4;
   --line: #DCD6D1;
   --line-soft: #E7E1D9;
-  --stripe-a: #EDE7DF;
-  --stripe-b: #F3EFE9;
-  --hero-text: #D9CBEE;
   --nav-muted: #C9B8E8;
   --lilac: #D1B0FF;
   --cta-ink: #2A1650;
-  --code-green: #B7E3A6;
-  --code-comment: #8E867E;
   --mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
