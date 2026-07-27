@@ -13,7 +13,7 @@ export const jobs: Job[] = [
     when: 'dec 2024 → now',
     role: 'Career switch → platform engineering',
     tag: 'independent · homelab',
-    desc: 'A health break turned pivot: built a multi-node Kubernetes cluster (Raspberry Pi CM5) run like production — GitOps with FluxCD, full Prometheus/Grafana observability. Fully cleared and eager to get back to work.',
+    desc: 'A health break turned pivot: retraining started dec 2024, full-time on platform work since mid-2025. Built a multi-node Kubernetes cluster (Raspberry Pi CM5) run like production — GitOps with FluxCD, full Prometheus/Grafana observability. Fully cleared and eager to get back to work.',
   },
   {
     when: 'may 2024 → nov 2024',

@@ -35,7 +35,8 @@ const openTab = openPost
 const overlayOpen = !!(openPost || openProject || openCv);
 ---
 
-<main id="main" class="lk-home">
+{/* tabindex="-1" so the skip link actually moves focus here, not just scroll. */}
+<main id="main" class="lk-home" tabindex="-1">
   <section id="lk-top" class="lk-hero" aria-label="intro">
     <canvas id="lk-glyphs" aria-hidden="true"></canvas>
     <div class="lk-hero-inner">
@@ -47,16 +48,19 @@ const overlayOpen = !!(openPost || openProject || openCv);
         <a class="lk-open-badge" href="/cv/" data-lk="cv:cv"><span class="dot"></span>open to platform / devops roles</a>
       </div>
       <div class="lk-hero-cta">
-        <a class="lk-btn" href="/about/" data-lk="section:about">about me →</a>
-        <a class="lk-btn ghost" href="/cv/" data-lk="cv:cv">open cv →</a>
+        <a class="lk-btn" href="/cv/" data-lk="cv:cv">open cv →</a>
+        <a class="lk-btn ghost" href="/about/" data-lk="section:about">about me →</a>
       </div>
     </div>
   </section>
 
+  {/* Seeded with a real-looking prompt so a cold KV cache or a failed
+      /api/ticker leaves a legible line rather than an empty orange band.
+      living-terminal.js overwrites both spans once commits arrive. */}
   <div class="lk-ticker" aria-hidden="true">
     <div class="lk-ticker-track">
-      <span id="lk-tick-a"></span>
-      <span id="lk-tick-b"></span>
+      <span id="lk-tick-a">$ git log --oneline --author=ronaldlokers &nbsp;·&nbsp; fetching recent commits… &nbsp;·&nbsp;</span>
+      <span id="lk-tick-b">$ git log --oneline --author=ronaldlokers &nbsp;·&nbsp; fetching recent commits… &nbsp;·&nbsp;</span>
     </div>
   </div>
 
@@ -73,19 +77,20 @@ const overlayOpen = !!(openPost || openProject || openCv);
       <div class="lk-about-body">
         <div class="lk-about-txt">
           <div class="lk-promptline"><span class="u">ronald</span> <span class="a">→</span> ~/lokilabs <span class="a">$</span> cat about.md</div>
-          <p>15 years of frontend and fullstack at Coolblue, Mendix, and Oliver IT. The part I loved was never the UI — it was the pipelines and infrastructure underneath. Since mid-2025 (after a health break, fully under control) I'm all-in on platform engineering.</p>
+          <p>15 years of frontend and fullstack at Coolblue, Mendix, and Oliver IT. The part I loved was never the UI — it was the pipelines and infrastructure underneath. A health break at the end of 2024 turned into the pivot: I started retraining on platform work in dec 2024, and since mid-2025 (fully cleared) I'm all-in on it.</p>
           <h3>in practice</h3>
           <ul>
             <li>Raspberry Pi CM5 Kubernetes cluster, three HA control planes, run like production — GitOps with FluxCD (<a href="https://github.com/ronaldlokers/homelab">repo</a>)</li>
             <li>Prometheus + Grafana observability; Longhorn, MetalLB, Renovate</li>
             <li>Daily: Arch Linux, Docker, CI/CD design, cluster operations</li>
           </ul>
-          <p>Ready to bring 15+ years to a Platform or DevOps role. <a href="mailto:ronald@lokilabs.nl">Get in touch</a>.</p>
+          <p>Ready to bring 15+ years to a Platform or DevOps role. <a class="lk-about-mail" href="mailto:ronald@lokilabs.nl" data-track="mailto">Get in touch →</a></p>
           <h3>away from the keyboard</h3>
           <p>Rally Chief Official and Rescue Marshal at KNAF rallies; Event Traffic Controller at village events in Fijnaart. Different kind of incident response.</p>
           <div class="lk-about-tl">
-            <span><span class="y">2010–2025</span> — frontend / fullstack</span>
-            <span><span class="y">2025–now</span> — platform / devops</span>
+            <span><span class="y">2010–2024</span> — frontend / fullstack</span>
+            <span><span class="y">dec 2024</span> — retraining on platform</span>
+            <span><span class="y">mid 2025–now</span> — platform / devops, full-time</span>
             <span><span class="y">always</span> — if it hurts, script it</span>
           </div>
         </div>
