@@ -35,3 +35,8 @@ pnpm-debug.log*
 
 # impeccable live-mode session journals (local recovery state)
 .impeccable/live/sessions/
+
+# impeccable critique runs — point-in-time audits that go stale the moment the
+# findings are fixed. One was committed still reporting a P0 contrast failure
+# that had already been resolved, on a repo read as portfolio evidence.
+.impeccable/critique/
