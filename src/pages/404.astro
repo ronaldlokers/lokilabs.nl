@@ -1,17 +1,26 @@
 ---
 import Base from '../layouts/Base.astro';
-import Prompt from '../components/Prompt.astro';
 ---
-<Base title="404 — lokilabs" description="Page not found." chrome={false}>
-  <nav class="lk-nav" slot="header" aria-label="site">
-    <a class="lk-brand" href="/">/lokilabs <span class="p">$</span></a>
-    <div class="lk-navlinks">
-      <a class="lk-cta" href="/">cd ~</a>
+{/* Was `chrome={false}` with a stripped one-link nav and `.wrap.page-head` —
+    the last page still using the old static-header offsets (34px top padding)
+    against a nav that is position:fixed and ~63px tall, so the prompt line
+    rendered entirely behind it; at <=640px the `.wrap` media rule has equal
+    specificity, is declared later, and zeroed that padding to 0 outright.
+    This now follows the same `.lk-section.doc` > `.lk-doc` pattern as
+    /privacy/, and the standard chrome restores the nav and contact footer —
+    so the page a stale external link lands on can still reach the CV. */}
+<Base title="404 — lokilabs" description="Page not found.">
+  <main id="main" class="lk-section doc" tabindex="-1">
+    <span id="lk-top" aria-hidden="true"></span>
+    <div class="lk-doc">
+      <div class="lk-promptline"><span class="u">ronald</span> <span class="a">→</span> ~/lokilabs <span class="a">$</span> cat {'{page}'}</div>
+      <h1>404</h1>
+      <div class="lk-doc-desc">No such file or directory — the page you followed doesn’t exist, or has been renamed.</div>
+      <div class="lk-doc-links">
+        <a class="repo" href="/">cd ~</a>
+        <a class="page" href="/projects/">cd ~/projects</a>
+        <a class="page" href="/writing/">cd ~/writing</a>
+      </div>
     </div>
-  </nav>
-  <main id="main" class="wrap page-head" tabindex="-1">
-    <Prompt cmd="cat {page}" />
-    <h1>404</h1>
-    <p>No such file or directory. <a href="/">cd ~</a></p>
   </main>
 </Base>
