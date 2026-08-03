@@ -105,33 +105,56 @@ async function handleTicker(env, ctx) {
 // this keeps it a one-visit check rather than a login flow to build.
 const TRACK_KEYS = ['cv', 'mailto', 'github', 'linkedin'];
 
-// Best-effort per-IP throttle — same non-atomic read-modify-write as
-// bumpCounter, so it's a rough cap, not a hard guarantee. Enough to blunt a
-// casual script without needing a Durable Object for a vanity counter.
+// Best-effort per-IP throttle. This used to be KV-backed, which cost a write
+// per counted click on top of bumpCounter's own — so on the Free plan's
+// 1,000 writes/day (account-wide, shared with the cron's 48) half the budget
+// went to protecting the other half, capping the site at ~476 tracked clicks
+// a day. It bought little: a blocked request already skipped its write, so a
+// distributed flood was never bounded by it anyway, only a single noisy IP.
+// The in-isolate limiter below costs nothing and blunts the same casual
+// script, which doubles real capacity to ~950 clicks/day.
 const TRACK_RATE_LIMIT = 20;
-// Window the 20-request cap applies over, and the TTL of the per-IP key.
-const TRACK_RATE_WINDOW_S = 60;
-async function isRateLimited(env, ip) {
-  // Fail OPEN, never 500. This put() used to be awaited bare in handleTrack's
-  // request path with no try/catch anywhere up the chain, so any KV write
-  // failure — quota exhaustion being the realistic one, since the limiter's
-  // own write counts against the same daily budget — turned a fire-and-forget
-  // analytics beacon into a 500 for the visitor.
-  try {
-    const kvKey = `ratelimit:track:${ip}`.slice(0, 500);
-    const count = Number((await env.TICKER_KV.get(kvKey)) || 0);
-    if (count >= TRACK_RATE_LIMIT) return true;
-    await env.TICKER_KV.put(kvKey, String(count + 1), { expirationTtl: TRACK_RATE_WINDOW_S });
-  } catch (err) {
-    console.error('rate-limit check failed, allowing request', err);
+const TRACK_RATE_WINDOW_MS = 60_000;
+
+// In-isolate throttle: a plain Map in module scope, no KV, therefore no writes.
+// Used by /api/csp-report, which is unauthenticated and must never consume the
+// KV write budget — on the Free plan that budget is 1,000 writes/day for the
+// whole account, and it is shared with the conversion counters, so letting an
+// anonymous endpoint spend it would hand anyone a way to silently stop the
+// site's only success metric from moving.
+//
+// Per-isolate rather than global, so it is a blunt instrument: Cloudflare runs
+// many isolates and a distributed flood spreads across them. That is an
+// acceptable trade for an endpoint whose only job is writing lines to a log —
+// the body/array caps bound the damage per request, and this bounds the rate
+// per isolate. Anything stronger wants a Durable Object, which is not worth it
+// here.
+// Keyed by scope+ip, not ip alone: /api/track and /api/csp-report have
+// unrelated budgets, and sharing one bucket would let a visitor's own link
+// clicks consume the allowance for their browser's violation reports (and
+// vice versa).
+const ISOLATE_RATE = new Map();
+function isIsolateRateLimited(scope, ip, limit, windowMs, now) {
+  const key = `${scope}:${ip}`;
+  const entry = ISOLATE_RATE.get(key);
+  if (!entry || now - entry.start > windowMs) {
+    // Opportunistic sweep: the Map is per-isolate and short-lived, but a long-
+    // running isolate under many distinct IPs would otherwise grow unbounded.
+    if (ISOLATE_RATE.size > 5000) ISOLATE_RATE.clear();
+    ISOLATE_RATE.set(key, { start: now, count: 1 });
+    return false;
   }
-  return false;
+  entry.count += 1;
+  return entry.count > limit;
 }
+
+const CSP_RATE_LIMIT = 20;
+const CSP_RATE_WINDOW_MS = 60_000;
 
 // Longest allowlisted key is 8 chars; anything beyond this is not a real
 // beacon, so reject on Content-Length before reading the body at all —
 // previously a 20MB bogus payload was read in full, and because the key was
-// validated BEFORE isRateLimited ran, invalid-key floods skipped the limiter
+// validated BEFORE the rate limiter ran, invalid-key floods skipped it
 // entirely.
 const TRACK_MAX_BODY = 32;
 
@@ -140,7 +163,9 @@ async function handleTrack(request, env, ctx) {
     const declared = Number(request.headers.get('Content-Length') || 0);
     if (declared > TRACK_MAX_BODY) return new Response('too large', { status: 413 });
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-    if (await isRateLimited(env, ip)) return new Response('rate limited', { status: 429 });
+    if (isIsolateRateLimited('track', ip, TRACK_RATE_LIMIT, TRACK_RATE_WINDOW_MS, Date.now())) {
+      return new Response('rate limited', { status: 429 });
+    }
     const key = (await request.text()).slice(0, TRACK_MAX_BODY).trim();
     if (!TRACK_KEYS.includes(key)) return new Response('bad key', { status: 400 });
     // .catch so a failed counter write is logged rather than becoming a silent
@@ -170,13 +195,15 @@ const CSP_MAX_BODY = 64 * 1024;
 const CSP_MAX_REPORTS = 20;
 const CSP_MAX_FIELD = 512;
 
-async function handleCspReport(request, env) {
+async function handleCspReport(request) {
   if (request.method !== 'POST') return new Response('method not allowed', { status: 405 });
   if (Number(request.headers.get('Content-Length') || 0) > CSP_MAX_BODY) {
     return new Response(null, { status: 204 });
   }
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-  if (await isRateLimited(env, ip)) return new Response(null, { status: 204 });
+  if (isIsolateRateLimited('csp', ip, CSP_RATE_LIMIT, CSP_RATE_WINDOW_MS, Date.now())) {
+    return new Response(null, { status: 204 });
+  }
   try {
     const body = await request.json();
     const reports = (Array.isArray(body) ? body : [body]).slice(0, CSP_MAX_REPORTS);
@@ -229,7 +256,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/ticker') return handleTicker(env, ctx);
     if (url.pathname === '/api/track') return handleTrack(request, env, ctx);
-    if (url.pathname === '/api/csp-report') return handleCspReport(request, env);
+    if (url.pathname === '/api/csp-report') return handleCspReport(request);
     if (url.pathname === '/api/healthz') return handleHealthz(env);
     if (url.pathname.startsWith('/api/')) return new Response('not found', { status: 404 });
     return env.ASSETS.fetch(request);
