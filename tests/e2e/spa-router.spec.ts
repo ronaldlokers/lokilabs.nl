@@ -115,6 +115,20 @@ test('a fast open-then-close does not flash the overlay back visible', async ({ 
   await expect(overlay).toBeHidden();
 });
 
+// Every other test in this file opens the overlay by clicking a homepage card,
+// which goes through openRoute(). Deep links go through adoptOpen() instead —
+// the path every shared URL, bookmark and crawler takes — and it was missing
+// openRoute's .focus() call entirely, so the dialog opened with focus still on
+// <body>. No test covered that path, which is why it shipped.
+for (const path of ['/cv/', '/writing/from-frontend-to-platform/', '/projects/homelab/']) {
+  test(`deep link to ${path} moves focus into the dialog`, async ({ page }) => {
+    await page.goto(path);
+    const overlay = page.locator('#lk-overlay');
+    await expect(overlay).toHaveClass(/shown/);
+    await expect(page.locator('.lk-panel')).toBeFocused();
+  });
+}
+
 test('CV print button fires window.print() without a CSP violation', async ({ page }) => {
   const cspErrors: string[] = [];
   page.on('console', (msg) => {
