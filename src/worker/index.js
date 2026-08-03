@@ -109,21 +109,45 @@ const TRACK_KEYS = ['cv', 'mailto', 'github', 'linkedin'];
 // bumpCounter, so it's a rough cap, not a hard guarantee. Enough to blunt a
 // casual script without needing a Durable Object for a vanity counter.
 const TRACK_RATE_LIMIT = 20;
+// Window the 20-request cap applies over, and the TTL of the per-IP key.
+const TRACK_RATE_WINDOW_S = 60;
 async function isRateLimited(env, ip) {
-  const kvKey = `ratelimit:track:${ip}`;
-  const count = Number((await env.TICKER_KV.get(kvKey)) || 0);
-  if (count >= TRACK_RATE_LIMIT) return true;
-  await env.TICKER_KV.put(kvKey, String(count + 1), { expirationTtl: 60 });
+  // Fail OPEN, never 500. This put() used to be awaited bare in handleTrack's
+  // request path with no try/catch anywhere up the chain, so any KV write
+  // failure — quota exhaustion being the realistic one, since the limiter's
+  // own write counts against the same daily budget — turned a fire-and-forget
+  // analytics beacon into a 500 for the visitor.
+  try {
+    const kvKey = `ratelimit:track:${ip}`.slice(0, 500);
+    const count = Number((await env.TICKER_KV.get(kvKey)) || 0);
+    if (count >= TRACK_RATE_LIMIT) return true;
+    await env.TICKER_KV.put(kvKey, String(count + 1), { expirationTtl: TRACK_RATE_WINDOW_S });
+  } catch (err) {
+    console.error('rate-limit check failed, allowing request', err);
+  }
   return false;
 }
 
+// Longest allowlisted key is 8 chars; anything beyond this is not a real
+// beacon, so reject on Content-Length before reading the body at all —
+// previously a 20MB bogus payload was read in full, and because the key was
+// validated BEFORE isRateLimited ran, invalid-key floods skipped the limiter
+// entirely.
+const TRACK_MAX_BODY = 32;
+
 async function handleTrack(request, env, ctx) {
   if (request.method === 'POST') {
-    const key = (await request.text()).trim();
-    if (!TRACK_KEYS.includes(key)) return new Response('bad key', { status: 400 });
+    const declared = Number(request.headers.get('Content-Length') || 0);
+    if (declared > TRACK_MAX_BODY) return new Response('too large', { status: 413 });
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
     if (await isRateLimited(env, ip)) return new Response('rate limited', { status: 429 });
-    ctx.waitUntil(bumpCounter(env, key));
+    const key = (await request.text()).slice(0, TRACK_MAX_BODY).trim();
+    if (!TRACK_KEYS.includes(key)) return new Response('bad key', { status: 400 });
+    // .catch so a failed counter write is logged rather than becoming a silent
+    // unhandled rejection behind the 204 the client already received — this is
+    // the site's only success metric, so losing writes quietly is the worst
+    // possible failure mode.
+    ctx.waitUntil(bumpCounter(env, key).catch((err) => console.error('bumpCounter failed', key, err)));
     return new Response(null, { status: 204 });
   }
   if (request.method === 'GET') {
@@ -138,16 +162,33 @@ async function handleTrack(request, env, ctx) {
 // here) — the print-button regression this session shipped was invisible
 // to every check until a human clicked it; logging violations means the
 // next one at least shows up in Workers Logs instead of needing that.
-async function handleCspReport(request) {
+// Real browser report batches are small. Without these caps the endpoint took
+// any method from anyone at any rate: a 14MB body holding 60k report objects
+// drove 60k sequential console.error calls and pinned the worker, which also
+// defeats the endpoint's own purpose — drowning real violations in noise.
+const CSP_MAX_BODY = 64 * 1024;
+const CSP_MAX_REPORTS = 20;
+const CSP_MAX_FIELD = 512;
+
+async function handleCspReport(request, env) {
+  if (request.method !== 'POST') return new Response('method not allowed', { status: 405 });
+  if (Number(request.headers.get('Content-Length') || 0) > CSP_MAX_BODY) {
+    return new Response(null, { status: 204 });
+  }
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  if (await isRateLimited(env, ip)) return new Response(null, { status: 204 });
   try {
     const body = await request.json();
-    const reports = Array.isArray(body) ? body : [body];
+    const reports = (Array.isArray(body) ? body : [body]).slice(0, CSP_MAX_REPORTS);
     for (const r of reports) {
-      const detail = r.body || r['csp-report'] || r;
+      const detail = (r && (r.body || r['csp-report'])) || r || {};
+      // Truncate: these are attacker-supplied strings from an unauthenticated
+      // endpoint going straight into Workers Logs.
+      const field = (v) => (typeof v === 'string' ? v.slice(0, CSP_MAX_FIELD) : undefined);
       console.error('CSP violation', {
-        blockedUri: detail['blocked-uri'] || detail.blockedURL,
-        directive: detail['violated-directive'] || detail.effectiveDirective,
-        documentUri: detail['document-uri'] || detail.documentURL,
+        blockedUri: field(detail['blocked-uri'] || detail.blockedURL),
+        directive: field(detail['violated-directive'] || detail.effectiveDirective),
+        documentUri: field(detail['document-uri'] || detail.documentURL),
       });
     }
   } catch {
@@ -188,7 +229,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/ticker') return handleTicker(env, ctx);
     if (url.pathname === '/api/track') return handleTrack(request, env, ctx);
-    if (url.pathname === '/api/csp-report') return handleCspReport(request);
+    if (url.pathname === '/api/csp-report') return handleCspReport(request, env);
     if (url.pathname === '/api/healthz') return handleHealthz(env);
     if (url.pathname.startsWith('/api/')) return new Response('not found', { status: 404 });
     return env.ASSETS.fetch(request);
