@@ -183,6 +183,11 @@ function adoptOpen(route) {
   if (route.kind === 'project') mountGiscus();
   if (route.kind === 'cv') trackEvent('cv');
   history.replaceState({ lk: false }, '', location.href);
+  // openRoute() focuses the panel on open; this path (every deep link, bookmark
+  // and shared URL — the primary arrival route) didn't, so a role="dialog"
+  // aria-modal="true" panel opened with focus still on <body> and no keyboard
+  // or screen-reader user was told a dialog existed at all.
+  overlay.querySelector('.lk-panel').focus({ preventScroll: true });
 }
 
 function openRoute(route, { push }) {
@@ -375,7 +380,10 @@ function mountDetail(route) {
     title.textContent = 'not found';
     body.appendChild(notFoundDoc(route));
   }
-  document.getElementById('lk-overlay').querySelector('.lk-panel').scrollTop = 0;
+  // #lk-dbody is the scroller (overflow-y: auto); .lk-panel is overflow:hidden
+  // and never scrolls, so resetting it was a no-op and older/newer nav opened
+  // the next document still at the previous one's offset.
+  document.getElementById('lk-dbody').scrollTop = 0;
   [...body.children].forEach((el, i) => el.style.setProperty('--i', i));
   mountFootNav(route, entry);
 }
