@@ -132,6 +132,7 @@ function bindNav() {
   const overlay = document.getElementById('lk-overlay');
   on(overlay.querySelector('.lk-scrim'), 'click', closeOverlay);
   on(overlay.querySelector('.lk-tl .close'), 'click', closeOverlay);
+  on(overlay.querySelector('.lk-panel-close'), 'click', closeOverlay);
   on(overlay.querySelector('.lk-tl .max'), 'click', () => overlay.classList.toggle('maxed'));
   on(overlay.querySelector('.lk-tl .min'), 'click', minimize);
   // Forward-tabbing off the end of the panel — including out of giscus's
@@ -248,7 +249,7 @@ function openRoute(route, { push }) {
     staggerBody();
   } else {
     hideBehindBoot();
-    later(() => revealDetail(route), 200);
+    later(() => revealDetail(route), 120);
   }
   overlay.querySelector('.lk-panel').focus({ preventScroll: true });
 }
@@ -500,6 +501,13 @@ function runBoot(route, done) {
   const boot = document.getElementById('lk-boot');
   const log = document.getElementById('lk-bootlog');
   if (!boot || !log) { done(); return; }
+  // The full sequence replayed on every open from a closed state, so a
+  // visitor who opened the CV, closed it and opened it again waited through
+  // the whole thing each time — roughly 2.9s measured, in front of the one
+  // document that converts. Play it in full once per page load, then a short
+  // acknowledgement, so the bit still lands but stops charging for itself.
+  const full = !ctx.bootedOnce;
+  ctx.bootedOnce = true;
   // ctx.killed was checked here but never set anywhere, so a boot sequence
   // interrupted by fast navigation (next/prev, double-click) never actually
   // stopped — two chains wrote into the same #lk-bootlog and interleaved.
@@ -532,6 +540,14 @@ function runBoot(route, done) {
     done();
     later(() => { boot.hidden = true; }, 440);
   };
+  // Repeat opens: skip straight to the acknowledgement line. Keeps the
+  // terminal voice without re-charging the visitor ~2.9s for it.
+  if (!full) {
+    log.innerHTML = '<span style="color:#2E9E63;">✓</span> done — opening.\n';
+    later(finish, 160);
+    return;
+  }
+
   const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   let fi = 0;
   let spun = 0;
@@ -539,21 +555,21 @@ function runBoot(route, done) {
     if (id !== ctx.bootId) return;
     log.innerHTML = html + '<span style="color:#E9622E;">' + frames[fi % frames.length] + '</span> rendering ' + file + '…\n';
     fi++; spun++;
-    if (spun < 13) later(spin, 65);
-    else { log.innerHTML = html + '<span style="color:#2E9E63;">✓</span> done — opening.\n'; later(finish, 300); }
+    if (spun < 5) later(spin, 50);
+    else { log.innerHTML = html + '<span style="color:#2E9E63;">✓</span> done — opening.\n'; later(finish, 140); }
   };
   const step = () => {
     if (id !== ctx.bootId) return;
-    if (i < steps.length) { html += steps[i] + '\n'; log.innerHTML = html; i++; later(step, 165); return; }
+    if (i < steps.length) { html += steps[i] + '\n'; log.innerHTML = html; i++; later(step, 70); return; }
     let pct = 0;
     const barBase = html;
     const bar = () => {
       if (id !== ctx.bootId) return;
-      pct = Math.min(100, pct + 7 + Math.random() * 15);
+      pct = Math.min(100, pct + 18 + Math.random() * 20);
       const f = Math.round(pct / 5);
       log.innerHTML = barBase + 'fetching ' + file + '  [<span style="color:#E9622E;">' + '█'.repeat(f) + '</span>' + '░'.repeat(20 - f) + '] ' + Math.round(pct) + '%\n';
-      if (pct < 100) later(bar, 85);
-      else { html = log.innerHTML; later(spin, 220); }
+      if (pct < 100) later(bar, 50);
+      else { html = log.innerHTML; later(spin, 90); }
     };
     bar();
   };
