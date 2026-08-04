@@ -193,6 +193,12 @@ function adoptOpen(route) {
 function openRoute(route, { push }) {
   const overlay = document.getElementById('lk-overlay');
   const key = routeKey(route);
+  // Captured BEFORE renderTaskbar(): restoring from a taskbar chip re-renders
+  // the strip with replaceChildren(), which destroys the very button the user
+  // just clicked. document.activeElement had therefore already fallen back to
+  // <body> by the time the capture below ran, so closing restored focus to
+  // nothing at all.
+  const previouslyFocused = document.activeElement;
   ctx.minWindows = ctx.minWindows.filter((w) => w.key !== key);
   renderTaskbar();
   // Navigating within an already-open overlay (next/prev, taskbar restore
@@ -202,7 +208,7 @@ function openRoute(route, { push }) {
   // behavior (back() vs replace-to-root) still matches how this session
   // actually got here.
   const alreadyOpen = !!ctx.route;
-  if (!alreadyOpen) ctx.lastFocused = document.activeElement;
+  if (!alreadyOpen) ctx.lastFocused = previouslyFocused;
   ctx.route = route;
   const path = pathFor(route.kind, route.slug);
   if (alreadyOpen) history.replaceState(history.state, '', path);
@@ -260,10 +266,14 @@ function closeVisual() {
   ctx.route = null;
   setBackgroundInert(false);
   lockBodyScroll(false);
-  if (ctx.lastFocused) {
-    ctx.lastFocused.focus({ preventScroll: true });
-    ctx.lastFocused = null;
-  }
+  // A taskbar chip that opened this overlay is gone from the DOM by now, and
+  // .focus() on a detached node silently leaves focus on <body> — so fall
+  // back to a real control rather than dropping the keyboard user nowhere.
+  const restore = ctx.lastFocused && document.contains(ctx.lastFocused)
+    ? ctx.lastFocused
+    : document.querySelector('.lk-navlinks a.lk-cta');
+  if (restore) restore.focus({ preventScroll: true });
+  ctx.lastFocused = null;
   later(() => {
     if (ctx && !ctx.route) {
       overlay.hidden = true;
@@ -293,7 +303,14 @@ function trapFocus(e) {
   if (!e.shiftKey) return;
   const focusables = panelFocusables();
   if (!focusables.length) return;
-  if (document.activeElement === focusables[0]) {
+  // The panel container itself is a wrap point, not just focusables[0]. On
+  // open, focus is put on .lk-panel (tabindex="-1"), which panelFocusables()
+  // excludes by design — so the guard below was false for the very first
+  // Shift+Tab a keyboard user pressed after opening, and focus fell out of
+  // the dialog to <body>. The next Tab recovered, so it read as a one-key
+  // blip rather than a broken trap, which is why it survived earlier passes.
+  const panel = document.querySelector('.lk-panel');
+  if (document.activeElement === focusables[0] || document.activeElement === panel) {
     e.preventDefault();
     focusables[focusables.length - 1].focus();
   }

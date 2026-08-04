@@ -40,6 +40,11 @@ jobs:
           check "/writing/" 200
           check "/cv/" 200
           check "/api/ticker" 200
+          # /api/healthz exists to catch the ticker cron silently stopping,
+          # but it was only ever exercised by the hourly external monitor —
+          # so a regression that broke it went undetected for up to ~2 hours
+          # despite this job already running 90s after every deploy.
+          check "/api/healthz" 200
           check "/rss.xml" 200
           check "/sitemap-index.xml" 200
           check "/robots.txt" 200

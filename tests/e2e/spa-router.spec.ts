@@ -127,7 +127,60 @@ for (const path of ['/cv/', '/writing/from-frontend-to-platform/', '/projects/ho
     await expect(overlay).toHaveClass(/shown/);
     await expect(page.locator('.lk-panel')).toBeFocused();
   });
+
+  test(`deep link to ${path} closes on Escape and rewrites to root`, async ({ page }) => {
+    // adoptOpen() pushes no history entry, so closeOverlay() takes the
+    // replaceState-to-root branch rather than history.back(). A deep-linked
+    // visitor pressing Escape should land on the homepage, not on whatever
+    // preceded the site in their history.
+    await page.goto(path);
+    await expect(page.locator('#lk-overlay')).toHaveClass(/shown/);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#lk-overlay')).not.toHaveClass(/shown/);
+    await expect(page).toHaveURL(/\/$/);
+  });
+
+  test(`deep link to ${path} keeps Shift+Tab inside the dialog`, async ({ page }) => {
+    // The trap only reversed when activeElement was focusables[0]. On open,
+    // focus sits on .lk-panel (tabindex="-1"), which panelFocusables()
+    // excludes — so the first Shift+Tab escaped to <body>. Deep links are the
+    // arrival path where this is most likely to be someone's first keypress.
+    await page.goto(path);
+    await expect(page.locator('#lk-overlay')).toHaveClass(/shown/);
+    await expect(page.locator('.lk-panel')).toBeFocused();
+
+    await page.keyboard.press('Shift+Tab');
+    const stillInside = await page.evaluate(() => {
+      const panel = document.querySelector('.lk-panel');
+      return !!panel && panel.contains(document.activeElement) && document.activeElement !== document.body;
+    });
+    expect(stillInside).toBe(true);
+  });
 }
+
+test('closing an overlay restored from the taskbar returns focus to a real control', async ({ page }) => {
+  // renderTaskbar() replaceChildren()s the strip, destroying the chip button
+  // the user just clicked, before openRoute() captured it as lastFocused — so
+  // focus fell back to <body> and the close-time restore was a no-op.
+  await page.goto('/');
+  await page.locator('.lk-projgrid .lk-card').first().click();
+  await expect(page.locator('#lk-overlay')).toHaveClass(/shown/);
+
+  await page.locator('.lk-tl .min').click();
+  await expect(page.locator('#lk-taskbar')).toBeVisible();
+
+  await page.locator('#lk-taskstrip .lk-task .open').first().click();
+  await expect(page.locator('#lk-overlay')).toHaveClass(/shown/);
+
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#lk-overlay')).not.toHaveClass(/shown/);
+
+  const landed = await page.evaluate(() => ({
+    isBody: document.activeElement === document.body,
+    tag: document.activeElement?.tagName,
+  }));
+  expect(landed.isBody).toBe(false);
+});
 
 test('CV print button fires window.print() without a CSP violation', async ({ page }) => {
   const cspErrors: string[] = [];
