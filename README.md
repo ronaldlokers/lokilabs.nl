@@ -51,6 +51,47 @@ passing before merge, enforced even for repo admins; a
 `post-deploy-smoke` workflow re-checks the live site after each deploy
 lands (see `.github/workflows/`).
 
+### Rolling back a bad deploy
+
+There's no staging, so a bad merge is live. Two options, and the first is
+almost always the right one — reverting through git needs a PR and a full CI
+pass (type-check, build, Playwright, link check), which is several minutes
+during which production stays broken.
+
+**Fastest — roll back the Worker itself** (seconds, no repo change):
+
+Cloudflare dashboard → Workers & Pages → `lokilabs-nl` → Deployments → pick
+the last good deployment → **Rollback**. Or with wrangler:
+
+```bash
+npx wrangler deployments list              # find the last good version id
+npx wrangler rollback <version-id>
+```
+
+This reverts the deployed Worker and its static assets. It does **not**
+touch `main`, so the repo and production are now out of sync — the offending
+commit still has to be reverted afterwards, or the next merge redeploys it.
+
+**Then — fix the repo**, at normal speed:
+
+```bash
+git checkout main && git pull
+git checkout -b fix/revert-<topic>
+git revert <bad-sha>
+```
+
+then open a PR as usual. Once it merges, production and `main` agree again.
+
+Notes:
+- **KV survives a rollback.** Ticker cache, conversion counters and the cron
+  heartbeat all live in `TICKER_KV` and are unaffected — a rollback cannot
+  restore a counter that a bad deploy corrupted or a bad key deleted.
+- **Cron triggers follow the deployed Worker**, so a rollback restores the
+  previous `scheduled` handler too.
+- `/api/healthz` is checked by `post-deploy-smoke` and polled externally; if
+  it reports unhealthy after a rollback, the cron hasn't run since — wait one
+  hour or trigger it manually (see Local dev).
+
 ### One-time setup for a fresh clone or fork
 
 The KV namespace ID in `wrangler.jsonc` is tied to this Cloudflare
