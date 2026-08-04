@@ -26,8 +26,8 @@ const name = project.data.title.toLowerCase();
   )}
   <div class="prose"><Content /></div>
   <div class="lk-doc-links">
-    {project.data.repo && <a class="repo" href={project.data.repo}>repo ↗</a>}
-    {project.data.link && <a class="live" href={project.data.link}>live ↗</a>}
+    {project.data.repo && <a class="repo" href={project.data.repo} data-track="repo">repo ↗</a>}
+    {project.data.link && <a class="live" href={project.data.link} data-track="repo">live ↗</a>}
   </div>
   <div class="lk-comments">
     <div class="lk-doc-sublabel">$ cat comments.log</div>

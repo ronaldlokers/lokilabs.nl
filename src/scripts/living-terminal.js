@@ -109,7 +109,13 @@ function bindNav() {
   // window.print() delegated here (not an inline onclick) so the CSP's
   // script-src, which has no 'unsafe-inline', doesn't block it.
   on(document, 'click', (e) => {
-    if (e.target.closest('[data-print]')) window.print();
+    if (e.target.closest('[data-print]')) {
+      // A print is a strong forward-it-internally signal, so it's worth
+      // counting — fired before print() because that call blocks on the
+      // browser's print dialog.
+      trackEvent('print');
+      window.print();
+    }
   });
   on(window, 'popstate', () => {
     const route = parsePath(location.pathname);
@@ -181,7 +187,7 @@ function adoptOpen(route) {
   [...body.children].forEach((el, i) => el.style.setProperty('--i', i));
   mountFootNav(route, ctx.registry.get(routeKey(route)));
   if (route.kind === 'project') mountGiscus();
-  if (route.kind === 'cv') trackEvent('cv');
+  if (route.kind === 'cv') trackEvent('cv', { once: true });
   history.replaceState({ lk: false }, '', location.href);
   // openRoute() focuses the panel on open; this path (every deep link, bookmark
   // and shared URL — the primary arrival route) didn't, so a role="dialog"
@@ -217,7 +223,7 @@ function openRoute(route, { push }) {
   // Tracked here (not just the a[data-lk] click handler) so taskbar restore
   // and back/forward into the CV route are counted too, not just the first
   // in-app click — those were silently missing before.
-  if (route.kind === 'cv') trackEvent('cv');
+  if (route.kind === 'cv') trackEvent('cv', { once: true });
   overlay.hidden = false;
   document.body.style.overflow = 'hidden';
   setBackgroundInert(true);
@@ -324,9 +330,42 @@ function closeOverlay() {
   closeVisual();
 }
 
+// Headless browsers that execute JS: link-unfurl bots (Slack, LinkedIn,
+// iMessage, Discord), preview crawlers, and the Lighthouse/Chrome-Headless
+// runs used to check the site. All of them load /cv/ like a visitor would and
+// used to increment the CV counter identically to a real recruiter reading it.
+// Deliberately conservative — this is a filter for self-identifying automation,
+// not an attempt at bot detection, which a first-party counter cannot win and
+// shouldn't try to.
+const BOT_UA = /bot|crawler|spider|crawling|headless|preview|slackbot|whatsapp|telegram|discord|embedly|quora link preview|facebookexternalhit|linkedinbot|twitterbot|bingpreview|lighthouse|chrome-lighthouse|pingdom|gtmetrix/i;
+function isLikelyBot() {
+  const nav = window.navigator;
+  if (!nav) return false;
+  // navigator.webdriver is set by every WebDriver/CDP-automated browser and is
+  // the single most reliable signal available to a page.
+  if (nav.webdriver) return true;
+  return BOT_UA.test(nav.userAgent || '');
+}
+
+// Events already sent this page load. The CV counter fired on every load of
+// /cv/ (adoptOpen) and again on every in-app navigation into the route
+// (openRoute), so a refresh, a back/forward, or a taskbar restore each counted
+// as a fresh "CV open" — the metric PRODUCT.md defines success by. Per page
+// load, not persisted: no cookie, no storage, nothing that survives the tab,
+// so the privacy posture is unchanged.
+const sentEvents = new Set();
+
 // Fire-and-forget first-party event ping (CV opens, contact clicks) — never
 // blocks or delays the thing the user actually clicked to do.
-function trackEvent(key) {
+function trackEvent(key, { once = false } = {}) {
+  if (isLikelyBot()) return;
+  // Outbound clicks (mail, github, linkedin, repo) are deliberate acts and can
+  // legitimately repeat in one session, so only the passive, load-triggered
+  // events dedup.
+  if (once) {
+    if (sentEvents.has(key)) return;
+    sentEvents.add(key);
+  }
   try {
     if (navigator.sendBeacon) navigator.sendBeacon('/api/track', key);
     else fetch('/api/track', { method: 'POST', body: key, keepalive: true }).catch(() => {});

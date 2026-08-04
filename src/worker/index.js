@@ -103,7 +103,14 @@ async function handleTicker(env, ctx) {
 // only, so a client can't create arbitrary KV entries. Reads plain, no
 // auth: it's just aggregate counts, low stakes for a personal site, and
 // this keeps it a one-visit check rather than a login flow to build.
-const TRACK_KEYS = ['cv', 'mailto', 'github', 'linkedin'];
+// 'repo' is the evidence signal: a click through to a project's source, most
+// importantly the homelab repo. Without it the funnel counted conversions and
+// generic profile links but never whether a visitor actually touched the thing
+// that answers "can a frontend engineer do platform work?" — so a CV open by
+// someone who read the evidence looked identical to one by someone who didn't.
+// 'print' is the CV's own print/save-PDF button, which is what a screener
+// clicks when they intend to forward it internally.
+const TRACK_KEYS = ['cv', 'mailto', 'github', 'linkedin', 'repo', 'print'];
 
 // Best-effort per-IP throttle. This used to be KV-backed, which cost a write
 // per counted click on top of bumpCounter's own — so on the Free plan's
