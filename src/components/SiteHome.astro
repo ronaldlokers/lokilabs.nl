@@ -44,6 +44,15 @@ const overlayOpen = !!(openPost || openProject || openCv);
       <h1 class="lk-hl">Do it twice?</h1>
       <p class="lk-hl l2">I’ll automate it<span class="lk-cursor" aria-hidden="true"></span></p>
       <p class="lk-hero-sub">from TypeScript to Kubernetes: i build the tooling that keeps software boring to deploy, and write down what breaks along the way.</p>
+      {/* The fold used to hold the claim and none of the proof — the homelab,
+          the cluster and the commit ticker all sat below it, while a screening
+          visitor may never scroll. Every item here is backed by the public
+          repo linked at the end; nothing is asserted that the link can't
+          settle. */}
+      {/* Kept on single lines: Astro's HTML compression collapses a
+          newline-only gap to nothing, which is how "governed byGitHub's"
+          shipped on the privacy page. */}
+      <p class="lk-hero-ev"><span class="f"><span class="k">3-node HA kubernetes</span> on raspberry pi cm5</span> <span class="s">·</span> <span class="f"><span class="k">fluxcd</span> gitops</span> <span class="s">·</span> <span class="f"><span class="k">prometheus</span> + grafana</span> <span class="s">·</span> <a href="https://github.com/ronaldlokers/homelab" data-track="repo">repo ↗</a></p>
       <div class="lk-hero-meta">
         <a class="lk-open-badge" href="/cv/" data-lk="cv:cv"><span class="dot"></span>open to platform / devops roles</a>
       </div>
@@ -153,6 +162,11 @@ const overlayOpen = !!(openPost || openProject || openCv);
           <button class="max" title="maximize" aria-label="maximize" type="button"><span>+</span></button>
         </span>
         <span class="lk-panel-title" id="lk-ptitle">{openTab}</span>
+        {/* Touch has no hover, so the traffic-light glyphs never appeared and
+            the only way out of a full-screen overlay was an unlabelled 13px
+            dot. Shown only under 680px, where the panel covers the nav and a
+            deep-linked visitor would otherwise be stuck. */}
+        <button class="lk-panel-close" type="button" aria-label="close">close <span aria-hidden="true">×</span></button>
       </div>
       <div id="lk-dbody" class={overlayOpen ? 'lk-reveal' : undefined}>
         {openPost && <PostDoc post={openPost.p} Content={openPost.Content} />}
